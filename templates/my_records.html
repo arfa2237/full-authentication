@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Records — TIG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+        /* ── PAGE GRID ── */
+        .records-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        .records-grid-3 {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        /* ── IMMUNIZATION BANNER ── */
+        .immun-banner {
+            background: linear-gradient(120deg, var(--accent-deeper) 0%, var(--accent-dark) 50%, var(--accent-color) 100%);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .immun-banner::before {
+            content: '';
+            position: absolute;
+            right: -40px; top: -40px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+        }
+
+        .immun-text h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+        .immun-text p  { font-size: 13px; opacity: 0.85; max-width: 400px; line-height: 1.7; }
+
+        /* Circular progress */
+        .circle-wrap {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .circle-wrap svg {
+            transform: rotate(-90deg);
+        }
+
+        .circle-bg { fill: none; stroke: rgba(255,255,255,0.2); stroke-width: 10; }
+        .circle-fill {
+            fill: none;
+            stroke: white;
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 1.5s ease;
+        }
+
+        .circle-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .circle-text .pct {
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+            line-height: 1;
+        }
+
+        .circle-text .lbl {
+            font-size: 9px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── STAT CARDS ── */
+        .mini-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .mini-stat {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow);
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .ms-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px; flex-shrink: 0;
+        }
+
+        .ms-icon.purple { background: var(--input-color); color: var(--accent-color); }
+        .ms-icon.green  { background: #e8f5e9; color: var(--success); }
+        .ms-icon.orange { background: #fff3e0; color: var(--warning); }
+        .ms-icon.red    { background: #fff0f1; color: var(--danger); }
+        .ms-icon.blue   { background: #dbeeff; color: #1a6fb3; }
+        .ms-icon.grey   { background: #f5f5f5; color: #9e9e9e; }
+
+        .ms-val   { font-size: 22px; font-weight: 800; color: var(--accent-deeper); line-height: 1; }
+        .ms-label { font-size: 10px; color: var(--text-muted); margin-top: 3px; font-weight: 500; }
+
+        /* ── SECTION CARDS ── */
+        .section-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: fadeUp 0.4s ease 0.1s both;
+        }
+
+        .card-header {
+            padding: 16px 22px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--input-color);
+        }
+
+        .card-header h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-deeper);
+            display: flex; align-items: center; gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .card-header h3 i { color: var(--accent-color); font-size: 15px; }
+
+        .card-body { padding: 18px 22px; }
+
+        /* ── CHART CONTAINERS ── */
+        .chart-wrap {
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .chart-wrap canvas {
+            max-height: 280px;
+        }
+
+        .chart-center-label {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .chart-center-label .big { font-size: 28px; font-weight: 800; color: var(--accent-deeper); }
+        .chart-center-label .sm  { font-size: 11px; color: var(--text-muted); }
+
+        /* ── PROGRESS BARS (horizontal) ── */
+        .hbar-list { display: flex; flex-direction: column; gap: 16px; }
+
+        .hbar-item {}
+
+        .hbar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-deeper);
+        }
+
+        .hbar-label span { color: var(--text-muted); font-weight: 400; font-size: 11px; }
+
+        .hbar-track {
+            height: 10px;
+            background: var(--input-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .hbar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1.2s ease;
+        }
+
+        /* ── COMPLETED TABLE ── */
+        .rec-table { width: 100%; border-collapse: collapse; }
+
+        .rec-table th {
+            padding: 10px 14px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            background: var(--input-color);
+        }
+
+        .rec-table td {
+            padding: 12px 14px;
+            font-size: 12px;
+            color: var(--accent-deeper);
+            border-bottom: 1px solid var(--input-color);
+            vertical-align: middle;
+        }
+
+        .rec-table tr:last-child td { border-bottom: none; }
+        .rec-table tr:hover td { background: #fafbff; }
+
+        .vax-cell { display: flex; align-items: center; gap: 10px; }
+
+        .vax-icon-sm {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            background: #e8f5e9;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; color: var(--success); flex-shrink: 0;
+        }
+
+        .status-dot {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 10px; font-weight: 600;
+            padding: 3px 9px; border-radius: 20px;
+        }
+
+        .status-dot.completed { background: #e8f5e9; color: var(--success); }
+        .status-dot.pending   { background: #fff3e0; color: var(--warning); }
+        .status-dot.scheduled { background: var(--input-color); color: var(--accent-dark); }
+        .status-dot.missed    { background: #fff0f1; color: var(--danger); }
+
+        /* ── LEGEND ── */
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .legend-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .empty-chart i {
+            font-size: 40px;
+            color: var(--accent-color);
+            opacity: 0.3;
+            margin-bottom: 12px;
+        }
+
+        .empty-chart p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .btn-book-sm {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 20px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-book-sm:hover { background: var(--accent-dark); transform: translateY(-1px); }
+
+        @media (max-width: 1000px) {
+            .records-grid   { grid-template-columns: 1fr; }
+            .records-grid-3 { grid-template-columns: 1fr; }
+            .mini-stats     { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .mini-stats { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════ SIDEBAR ════════ -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-icon">
+            <img src="{% static 'logo.png' %}" alt="TIG Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;">
+        </div>
+        <div class="logo-text">TIG <span>Trace &amp; Immunize GRW</span></div>
+    </div>
+
+    <div class="sidebar-user">
+        <div class="avatar">{{ request.user.first_name|first|upper }}</div>
+        <div class="user-info">
+            <div class="name">{{ request.user.first_name }} {{ request.user.last_name }}</div>
+            <div class="role">Patient &middot; PIN: #{{ profile.unique_pin }}</div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-label">Main Menu</div>
+        <a class="nav-item" href="{% url 'home' %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a class="nav-item" href="{% url 'book-appointment' %}"><i class="fa-solid fa-calendar-plus"></i> Book Appointment</a>
+        <a class="nav-item" href="{% url 'my-appointments' %}">
+            <i class="fa-solid fa-calendar-check"></i> My Appointments
+            {% if pending_count %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}
+        </a>
+        <a class="nav-item" href="{% url 'vaccine-card' %}"><i class="fa-solid fa-id-card"></i> My Vaccine Card</a>
+        <a class="nav-item active" href="{% url 'my-records' %}"><i class="fa-solid fa-chart-line"></i> My Records</a>
+        <div class="nav-label" style="margin-top:8px">Information</div>
+        <a class="nav-item" href="#"><i class="fa-solid fa-location-dot"></i> Find Centers</a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-shield-virus"></i> VPDs Info</a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-newspaper"></i> Blogs &amp; News</a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-circle-question"></i> FAQs</a>
+        <div class="nav-label" style="margin-top:8px">Account</div>
+        <a class="nav-item" href="#"><i class="fa-solid fa-user"></i> My Profile</a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a class="logout-btn" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+</aside>
+
+<!-- ════════ MAIN ════════ -->
+<div class="main">
+
+    <header class="topbar">
+        <div class="topbar-left">
+            <h2>My Records</h2>
+            <p>{{ today }} &nbsp;&middot;&nbsp; Your personal vaccination statistics</p>
+        </div>
+        <div class="topbar-right">
+            <button class="notif-btn" title="Notifications">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notif-dot"></span>
+            </button>
+            <div class="topbar-avatar">{{ request.user.first_name|first|upper }}</div>
+        </div>
+    </header>
+
+    <div class="content">
+
+        <!-- ── IMMUNIZATION BANNER ── -->
+        <div class="immun-banner">
+            <div class="immun-text">
+                <h1>Your Immunization Status 💉</h1>
+                <p>
+                    You have completed <strong>{{ completed_count }}</strong> out of
+                    <strong>{{ TOTAL_DOSES }}</strong> total recommended doses.
+                    {% if immunization_pct == 100 %}
+                        Congratulations — you are fully immunized! 🎉
+                    {% elif immunization_pct >= 50 %}
+                        Keep going — you are more than halfway there!
+                    {% else %}
+                        Book your next appointment to stay protected!
+                    {% endif %}
+                </p>
+            </div>
+            <!-- Circular Progress -->
+            <div class="circle-wrap">
+                <svg width="110" height="110" viewBox="0 0 110 110">
+                    <circle class="circle-bg" cx="55" cy="55" r="45"/>
+                    <circle class="circle-fill" id="circleProgress" cx="55" cy="55" r="45"/>
+                </svg>
+                <div class="circle-text">
+                    <div class="pct" id="circleLabel">0%</div>
+                    <div class="lbl">COMPLETE</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── MINI STAT CARDS ── -->
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <div class="ms-icon purple"><i class="fa-solid fa-list"></i></div>
+                <div><div class="ms-val">{{ total_count }}</div><div class="ms-label">Total Appointments</div></div>
+            </div>
+            <div class="mini-stat">
+                <div class="ms-icon green"><i class="fa-solid fa-circle-check"></i></div>
+                <div><div class="ms-val">{{ completed_count }}</div><div class="ms-label">Completed</div></div>
+            </div>
+            <div class="mini-stat">
+                <div class="ms-icon orange"><i class="fa-solid fa-clock"></i></div>
+                <div><div class="ms-val">{{ pending_count }}</div><div class="ms-label">Pending</div></div>
+            </div>
+            <div class="mini-stat">
+                <div class="ms-icon blue"><i class="fa-solid fa-calendar"></i></div>
+                <div><div class="ms-val">{{ scheduled_count }}</div><div class="ms-label">Scheduled</div></div>
+            </div>
+            <div class="mini-stat">
+                <div class="ms-icon red"><i class="fa-solid fa-circle-xmark"></i></div>
+                <div><div class="ms-val">{{ missed_count }}</div><div class="ms-label">Missed</div></div>
+            </div>
+            <div class="mini-stat">
+                <div class="ms-icon grey"><i class="fa-solid fa-ban"></i></div>
+                <div><div class="ms-val">{{ cancelled_count }}</div><div class="ms-label">Cancelled</div></div>
+            </div>
+        </div>
+
+        <!-- ── ROW 1: DONUT + VACCINE PROGRESS ── -->
+        <div class="records-grid">
+
+            <!-- Donut Chart — Appointment Status -->
+            <div class="section-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-chart-pie"></i> Appointment Status</h3>
+                </div>
+                <div class="card-body">
+                    {% if total_count > 0 %}
+                    <div class="chart-wrap" style="position:relative;">
+                        <canvas id="donutChart"></canvas>
+                        <div class="chart-center-label">
+                            <div class="big">{{ total_count }}</div>
+                            <div class="sm">Total</div>
+                        </div>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item"><div class="legend-dot" style="background:#43a047"></div> Completed ({{ completed_count }})</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#fb8c00"></div> Pending ({{ pending_count }})</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#6884d3"></div> Scheduled ({{ scheduled_count }})</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#f06272"></div> Missed ({{ missed_count }})</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#9e9e9e"></div> Cancelled ({{ cancelled_count }})</div>
+                    </div>
+                    {% else %}
+                    <div class="empty-chart">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <p>No appointment data yet. Book your first vaccination appointment!</p>
+                        <a href="{% url 'book-appointment' %}" class="btn-book-sm">
+                            <i class="fa-solid fa-calendar-plus"></i> Book Now
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Vaccine Progress Bars -->
+            <div class="section-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-syringe"></i> Vaccine Progress</h3>
+                    <span style="font-size:11px;color:var(--text-muted);">{{ completed_count }}/{{ TOTAL_DOSES }} doses</span>
+                </div>
+                <div class="card-body">
+                    <div class="hbar-list">
+                        {% for vac in vaccine_progress %}
+                        <div class="hbar-item">
+                            <div class="hbar-label">
+                                {{ vac.name }}
+                                <span>{{ vac.done }}/{{ vac.total }} doses &nbsp; {{ vac.percent }}%</span>
+                            </div>
+                            <div class="hbar-track">
+                                <div class="hbar-fill"
+                                     style="width:{{ vac.percent }}%; background:{{ vac.color }};"
+                                     data-width="{{ vac.percent }}">
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end records-grid -->
+
+        <!-- ── ROW 2: BAR CHART + COMPLETED TABLE ── -->
+        <div class="records-grid">
+
+            <!-- Bar Chart — Doses Completed per Vaccine -->
+            <div class="section-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-chart-bar"></i> Doses Completed by Vaccine</h3>
+                </div>
+                <div class="card-body">
+                    {% if completed_count > 0 %}
+                    <div class="chart-wrap">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="empty-chart">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <p>No completed vaccinations yet. Complete your appointments to see progress here!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Completed Appointments -->
+            <div class="section-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-list-check"></i> Completed Vaccinations</h3>
+                    <a href="{% url 'my-appointments' %}" style="font-size:11px;font-weight:600;color:var(--accent-dark);text-decoration:none;padding:5px 12px;background:var(--input-color);border-radius:20px;">View All</a>
+                </div>
+                {% if recent_completed %}
+                <table class="rec-table">
+                    <thead>
+                        <tr>
+                            <th>Vaccine</th>
+                            <th>Dose</th>
+                            <th>Date</th>
+                            <th>Center</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appt in recent_completed %}
+                        <tr>
+                            <td>
+                                <div class="vax-cell">
+                                    <div class="vax-icon-sm"><i class="fa-solid fa-check"></i></div>
+                                    <span style="font-weight:600;">{{ appt.vaccine_type }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                {% if appt.dose_number == 0 %}Booster
+                                {% else %}Dose {{ appt.dose_number }}{% endif %}
+                            </td>
+                            <td style="font-size:11px;">{{ appt.appointment_date|date:"d M Y" }}</td>
+                            <td style="font-size:11px;">{{ appt.center.name|default:"—" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-chart">
+                    <i class="fa-solid fa-list-check"></i>
+                    <p>No completed vaccinations yet!</p>
+                    <a href="{% url 'book-appointment' %}" class="btn-book-sm">
+                        <i class="fa-solid fa-calendar-plus"></i> Book Appointment
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+        </div><!-- end records-grid -->
+
+    </div><!-- end content -->
+</div><!-- end main -->
+
+<!-- AI Chatbot FAB -->
+<button class="chatbot-fab" title="Ask AI Vaccine Assistant">
+    <span class="fab-tooltip">Ask AI Chatbot</span>
+    <i class="fa-solid fa-robot"></i>
+</button>
+
+<script>
+// ── DATA FROM DJANGO ──────────────────────────────────────────────────────────
+const donutLabels  = {{ donut_labels|safe }};
+const donutData    = {{ donut_data|safe }};
+const donutColors  = {{ donut_colors|safe }};
+const barLabels    = {{ bar_labels|safe }};
+const barDone      = {{ bar_done|safe }};
+const barTotal     = {{ bar_total|safe }};
+const barColors    = {{ bar_colors|safe }};
+const immPct       = {{ immunization_pct }};
+const totalCount   = {{ total_count }};
+
+// ── CIRCULAR PROGRESS ────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+    const circle = document.getElementById('circleProgress');
+    const label  = document.getElementById('circleLabel');
+    if (circle) {
+        const circumference = 2 * Math.PI * 45; // r=45 → ~283
+        const offset = circumference - (immPct / 100) * circumference;
+        setTimeout(() => {
+            circle.style.strokeDashoffset = offset;
+            // Animate counter
+            let count = 0;
+            const interval = setInterval(() => {
+                count++;
+                label.textContent = count + '%';
+                if (count >= immPct) clearInterval(interval);
+            }, 20);
+        }, 300);
+    }
+});
+
+// ── DONUT CHART ───────────────────────────────────────────────────────────────
+{% if total_count > 0 %}
+const donutCtx = document.getElementById('donutChart').getContext('2d');
+new Chart(donutCtx, {
+    type: 'doughnut',
+    data: {
+        labels: donutLabels,
+        datasets: [{
+            data: donutData,
+            backgroundColor: donutColors,
+            borderWidth: 3,
+            borderColor: '#ffffff',
+            hoverOffset: 8,
+        }]
+    },
+    options: {
+        responsive: true,
+        cutout: '65%',
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: function(ctx) {
+                        const pct = totalCount > 0 ? Math.round((ctx.raw / totalCount) * 100) : 0;
+                        return ` ${ctx.label}: ${ctx.raw} (${pct}%)`;
+                    }
+                }
+            }
+        },
+        animation: { animateRotate: true, duration: 1200 }
+    }
+});
+{% endif %}
+
+// ── BAR CHART ─────────────────────────────────────────────────────────────────
+{% if completed_count > 0 %}
+const barCtx = document.getElementById('barChart').getContext('2d');
+new Chart(barCtx, {
+    type: 'bar',
+    data: {
+        labels: barLabels,
+        datasets: [
+            {
+                label: 'Completed',
+                data: barDone,
+                backgroundColor: barColors.map(c => c + 'CC'),
+                borderColor: barColors,
+                borderWidth: 2,
+                borderRadius: 8,
+                borderSkipped: false,
+            },
+            {
+                label: 'Remaining',
+                data: barTotal.map((t, i) => t - barDone[i]),
+                backgroundColor: 'rgba(104,132,211,0.12)',
+                borderColor: 'rgba(104,132,211,0.2)',
+                borderWidth: 1,
+                borderRadius: 8,
+                borderSkipped: false,
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { font: { family: 'Poppins', size: 11 }, boxWidth: 12, padding: 16 }
+            },
+            tooltip: {
+                callbacks: {
+                    afterBody: function(ctx) {
+                        const i = ctx[0].dataIndex;
+                        return `Total needed: ${barTotal[i]} doses`;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                stacked: false,
+                grid: { display: false },
+                ticks: { font: { family: 'Poppins', size: 10 } }
+            },
+            y: {
+                beginAtZero: true,
+                max: Math.max(...barTotal) + 1,
+                ticks: { stepSize: 1, font: { family: 'Poppins', size: 10 } },
+                grid: { color: 'rgba(104,132,211,0.08)' }
+            }
+        },
+        animation: { duration: 1200 }
+    }
+});
+{% endif %}
+</script>
+
+</body>
+</html>

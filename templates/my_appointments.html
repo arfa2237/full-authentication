@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Appointments — TIG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}"/>
+    <style>
+        /* ── FILTER BAR ── */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 9px 20px;
+            border-radius: 25px;
+            border: 2px solid var(--input-color);
+            background: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+            box-shadow: 0 4px 14px rgba(104,132,211,0.35);
+        }
+
+        .filter-count {
+            background: rgba(255,255,255,0.3);
+            padding: 1px 7px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        .filter-btn:not(.active) .filter-count {
+            background: var(--input-color);
+            color: var(--accent-deeper);
+        }
+
+        .filter-spacer { flex: 1; }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: 2px solid var(--input-color);
+            border-radius: 25px;
+            padding: 8px 16px;
+            transition: all 0.2s;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(104,132,211,0.12);
+        }
+
+        .search-box i { color: var(--text-muted); font-size: 13px; }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            color: var(--accent-deeper);
+            background: transparent;
+            width: 180px;
+        }
+
+        .search-box input::placeholder { color: var(--text-muted); }
+
+        /* ── STATS MINI ROW ── */
+        .mini-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .mini-stat {
+            background: white;
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow);
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .mini-stat:nth-child(1) { animation-delay: .05s; }
+        .mini-stat:nth-child(2) { animation-delay: .10s; }
+        .mini-stat:nth-child(3) { animation-delay: .15s; }
+        .mini-stat:nth-child(4) { animation-delay: .20s; }
+
+        .mini-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+        }
+
+        .mini-icon.all      { background: var(--input-color);  color: var(--accent-color); }
+        .mini-icon.pending  { background: #fff3e0;             color: var(--warning); }
+        .mini-icon.done     { background: #e8f5e9;             color: var(--success); }
+        .mini-icon.missed   { background: #fff0f1;             color: var(--danger); }
+
+        .mini-val  { font-size: 20px; font-weight: 800; color: var(--accent-deeper); line-height: 1; }
+        .mini-lbl  { font-size: 10px; color: var(--text-muted); margin-top: 3px; font-weight: 500; }
+
+        /* ── APPOINTMENTS GRID ── */
+        .appts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 18px;
+        }
+
+        /* ── APPOINTMENT CARD ── */
+        .appt-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: fadeUp 0.4s ease both;
+            border-left: 4px solid transparent;
+        }
+
+        .appt-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 36px rgba(104,132,211,0.18);
+        }
+
+        .appt-card.pending   { border-left-color: var(--warning); }
+        .appt-card.scheduled { border-left-color: var(--accent-color); }
+        .appt-card.completed { border-left-color: var(--success); }
+        .appt-card.missed    { border-left-color: var(--danger); }
+        .appt-card.cancelled { border-left-color: #bdbdbd; }
+
+        /* Card top strip */
+        .card-strip {
+            padding: 16px 20px 12px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .vaccine-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vbadge-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+
+        .vbadge-icon.pending   { background: #fff3e0; color: var(--warning); }
+        .vbadge-icon.scheduled { background: var(--input-color); color: var(--accent-color); }
+        .vbadge-icon.completed { background: #e8f5e9; color: var(--success); }
+        .vbadge-icon.missed    { background: #fff0f1; color: var(--danger); }
+        .vbadge-icon.cancelled { background: #f5f5f5; color: #9e9e9e; }
+
+        .vbadge-info .vname {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--accent-deeper);
+            line-height: 1.2;
+        }
+
+        .vbadge-info .vdose {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* Status pill */
+        .status-pill {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .status-pill.pending   { background: #fff3e0; color: var(--warning); }
+        .status-pill.scheduled { background: var(--input-color); color: var(--accent-dark); }
+        .status-pill.completed { background: #e8f5e9; color: var(--success); }
+        .status-pill.missed    { background: #fff0f1; color: var(--danger); }
+        .status-pill.cancelled { background: #f5f5f5; color: #9e9e9e; }
+
+        /* Card details */
+        .card-details {
+            padding: 0 20px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .detail-row i {
+            width: 16px;
+            text-align: center;
+            color: var(--accent-color);
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .detail-row strong {
+            color: var(--accent-deeper);
+            font-weight: 600;
+        }
+
+        /* Patient info strip */
+        .patient-strip {
+            margin: 0 20px 14px;
+            background: var(--input-color);
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ps-avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), #a0b4f0);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; color: white;
+            font-weight: 800; flex-shrink: 0;
+        }
+
+        .ps-name  { font-size: 12px; font-weight: 600; color: var(--accent-deeper); }
+        .ps-email { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+        .ps-pin   {
+            margin-left: auto;
+            font-size: 10px;
+            font-family: monospace;
+            color: var(--accent-dark);
+            background: white;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        /* Card actions */
+        .card-actions {
+            padding: 12px 20px;
+            border-top: 1px solid var(--input-color);
+            display: flex;
+            gap: 8px;
+            background: #fafbff;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 9px 12px;
+            border-radius: 10px;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-cancel {
+            background: #fff0f1;
+            color: var(--danger);
+        }
+
+        .btn-cancel:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-reschedule {
+            background: var(--input-color);
+            color: var(--accent-dark);
+        }
+
+        .btn-reschedule:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-disabled {
+            background: #f5f5f5;
+            color: #bdbdbd;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: var(--input-color);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 34px;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-deeper);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+            color: var(--text-muted);
+            max-width: 300px;
+            line-height: 1.7;
+            margin-bottom: 22px;
+        }
+
+        .btn-book {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(104,132,211,0.40);
+            transition: all 0.2s;
+        }
+
+        .btn-book:hover {
+            background: var(--accent-dark);
+            transform: translateY(-1px);
+        }
+
+        /* ── CANCEL CONFIRM MODAL ── */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(40,55,95,0.45);
+            z-index: 500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal-box {
+            background: white;
+            border-radius: var(--radius);
+            padding: 32px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(40,55,95,0.25);
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .modal-icon {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: #fff0f1;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px;
+            color: var(--danger);
+            margin: 0 auto 16px;
+        }
+
+        .modal-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-deeper);
+            margin-bottom: 8px;
+        }
+
+        .modal-box p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 22px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-cancel-no {
+            flex: 1;
+            padding: 11px;
+            border: 2px solid var(--input-color);
+            border-radius: 25px;
+            background: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-cancel-no:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+        .modal-cancel-yes {
+            flex: 1;
+            padding: 11px;
+            border: none;
+            border-radius: 25px;
+            background: var(--danger);
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-cancel-yes:hover { background: #d32f2f; }
+
+        /* Django messages */
+        .msg-success {
+            background: #e8f5e9; border: 1px solid var(--success);
+            color: #2e7d32; padding: 12px 16px; border-radius: 10px;
+            font-size: 12px; display: flex; align-items: center;
+            gap: 8px; margin-bottom: 20px;
+        }
+
+        .msg-error {
+            background: #fff0f1; border: 1px solid var(--danger);
+            color: #c62828; padding: 12px 16px; border-radius: 10px;
+            font-size: 12px; display: flex; align-items: center;
+            gap: 8px; margin-bottom: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .mini-stats { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .appts-grid { grid-template-columns: 1fr; }
+            .filter-bar { gap: 6px; }
+            .search-box input { width: 120px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════ SIDEBAR ════════ -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-icon">
+            <img src="{% static 'logo.png' %}" alt="TIG Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;">
+        </div>
+        <div class="logo-text">TIG <span>Trace &amp; Immunize GRW</span></div>
+    </div>
+
+    <div class="sidebar-user">
+        <div class="avatar">{{ request.user.first_name|first|upper }}</div>
+        <div class="user-info">
+            <div class="name">{{ request.user.first_name }} {{ request.user.last_name }}</div>
+            <div class="role">Patient &middot; PIN: #{{ profile.unique_pin }}</div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-label">Main Menu</div>
+        <a class="nav-item" href="{% url 'home' %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a class="nav-item" href="{% url 'book-appointment' %}"><i class="fa-solid fa-calendar-plus"></i> Book Appointment</a>
+        <a class="nav-item active" href="{% url 'my-appointments' %}">
+            <i class="fa-solid fa-calendar-check"></i> My Appointments
+            {% if pending_count %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}
+        </a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-id-card"></i> My Vaccine Card</a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-chart-line"></i> My Records</a>
+        <div class="nav-label" style="margin-top:8px">Information</div>
+        <a class="nav-item" href="#"><i class="fa-solid fa-location-dot"></i> Find Centers</a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-shield-virus"></i> VPDs Info</a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-newspaper"></i> Blogs &amp; News</a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-circle-question"></i> FAQs</a>
+        <div class="nav-label" style="margin-top:8px">Account</div>
+        <a class="nav-item" href="#"><i class="fa-solid fa-user"></i> My Profile</a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a class="logout-btn" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+</aside>
+
+<!-- ════════ MAIN ════════ -->
+<div class="main">
+
+    <header class="topbar">
+        <div class="topbar-left">
+            <h2>My Appointments</h2>
+            <p>{{ today }} &nbsp;&middot;&nbsp; Track all your vaccination appointments</p>
+        </div>
+        <div class="topbar-right">
+            <button class="notif-btn" title="Notifications">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notif-dot"></span>
+            </button>
+            <div class="topbar-avatar">{{ request.user.first_name|first|upper }}</div>
+        </div>
+    </header>
+
+    <div class="content">
+
+        <!-- Django Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <div class="msg-error"><i class="fa-solid fa-circle-xmark"></i> {{ message }}</div>
+                {% else %}
+                    <div class="msg-success"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        <!-- MINI STATS -->
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <div class="mini-icon all"><i class="fa-solid fa-list"></i></div>
+                <div>
+                    <div class="mini-val">{{ total_count }}</div>
+                    <div class="mini-lbl">Total Appointments</div>
+                </div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-icon pending"><i class="fa-solid fa-clock"></i></div>
+                <div>
+                    <div class="mini-val">{{ pending_count }}</div>
+                    <div class="mini-lbl">Pending</div>
+                </div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-icon done"><i class="fa-solid fa-circle-check"></i></div>
+                <div>
+                    <div class="mini-val">{{ completed_count }}</div>
+                    <div class="mini-lbl">Completed</div>
+                </div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-icon missed"><i class="fa-solid fa-circle-xmark"></i></div>
+                <div>
+                    <div class="mini-val">{{ missed_count }}</div>
+                    <div class="mini-lbl">Missed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILTER BAR -->
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterAppts('all', this)">
+                <i class="fa-solid fa-list"></i> All
+                <span class="filter-count">{{ total_count }}</span>
+            </button>
+            <button class="filter-btn" onclick="filterAppts('scheduled', this)">
+                <i class="fa-solid fa-calendar"></i> Scheduled
+                <span class="filter-count">{{ scheduled_count }}</span>
+            </button>
+            <button class="filter-btn" onclick="filterAppts('pending', this)">
+                <i class="fa-solid fa-clock"></i> Pending
+                <span class="filter-count">{{ pending_count }}</span>
+            </button>
+            <button class="filter-btn" onclick="filterAppts('completed', this)">
+                <i class="fa-solid fa-circle-check"></i> Completed
+                <span class="filter-count">{{ completed_count }}</span>
+            </button>
+            <button class="filter-btn" onclick="filterAppts('missed', this)">
+                <i class="fa-solid fa-circle-xmark"></i> Missed
+                <span class="filter-count">{{ missed_count }}</span>
+            </button>
+            <button class="filter-btn" onclick="filterAppts('cancelled', this)">
+                <i class="fa-solid fa-ban"></i> Cancelled
+                <span class="filter-count">{{ cancelled_count }}</span>
+            </button>
+
+            <div class="filter-spacer"></div>
+
+            <!-- Search -->
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Search vaccine..." oninput="searchAppts(this.value)">
+            </div>
+
+            <!-- Book new -->
+            <a href="{% url 'book-appointment' %}" class="btn-book" style="padding:9px 18px;font-size:12px;">
+                <i class="fa-solid fa-plus"></i> New Appointment
+            </a>
+        </div>
+
+        <!-- APPOINTMENTS GRID -->
+        <div class="appts-grid" id="apptsGrid">
+
+            {% for appt in appointments %}
+            <div class="appt-card {{ appt.status }}" data-status="{{ appt.status }}" data-vaccine="{{ appt.vaccine_type|lower }}">
+
+                <!-- Top strip: vaccine + status -->
+                <div class="card-strip">
+                    <div class="vaccine-badge">
+                        <div class="vbadge-icon {{ appt.status }}">
+                            {% if appt.vaccine_type == 'Hepatitis B' %}
+                                <i class="fa-solid fa-shield-halved"></i>
+                            {% elif appt.vaccine_type == 'MMR' %}
+                                <i class="fa-solid fa-virus-slash"></i>
+                            {% elif appt.vaccine_type == 'Tetanus' %}
+                                <i class="fa-solid fa-syringe"></i>
+                            {% elif appt.vaccine_type == 'Pneumococcal' %}
+                                <i class="fa-solid fa-lungs"></i>
+                            {% elif appt.vaccine_type == 'Child Vaccination' %}
+                                <i class="fa-solid fa-baby"></i>
+                            {% elif appt.vaccine_type == 'COVID-19' %}
+                                <i class="fa-solid fa-biohazard"></i>
+                            {% else %}
+                                <i class="fa-solid fa-syringe"></i>
+                            {% endif %}
+                        </div>
+                        <div class="vbadge-info">
+                            <div class="vname">{{ appt.vaccine_type }}</div>
+                            <div class="vdose">
+                                {% if appt.dose_number == 0 %}Booster Dose
+                                {% else %}Dose {{ appt.dose_number }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <span class="status-pill {{ appt.status }}">
+                        {% if appt.status == 'scheduled' %}<i class="fa-solid fa-calendar"></i> Scheduled
+                        {% elif appt.status == 'pending' %}<i class="fa-solid fa-clock"></i> Pending
+                        {% elif appt.status == 'completed' %}<i class="fa-solid fa-check"></i> Completed
+                        {% elif appt.status == 'missed' %}<i class="fa-solid fa-xmark"></i> Missed
+                        {% elif appt.status == 'cancelled' %}<i class="fa-solid fa-ban"></i> Cancelled
+                        {% endif %}
+                    </span>
+                </div>
+
+                <!-- Details -->
+                <div class="card-details">
+                    <div class="detail-row">
+                        <i class="fa-solid fa-hospital"></i>
+                        <span><strong>{{ appt.center.name|default:"Center not assigned" }}</strong></span>
+                    </div>
+                    <div class="detail-row">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span>{{ appt.appointment_date|date:"l, d F Y" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <i class="fa-regular fa-clock"></i>
+                        <span>{{ appt.appointment_time|time:"h:i A" }}</span>
+                    </div>
+                    {% if appt.notes %}
+                    <div class="detail-row">
+                        <i class="fa-solid fa-note-sticky"></i>
+                        <span>{{ appt.notes|truncatechars:60 }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="detail-row">
+                        <i class="fa-solid fa-calendar-plus"></i>
+                        <span>Booked on {{ appt.created_at|date:"d M Y" }}</span>
+                    </div>
+                </div>
+
+                <!-- Patient info strip -->
+                <div class="patient-strip">
+                    <div class="ps-avatar">{{ appt.patient.first_name|first|upper }}</div>
+                    <div style="flex:1">
+                        <div class="ps-name">{{ appt.patient.first_name }} {{ appt.patient.last_name }}</div>
+                        <div class="ps-email">{{ appt.patient.email }}</div>
+                    </div>
+                    <div class="ps-pin">#{{ profile.unique_pin }}</div>
+                </div>
+
+                <!-- Actions -->
+                <div class="card-actions">
+                    {% if appt.status == 'scheduled' or appt.status == 'pending' %}
+                        <button class="action-btn btn-reschedule" onclick="alert('Reschedule feature coming soon!')">
+                            <i class="fa-solid fa-calendar-pen"></i> Reschedule
+                        </button>
+                        <button class="action-btn btn-cancel" onclick="confirmCancel({{ appt.id }}, '{{ appt.vaccine_type }}')">
+                            <i class="fa-solid fa-xmark"></i> Cancel
+                        </button>
+                    {% elif appt.status == 'completed' %}
+                        <button class="action-btn btn-disabled">
+                            <i class="fa-solid fa-circle-check"></i> Completed
+                        </button>
+                    {% elif appt.status == 'missed' %}
+                        <a href="{% url 'book-appointment' %}" class="action-btn btn-reschedule">
+                            <i class="fa-solid fa-rotate-right"></i> Rebook
+                        </a>
+                    {% else %}
+                        <button class="action-btn btn-disabled">
+                            <i class="fa-solid fa-ban"></i> Cancelled
+                        </button>
+                    {% endif %}
+                </div>
+
+            </div><!-- end appt-card -->
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fa-solid fa-calendar-xmark"></i></div>
+                <h3>No Appointments Yet</h3>
+                <p>You haven't booked any vaccination appointments. Schedule your first appointment now!</p>
+                <a href="{% url 'book-appointment' %}" class="btn-book">
+                    <i class="fa-solid fa-calendar-plus"></i> Book First Appointment
+                </a>
+            </div>
+            {% endfor %}
+
+        </div><!-- end appts-grid -->
+
+    </div><!-- end content -->
+</div><!-- end main -->
+
+<!-- ════════ CANCEL MODAL ════════ -->
+<div class="modal-overlay" id="cancelModal">
+    <div class="modal-box">
+        <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h3>Cancel Appointment?</h3>
+        <p id="modalText">Are you sure you want to cancel this appointment? This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="modal-cancel-no" onclick="closeModal()">Keep It</button>
+            <form method="POST" id="cancelForm" style="flex:1">
+                {% csrf_token %}
+                <input type="hidden" name="cancel_id" id="cancelId">
+                <button type="submit" class="modal-cancel-yes" style="width:100%">Yes, Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- AI Chatbot FAB -->
+<button class="chatbot-fab" title="Ask AI Vaccine Assistant">
+    <span class="fab-tooltip">Ask AI Chatbot</span>
+    <i class="fa-solid fa-robot"></i>
+</button>
+
+<script>
+    // ── FILTER ──
+    function filterAppts(status, btn) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.appt-card').forEach(card => {
+            if (status === 'all' || card.dataset.status === status) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        checkEmpty();
+    }
+
+    // ── SEARCH ──
+    function searchAppts(val) {
+        const q = val.toLowerCase();
+        document.querySelectorAll('.appt-card').forEach(card => {
+            card.style.display = card.dataset.vaccine.includes(q) ? '' : 'none';
+        });
+        checkEmpty();
+    }
+
+    // ── CHECK EMPTY ──
+    function checkEmpty() {
+        const grid = document.getElementById('apptsGrid');
+        const visible = [...grid.querySelectorAll('.appt-card')].filter(c => c.style.display !== 'none');
+        const existing = grid.querySelector('.no-results');
+        if (existing) existing.remove();
+        if (visible.length === 0) {
+            const msg = document.createElement('div');
+            msg.className = 'empty-state no-results';
+            msg.style.gridColumn = '1/-1';
+            msg.innerHTML = `
+                <div class="empty-icon"><i class="fa-solid fa-filter-circle-xmark"></i></div>
+                <h3>No Results Found</h3>
+                <p>No appointments match your filter. Try a different filter.</p>`;
+            grid.appendChild(msg);
+        }
+    }
+
+    // ── CANCEL MODAL ──
+    function confirmCancel(id, vaccine) {
+        document.getElementById('cancelId').value = id;
+        document.getElementById('modalText').textContent =
+            `Are you sure you want to cancel your ${vaccine} appointment? This action cannot be undone.`;
+        document.getElementById('cancelForm').action = `/cancel-appointment/${id}/`;
+        document.getElementById('cancelModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('cancelModal').classList.remove('show');
+    }
+
+    // Close modal on overlay click
+    document.getElementById('cancelModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+</script>
+
+</body>
+</html>

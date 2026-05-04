@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Vaccine Card — TIG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}"/>
+    <style>
+        /* ── VACCINE CARD PAGE ── */
+        .card-page-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* ── DIGITAL CARD ── */
+        .digital-card {
+            background: linear-gradient(135deg, #1a2a5e 0%, #28375f 40%, #6884d3 100%);
+            border-radius: 20px;
+            padding: 28px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(40,55,95,0.40);
+            animation: fadeUp 0.5s ease both;
+            min-height: 220px;
+        }
+
+        .digital-card::before {
+            content: '';
+            position: absolute;
+            right: -40px; top: -40px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .digital-card::after {
+            content: '';
+            position: absolute;
+            left: -20px; bottom: -60px;
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+        }
+
+        .card-chip {
+            width: 44px; height: 34px;
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            border-radius: 6px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .card-chip i { font-size: 18px; color: rgba(0,0,0,0.4); }
+
+        .card-org {
+            font-size: 10px;
+            opacity: 0.7;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            position: relative; z-index: 1;
+        }
+
+        .card-name {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            position: relative; z-index: 1;
+            letter-spacing: 0.5px;
+        }
+
+        .card-pin {
+            font-family: monospace;
+            font-size: 13px;
+            opacity: 0.8;
+            letter-spacing: 3px;
+            position: relative; z-index: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 24px;
+            position: relative; z-index: 1;
+        }
+
+        .card-doses-info { font-size: 12px; opacity: 0.85; }
+        .card-doses-info strong { font-size: 20px; display: block; font-weight: 800; }
+
+        .card-issued {
+            text-align: right;
+            font-size: 11px;
+            opacity: 0.75;
+        }
+
+        .card-issued strong { display: block; font-size: 13px; opacity: 1; }
+
+        /* ── DOWNLOAD BUTTON ── */
+        .download-section {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-download-pdf {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 20px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 18px rgba(104,132,211,0.45);
+            transition: all 0.2s;
+        }
+
+        .btn-download-pdf:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(104,132,211,0.55);
+        }
+
+        /* ── STATUS BANNER ── */
+        .status-banner {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-banner.complete {
+            background: #e8f5e9;
+            color: var(--success);
+            border: 1px solid #a5d6a7;
+        }
+
+        .status-banner.incomplete {
+            background: #fff3e0;
+            color: var(--warning);
+            border: 1px solid #ffcc80;
+        }
+
+        /* ── VACCINATION RECORDS TABLE ── */
+        .records-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: fadeUp 0.5s ease 0.1s both;
+        }
+
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .records-table thead {
+            background: var(--input-color);
+        }
+
+        .records-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .records-table td {
+            padding: 13px 16px;
+            font-size: 12px;
+            color: var(--accent-deeper);
+            border-bottom: 1px solid var(--input-color);
+            vertical-align: middle;
+        }
+
+        .records-table tr:last-child td { border-bottom: none; }
+
+        .records-table tr:hover td { background: #fafbff; }
+
+        .vax-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vax-icon-sm {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: var(--input-color);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px;
+            color: var(--accent-color);
+            flex-shrink: 0;
+        }
+
+        .vax-nm { font-weight: 600; font-size: 13px; }
+        .vax-dt { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+        .dose-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            background: var(--input-color);
+            color: var(--accent-dark);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .status-dot.completed { background: #e8f5e9; color: var(--success); }
+        .status-dot.pending   { background: #fff3e0; color: var(--warning); }
+        .status-dot.scheduled { background: var(--input-color); color: var(--accent-dark); }
+        .status-dot.missed    { background: #fff0f1; color: var(--danger); }
+
+        .status-dot::before {
+            content: '';
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* ── EMPTY TABLE STATE ── */
+        .empty-records {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .empty-records i {
+            font-size: 40px;
+            color: var(--accent-color);
+            opacity: 0.4;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .empty-records p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        /* ── PROGRESS SECTION ── */
+        .progress-section {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-top: 24px;
+            animation: fadeUp 0.5s ease 0.2s both;
+        }
+
+        .prog-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 18px 22px;
+        }
+
+        .prog-item {
+            background: var(--input-color);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+
+        .prog-item .pi-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-deeper);
+        }
+
+        .prog-item .pi-label span { color: var(--text-muted); font-weight: 500; }
+
+        .prog-bar {
+            height: 7px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .prog-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1.2s ease;
+        }
+
+        .prog-fill.purple { background: linear-gradient(90deg, var(--accent-color), #a0b4f0); }
+        .prog-fill.green  { background: linear-gradient(90deg, #43a047, #a5d6a7); }
+        .prog-fill.orange { background: linear-gradient(90deg, #fb8c00, #ffcc80); }
+        .prog-fill.blue   { background: linear-gradient(90deg, #1a6fb3, #64b5f6); }
+
+        /* Django messages */
+        .msg-success {
+            background: #e8f5e9; border: 1px solid var(--success);
+            color: #2e7d32; padding: 12px 16px; border-radius: 10px;
+            font-size: 12px; display: flex; align-items: center;
+            gap: 8px; margin-bottom: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .card-page-grid { grid-template-columns: 1fr; }
+            .prog-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════ SIDEBAR ════════ -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-icon">
+            <img src="{% static 'logo.png' %}" alt="TIG Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;">
+        </div>
+        <div class="logo-text">TIG <span>Trace &amp; Immunize GRW</span></div>
+    </div>
+
+    <div class="sidebar-user">
+        <div class="avatar">{{ request.user.first_name|first|upper }}</div>
+        <div class="user-info">
+            <div class="name">{{ request.user.first_name }} {{ request.user.last_name }}</div>
+            <div class="role">Patient &middot; PIN: #{{ profile.unique_pin }}</div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-label">Main Menu</div>
+        <a class="nav-item" href="{% url 'home' %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a class="nav-item" href="{% url 'book-appointment' %}"><i class="fa-solid fa-calendar-plus"></i> Book Appointment</a>
+        <a class="nav-item" href="{% url 'my-appointments' %}">
+            <i class="fa-solid fa-calendar-check"></i> My Appointments
+            {% if pending_count %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}
+        </a>
+        <a class="nav-item active" href="{% url 'vaccine-card' %}"><i class="fa-solid fa-id-card"></i> My Vaccine Card</a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-chart-line"></i> My Records</a>
+        <div class="nav-label" style="margin-top:8px">Information</div>
+        <a class="nav-item" href="#"><i class="fa-solid fa-location-dot"></i> Find Centers</a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-shield-virus"></i> VPDs Info</a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-newspaper"></i> Blogs &amp; News</a>
+        <a class="nav-item" href="#"><i class="fa-solid fa-circle-question"></i> FAQs</a>
+        <div class="nav-label" style="margin-top:8px">Account</div>
+        <a class="nav-item" href="#"><i class="fa-solid fa-user"></i> My Profile</a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a class="logout-btn" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+</aside>
+
+<!-- ════════ MAIN ════════ -->
+<div class="main">
+
+    <header class="topbar">
+        <div class="topbar-left">
+            <h2>My Vaccine Card</h2>
+            <p>{{ today }} &nbsp;&middot;&nbsp; Your digital vaccination certificate</p>
+        </div>
+        <div class="topbar-right">
+            <button class="notif-btn" title="Notifications">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notif-dot"></span>
+            </button>
+            <div class="topbar-avatar">{{ request.user.first_name|first|upper }}</div>
+        </div>
+    </header>
+
+    <div class="content">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="msg-success"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="card-page-grid">
+
+            <!-- LEFT: Digital Card + Download -->
+            <div>
+                <!-- Digital Card Visual -->
+                <div class="digital-card">
+                    <div class="card-chip"><i class="fa-solid fa-microchip"></i></div>
+                    <div class="card-org">Trace &amp; Immunize Gujranwala</div>
+                    <div class="card-name">{{ request.user.first_name }} {{ request.user.last_name }}</div>
+                    <div class="card-pin">PIN: {{ profile.unique_pin }}</div>
+                    <div class="card-footer">
+                        <div class="card-doses-info">
+                            <strong>{{ completed_doses }}</strong>
+                            Doses Completed
+                        </div>
+                        <div class="card-issued">
+                            <span>Issued</span>
+                            <strong>{{ today }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                {% if completed_doses > 0 %}
+                <div class="status-banner incomplete">
+                    <i class="fa-solid fa-circle-info"></i>
+                    {{ completed_doses }} vaccination{{ completed_doses|pluralize }} recorded. Keep completing your schedule!
+                </div>
+                {% else %}
+                <div class="status-banner incomplete">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    No completed vaccinations yet. Book your first appointment!
+                </div>
+                {% endif %}
+
+                <!-- Download Button -->
+                <div class="download-section">
+                    <a href="{% url 'download-vaccine-card' %}" class="btn-download-pdf">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF Card
+                    </a>
+                </div>
+
+                <!-- Progress Section -->
+                <div class="progress-section" style="margin-top:20px">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-chart-pie"></i> Vaccination Progress</h3>
+                    </div>
+                    <div class="prog-grid">
+                        {% for vac in vaccine_progress %}
+                        <div class="prog-item">
+                            <div class="pi-label">
+                                {{ vac.name }} <span>{{ vac.percent }}%</span>
+                            </div>
+                            <div class="prog-bar">
+                                <div class="prog-fill {{ vac.color }}" style="width:{{ vac.percent }}%"></div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-muted);font-size:12px;">
+                            No vaccination data yet.
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div><!-- end left col -->
+
+            <!-- RIGHT: Vaccination Records Table -->
+            <div class="records-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-list-check"></i> Vaccination Records</h3>
+                    <span style="font-size:11px;color:var(--text-muted);">{{ completed_doses }} completed</span>
+                </div>
+
+                {% if appointments %}
+                <table class="records-table">
+                    <thead>
+                        <tr>
+                            <th>Vaccine</th>
+                            <th>Dose</th>
+                            <th>Center</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appt in appointments %}
+                        <tr>
+                            <td>
+                                <div class="vax-name-cell">
+                                    <div class="vax-icon-sm">
+                                        {% if appt.vaccine_type == 'Hepatitis B' %}<i class="fa-solid fa-shield-halved"></i>
+                                        {% elif appt.vaccine_type == 'MMR' %}<i class="fa-solid fa-virus-slash"></i>
+                                        {% elif appt.vaccine_type == 'Tetanus' %}<i class="fa-solid fa-syringe"></i>
+                                        {% elif appt.vaccine_type == 'Pneumococcal' %}<i class="fa-solid fa-lungs"></i>
+                                        {% elif appt.vaccine_type == 'Child Vaccination' %}<i class="fa-solid fa-baby"></i>
+                                        {% elif appt.vaccine_type == 'COVID-19' %}<i class="fa-solid fa-biohazard"></i>
+                                        {% else %}<i class="fa-solid fa-syringe"></i>{% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="vax-nm">{{ appt.vaccine_type }}</div>
+                                        <div class="vax-dt">{{ appt.appointment_date|date:"d M Y" }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="dose-badge">
+                                    {% if appt.dose_number == 0 %}B{% else %}{{ appt.dose_number }}{% endif %}
+                                </span>
+                            </td>
+                            <td style="font-size:11px;">{{ appt.center.name|default:"—" }}</td>
+                            <td>
+                                <span class="status-dot {{ appt.status }}">
+                                    {% if appt.status == 'completed' %}Completed
+                                    {% elif appt.status == 'pending' %}Pending
+                                    {% elif appt.status == 'scheduled' %}Scheduled
+                                    {% elif appt.status == 'missed' %}Missed
+                                    {% else %}{{ appt.status|capfirst }}{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-records">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    <p>No vaccination records found. Book your first appointment to get started!</p>
+                    <a href="{% url 'book-appointment' %}" class="btn-download-pdf" style="display:inline-flex;width:auto;">
+                        <i class="fa-solid fa-calendar-plus"></i> Book Appointment
+                    </a>
+                </div>
+                {% endif %}
+
+            </div><!-- end records card -->
+
+        </div><!-- end card-page-grid -->
+
+    </div><!-- end content -->
+</div><!-- end main -->
+
+<button class="chatbot-fab" title="Ask AI Vaccine Assistant">
+    <span class="fab-tooltip">Ask AI Chatbot</span>
+    <i class="fa-solid fa-robot"></i>
+</button>
+
+</body>
+</html>

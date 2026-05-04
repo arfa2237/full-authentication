@@ -1,0 +1,333 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.core.mail import EmailMessage
+from django.conf import settings
+from datetime import date
+from Core.models import Appointment, VaccinationCenter, PatientProfile
+from .models import StaffProfile
+
+
+# ── Helper decorator ─────────────────────────────────────────────────────────
+def staff_required(view_func):
+    """Only allow approved staff members."""
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('staff-login')
+        try:
+            sp = request.user.staff_profile
+            if sp.status != 'approved':
+                messages.error(request, 'Your account is pending admin approval.')
+                return redirect('staff-login')
+        except StaffProfile.DoesNotExist:
+            messages.error(request, 'Staff profile not found.')
+            return redirect('staff-login')
+        return view_func(request, *args, **kwargs)
+    wrapper.__name__ = view_func.__name__
+    return wrapper
+
+
+# ── Staff Signup ──────────────────────────────────────────────────────────────
+def StaffSignup(request):
+    centers = VaccinationCenter.objects.filter(is_active=True)
+
+    if request.method == 'POST':
+        first_name  = request.POST.get('first_name', '').strip()
+        last_name   = request.POST.get('last_name', '').strip()
+        username    = request.POST.get('username', '').strip()
+        email       = request.POST.get('email', '').strip()
+        password    = request.POST.get('password', '').strip()
+        phone       = request.POST.get('phone', '').strip()
+        designation = request.POST.get('designation', '').strip()
+        center_id   = request.POST.get('center', '').strip()
+
+        has_error = False
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username is already taken.')
+            has_error = True
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email is already registered.')
+            has_error = True
+
+        if len(password) < 8:
+            messages.error(request, 'Password must be at least 8 characters.')
+            has_error = True
+
+        if has_error:
+            return render(request, 'staff/staff_signup.html', {'centers': centers})
+
+        # Create user
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+        )
+
+        # Get center
+        center = None
+        if center_id:
+            try:
+                center = VaccinationCenter.objects.get(id=int(center_id))
+            except VaccinationCenter.DoesNotExist:
+                pass
+
+        # Create staff profile
+        StaffProfile.objects.create(
+            user=user,
+            center=center,
+            phone=phone,
+            designation=designation,
+            status='pending',
+        )
+
+        messages.success(request,
+            'Registration submitted! Your account is pending admin approval. '
+            'You will receive an email once approved.')
+        return redirect('staff-login')
+
+    return render(request, 'staff/staff_signup.html', {'centers': centers})
+
+
+# ── Staff Login ───────────────────────────────────────────────────────────────
+def StaffLogin(request):
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '').strip()
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            # Check if this user has a staff profile
+            try:
+                sp = user.staff_profile
+                if sp.status == 'approved':
+                    login(request, user)
+                    return redirect('staff-dashboard')
+                elif sp.status == 'pending':
+                    messages.error(request,
+                        'Your account is pending admin approval. Please wait.')
+                else:
+                    messages.error(request,
+                        'Your account has been rejected. Contact administrator.')
+            except StaffProfile.DoesNotExist:
+                messages.error(request,
+                    'No staff account found. Please register first.')
+        else:
+            messages.error(request, 'Invalid username or password.')
+
+    return render(request, 'staff/staff_login.html')
+
+
+# ── Staff Logout ──────────────────────────────────────────────────────────────
+def StaffLogout(request):
+    logout(request)
+    return redirect('staff-login')
+
+
+# ── Staff Dashboard ───────────────────────────────────────────────────────────
+@staff_required
+def StaffDashboard(request):
+    sp    = request.user.staff_profile
+    today = date.today().strftime("%A, %d %B %Y")
+
+    # Only appointments for staff's assigned center
+    base_qs = Appointment.objects.filter(center=sp.center)
+
+    pending_count   = base_qs.filter(status='pending').count()
+    scheduled_count = base_qs.filter(status='scheduled').count()
+    completed_count = base_qs.filter(status='completed').count()
+    missed_count    = base_qs.filter(status='missed').count()
+    total_count     = base_qs.count()
+
+    # Latest 5 pending appointments for quick view
+    recent_pending = base_qs.filter(status='pending').order_by('appointment_date')[:5]
+
+    return render(request, 'staff/staff_dashboard.html', {
+        'sp':               sp,
+        'today':            today,
+        'pending_count':    pending_count,
+        'scheduled_count':  scheduled_count,
+        'completed_count':  completed_count,
+        'missed_count':     missed_count,
+        'total_count':      total_count,
+        'recent_pending':   recent_pending,
+    })
+
+
+# ── Staff Appointments (full list) ────────────────────────────────────────────
+@staff_required
+def StaffAppointments(request):
+    sp    = request.user.staff_profile
+    today = date.today().strftime("%A, %d %B %Y")
+
+    # Filter by status if requested
+    status_filter = request.GET.get('status', 'all')
+
+    base_qs = Appointment.objects.filter(center=sp.center).order_by('appointment_date')
+
+    if status_filter != 'all':
+        appointments = base_qs.filter(status=status_filter)
+    else:
+        appointments = base_qs
+
+    pending_count   = base_qs.filter(status='pending').count()
+    scheduled_count = base_qs.filter(status='scheduled').count()
+    completed_count = base_qs.filter(status='completed').count()
+    missed_count    = base_qs.filter(status='missed').count()
+    total_count     = base_qs.count()
+
+    return render(request, 'staff/staff_appointments.html', {
+        'sp':               sp,
+        'today':            today,
+        'appointments':     appointments,
+        'status_filter':    status_filter,
+        'pending_count':    pending_count,
+        'scheduled_count':  scheduled_count,
+        'completed_count':  completed_count,
+        'missed_count':     missed_count,
+        'total_count':      total_count,
+    })
+
+
+# ── Update Appointment Status ─────────────────────────────────────────────────
+@staff_required
+def UpdateAppointmentStatus(request, appt_id):
+    if request.method == 'POST':
+        sp     = request.user.staff_profile
+        action = request.POST.get('action', '').strip()
+
+        try:
+            appt = Appointment.objects.get(id=appt_id, center=sp.center)
+        except Appointment.DoesNotExist:
+            messages.error(request, 'Appointment not found.')
+            return redirect('staff-appointments')
+
+        # Map action to status
+        STATUS_MAP = {
+            'confirm':   'scheduled',
+            'complete':  'completed',
+            'missed':    'missed',
+            'cancel':    'cancelled',
+        }
+
+        new_status = STATUS_MAP.get(action)
+        if not new_status:
+            messages.error(request, 'Invalid action.')
+            return redirect('staff-appointments')
+
+        old_status = appt.status
+        appt.status = new_status
+        appt.save()
+
+        # ── Send Email Notification to Patient ────────────────────────────
+        patient_email = appt.patient.email
+        patient_name  = appt.patient.get_full_name() or appt.patient.username
+        vaccine       = appt.vaccine_type
+        appt_date     = appt.appointment_date.strftime("%d %B %Y")
+        appt_time     = appt.appointment_time.strftime("%I:%M %p")
+        center_name   = appt.center.name if appt.center else "the center"
+
+        if action == 'confirm' and patient_email:
+            subject = f'TIG — Appointment Confirmed: {vaccine}'
+            body = (
+                f'Dear {patient_name},\n\n'
+                f'Your vaccination appointment has been CONFIRMED.\n\n'
+                f'Details:\n'
+                f'  Vaccine  : {vaccine} — Dose {appt.dose_number}\n'
+                f'  Date     : {appt_date}\n'
+                f'  Time     : {appt_time}\n'
+                f'  Center   : {center_name}\n\n'
+                f'Please arrive 10 minutes early and bring your vaccine card.\n\n'
+                f'Regards,\n'
+                f'Trace and Immunize Gujranwala (TIG)'
+            )
+            _send_email(subject, body, patient_email)
+
+        elif action == 'cancel' and patient_email:
+            subject = f'TIG — Appointment Cancelled: {vaccine}'
+            body = (
+                f'Dear {patient_name},\n\n'
+                f'Your vaccination appointment has been CANCELLED by healthcare staff.\n\n'
+                f'Details:\n'
+                f'  Vaccine  : {vaccine} — Dose {appt.dose_number}\n'
+                f'  Date     : {appt_date}\n'
+                f'  Center   : {center_name}\n\n'
+                f'Please log in to book a new appointment.\n\n'
+                f'Regards,\n'
+                f'Trace and Immunize Gujranwala (TIG)'
+            )
+            _send_email(subject, body, patient_email)
+
+        elif action == 'complete' and patient_email:
+            subject = f'TIG — Vaccination Completed: {vaccine}'
+            body = (
+                f'Dear {patient_name},\n\n'
+                f'Your vaccination has been marked as COMPLETED.\n\n'
+                f'  Vaccine  : {vaccine} — Dose {appt.dose_number}\n'
+                f'  Date     : {appt_date}\n'
+                f'  Center   : {center_name}\n\n'
+                f'You can download your updated vaccine card from your dashboard.\n\n'
+                f'Regards,\n'
+                f'Trace and Immunize Gujranwala (TIG)'
+            )
+            _send_email(subject, body, patient_email)
+
+        messages.success(request,
+            f'{patient_name}\'s appointment marked as {new_status.upper()} successfully!')
+
+    return redirect('staff-appointments')
+
+
+# ── Staff Patients List ───────────────────────────────────────────────────────
+@staff_required
+def StaffPatients(request):
+    sp    = request.user.staff_profile
+    today = date.today().strftime("%A, %d %B %Y")
+
+    # Get all unique patients who have appointments at this center
+    patient_ids = Appointment.objects.filter(
+        center=sp.center
+    ).values_list('patient_id', flat=True).distinct()
+
+    patients = []
+    for pid in patient_ids:
+        try:
+            user    = User.objects.get(id=pid)
+            profile = PatientProfile.objects.get(user=user)
+            appts   = Appointment.objects.filter(patient=user, center=sp.center)
+            patients.append({
+                'user':      user,
+                'profile':   profile,
+                'total':     appts.count(),
+                'completed': appts.filter(status='completed').count(),
+                'pending':   appts.filter(status='pending').count(),
+            })
+        except (User.DoesNotExist, PatientProfile.DoesNotExist):
+            pass
+
+    return render(request, 'staff/staff_patients.html', {
+        'sp':       sp,
+        'today':    today,
+        'patients': patients,
+    })
+
+
+# ── Email Helper ──────────────────────────────────────────────────────────────
+def _send_email(subject, body, to_email):
+    try:
+        email = EmailMessage(
+            subject,
+            body,
+            settings.EMAIL_HOST_USER,
+            [to_email],
+        )
+        email.fail_silently = True
+        email.send()
+    except Exception:
+        pass
