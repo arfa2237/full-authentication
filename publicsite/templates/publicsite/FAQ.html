@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+    <head>
+        <meta charset="utf-8">
+        <title>TIG-Scheduling</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75..100,300..800;1,75..100,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet"> 
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="{% static 'publicsite/lib/animate/animate.min.css' %}" rel="stylesheet">
+        <link href="{% static 'publicsite/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="{% static 'publicsite/css/bootstrap.min.css' %}" rel="stylesheet">
+
+        <!-- CSS Stylesheet -->
+        <link href="{% static 'publicsite/css/style.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'publicsite/css/vpd.css' %}">
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+        <!-- Navbar & Hero Start -->
+        <div class="container-fluid position-relative p-0">
+            <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+                <a href="" class="navbar-brand p-0">
+                    <img src="{% static 'publicsite/img/logo.png' %}" alt="Logo">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="fa fa-bars"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto py-0">
+                        <a href="{% url 'index' %}" class="nav-item nav-link">Home</a>
+                        <a href="{% url 'scheduling' %}" class="nav-item nav-link">Schedule now</a>
+                        <a href="" class="nav-item nav-link">Track now</a>
+                        <a href="{% url 'vpd' %}" class="nav-item nav-link">VPDs</a>
+                        <a href="{% url 'nearby' %}" class="nav-item nav-link">Location nearby</a>
+                        <a href="{% url 'faq' %}" class="nav-item nav-link active">FAQs</a>
+                        
+                        </div>
+                      <!--Code for theme Toggle -->
+                    </div>
+                   <div class="d-none d-xl-flex me-3">
+                        <div class="d-flex flex-row pe-3 border-end "> <!--Border-primary remove-->
+                             <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                              <i class="fas fa-moon"></i>
+                           </button>
+                            <button class="language-toggle" id="languageToggle" title="Switch Language"> EN </button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-md-square d-flex flex-shrink-0 mb-3 mb-lg-0 rounded-circle me-3" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search"></i></button>
+                    <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">Login</a><!--Order now-->
+                </div>
+            </nav>
+
+            <!-- Header Start -->
+            <div class="container-fluid bg-breadcrumb">
+                <div class="container text-center py-5" style="max-width: 900px;">
+                    <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Frequently Asked Questions</h4>
+                </div>
+            </div>
+            <!-- Header End -->
+        </div>
+        <!-- Navbar & Hero End -->
+         <link rel="stylesheet" href="{% static 'publicsite/css/FAQ.css' %}">
+</head>
+<body>
+    <!-- Main FAQ Container -->
+    <div class="faq-container">
+
+        <!-- Stats Section -->
+        <div class="faq-stats">
+            <div class="stat-box">
+                <i class="fas fa-shield-virus"></i>
+                <div class="stat-number">95%</div>
+                <div class="stat-text">Vaccine Effectiveness</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-users"></i>
+                <div class="stat-number">3.5M+</div>
+                <div class="stat-text">Lives Saved Yearly</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-syringe"></i>
+                <div class="stat-number">20+</div>
+                <div class="stat-text">Preventable Diseases</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-calendar-check"></i>
+                <div class="stat-number">86%</div>
+                <div class="stat-text">Global Coverage Rate</div>
+            </div>
+        </div>
+
+        <!-- Category Filtering System (PURE CSS) -->
+        <input type="radio" name="category" id="cat-all" class="category-radio" checked>
+        <input type="radio" name="category" id="cat-general" class="category-radio">
+        <input type="radio" name="category" id="cat-childhood" class="category-radio">
+        <input type="radio" name="category" id="cat-safety" class="category-radio">
+        <input type="radio" name="category" id="cat-platform" class="category-radio">
+
+        <!-- Category Navigation -->
+        <div class="category-nav">
+            <label for="cat-all" class="category-label">
+                <i class="fas fa-globe"></i>
+                All Questions
+            </label>
+            <label for="cat-general" class="category-label">
+                <i class="fas fa-shield-alt"></i>
+                General
+            </label>
+            <label for="cat-childhood" class="category-label">
+                <i class="fas fa-child"></i>
+                Childhood
+            </label>
+            <label for="cat-safety" class="category-label">
+                <i class="fas fa-check-circle"></i>
+                Safety
+            </label>
+            <label for="cat-platform" class="category-label">
+                <i class="fas fa-laptop-medical"></i>
+                Platform
+            </label>
+        </div>
+
+        <!-- FAQ Items Container -->
+        <div class="faq-items-container">
+            
+            <!-- General Category -->
+            <div class="faq-item" data-category="general">
+                <input type="checkbox" id="faq1" class="accordion-input">
+                <label for="faq1" class="faq-question">
+                    <span>
+                        <span class="category-badge">General</span>
+                        What are vaccines and how do they work?
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <div class="faq-answer">
+                    <p>Vaccines are biological preparations that provide active acquired immunity to specific infectious diseases. They contain agents that resemble disease-causing microorganisms and are often made from weakened or killed forms of the microbe.</p>
+                    
+                    <p><strong>How they work:</strong> When administered, vaccines stimulate the body's immune system to recognize the agent as a threat, destroy it, and remember it. This creates immunological memory that allows the immune system to more easily recognize and destroy any of these microorganisms that it later encounters.</p>
+                    
+                    <div class="who-reference">
+                        <strong>WHO Reference:</strong> Vaccines train your immune system to create antibodies, just as it does when exposed to a disease. However, because vaccines contain only killed or weakened forms of germs, they do not cause the disease or put you at risk of its complications.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="general">
+                <input type="checkbox" id="faq2" class="accordion-input">
+                <label for="faq2" class="faq-question">
+                    <span>
+                        <span class="category-badge">General</span>
+                        Why is vaccination important for public health?
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <div class="faq-answer">
+                    <p>Vaccination is one of the most effective ways to prevent diseases and save lives. Here's why it's crucial:</p>
+                    
+                    <ul>
+                        <li><strong>Disease Prevention:</strong> Prevents 3.5-5 million deaths annually from diseases like diphtheria, tetanus, pertussis, influenza and measles</li>
+                        <li><strong>Herd Immunity:</strong> Protects vulnerable populations who cannot be vaccinated (newborns, elderly, immunocompromised)</li>
+                        <li><strong>Disease Eradication:</strong> Has successfully eradicated smallpox and nearly eliminated polio worldwide</li>
+                        <li><strong>Cost-Effective:</strong> Saves healthcare costs by preventing expensive treatments and hospitalizations</li>
+                        <li><strong>Future Protection:</strong> Provides long-term immunity and protects future generations</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Childhood Category -->
+            <div class="faq-item" data-category="childhood">
+                <input type="checkbox" id="faq3" class="accordion-input">
+                <label for="faq3" class="faq-question">
+                    <span>
+                        <span class="category-badge">Childhood</span>
+                        What vaccines are essential for my child's first year?
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <div class="faq-answer">
+                    <p>During the first year, your child should receive these essential vaccines according to the EPI schedule:</p>
+                    
+                    <ul>
+                        <li><strong>At Birth:</strong> BCG (Tuberculosis), OPV-0 (Polio), Hepatitis B-1</li>
+                        <li><strong>6 Weeks:</strong> Penta-1 (5 diseases), OPV-1, PCV-1, Rota-1</li>
+                        <li><strong>10 Weeks:</strong> Penta-2, OPV-2, PCV-2, Rota-2</li>
+                        <li><strong>14 Weeks:</strong> Penta-3, OPV-3, PCV-3</li>
+                        <li><strong>9 Months:</strong> Measles-1</li>
+                    </ul>
+                    
+                    <div class="who-reference">
+                        <strong>WHO Recommendation:</strong> Complete immunization before age 2 provides protection during the most vulnerable period of childhood. Never delay essential vaccines.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="childhood">
+                <input type="checkbox" id="faq4" class="accordion-input">
+                <label for="faq4" class="faq-question">
+                    <span>
+                        <span class="category-badge">Childhood</span>
+                        What should I do if my child misses a vaccine dose?
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <div class="faq-answer">
+                    <p>If your child misses a scheduled vaccine dose, follow these important steps:</p>
+                    
+                    <p><strong>Important Rule:</strong> DO NOT restart the vaccine series. Continue from where you left off.</p>
+                    
+                    <ol>
+                        <li><strong>Contact Immediately:</strong> Reach out to your healthcare provider or vaccination center</li>
+                        <li><strong>Schedule Catch-up:</strong> Book the missed dose as soon as possible</li>
+                        <li><strong>Continue Schedule:</strong> Complete the remaining doses on the regular schedule</li>
+                        <li><strong>Update Records:</strong> Ensure digital records are updated with the catch-up dose</li>
+                        <li><strong>Set Reminders:</strong> Use our platform to set reminders for future appointments</li>
+                    </ol>
+                    
+                    <p>Most vaccines can be administered later than recommended without losing effectiveness.</p>
+                </div>
+            </div>
+
+            <!-- Safety Category -->
+            <div class="faq-item" data-category="safety">
+                <input type="checkbox" id="faq5" class="accordion-input">
+                <label for="faq5" class="faq-question">
+                    <span>
+                        <span class="category-badge">Safety</span>
+                        Are vaccines thoroughly tested for safety?
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <div class="faq-answer">
+                    <p>Yes, vaccines undergo the most rigorous testing of any medical product. The safety evaluation process includes:</p>
+                    
+                    <ul>
+                        <li><strong>Pre-clinical Testing:</strong> Laboratory and animal studies (2-4 years)</li>
+                        <li><strong>Phase 1 Trials:</strong> Small group safety testing (20-100 people)</li>
+                        <li><strong>Phase 2 Trials:</strong> Expanded safety and dosage studies (several hundred people)</li>
+                        <li><strong>Phase 3 Trials:</strong> Large-scale efficacy and safety (thousands of people)</li>
+                        <li><strong>Regulatory Review:</strong> Independent evaluation by health authorities</li>
+                        <li><strong>Post-Marketing Surveillance:</strong> Continuous monitoring after approval</li>
+                    </ul>
+                    
+                    <p>This process typically takes 10-15 years before a vaccine is approved for public use.</p>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="safety">
+                <input type="checkbox" id="faq6" class="accordion-input">
+                <label for="faq6" class="faq-question">
+                    <span>
+                        <span class="category-badge">Safety</span>
+                        What are common side effects of vaccines?
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <div class="faq-answer">
+                    <p>Most vaccine side effects are mild and temporary, indicating that the body is building protection:</p>
+                    
+                    <div class="who-reference">
+                        <strong>Common Mild Reactions:</strong> These usually last 1-2 days and include soreness at injection site, mild fever, fatigue, fussiness (in children), and loss of appetite.
+                    </div>
+                    
+                    <p><strong>Typical Side Effects by Age:</strong></p>
+                    <ul>
+                        <li><strong>Infants:</strong> Sleepiness, temporary appetite loss, mild fever</li>
+                        <li><strong>Children:</strong> Sore arm, low-grade fever, mild rash</li>
+                        <li><strong>Adults:</strong> Injection site redness/swelling, headache, muscle aches</li>
+                    </ul>
+                    
+                    <p><strong>Note:</strong> Serious side effects are extremely rare (less than 1 in a million doses). The benefits of vaccination far outweigh the minimal risks.</p>
+                </div>
+            </div>
+
+            <!-- Platform Category -->
+            <div class="faq-item" data-category="platform">
+                <input type="checkbox" id="faq7" class="accordion-input">
+                <label for="faq7" class="faq-question">
+                    <span>
+                        <span class="category-badge">Platform</span>
+                        How do I schedule a vaccination appointment?
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <div class="faq-answer">
+                    <p>Scheduling vaccination appointments is simple with our digital platform:</p>
+                    
+                    <div class="steps-container">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-text">Register Account</div>
+                        </div>
+                        <div class="step-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-text">Select Vaccine & Date</div>
+                        </div>
+                        <div class="step-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-text">Choose Center</div>
+                        </div>
+                        <div class="step-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-text">Get Confirmation</div>
+                        </div>
+                    </div>
+                    
+                    <p><strong>Additional Features:</strong></p>
+                    <ul>
+                        <li>Automatic reminders 24 hours before appointment</li>
+                        <li>Rescheduling option up to 6 hours before</li>
+                        <li>Digital vaccination card generation</li>
+                        <li>Family member management</li>
+                        <li>Vaccine information sheets</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="platform">
+                <input type="checkbox" id="faq8" class="accordion-input">
+                <label for="faq8" class="faq-question">
+                    <span>
+                        <span class="category-badge">Platform</span>
+                        How can I access vaccination records for my family?
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <div class="faq-answer">
+                    <p>Accessing vaccination records is secure and convenient:</p>
+                    
+                    <ul>
+                        <li><strong>Login:</strong> Access your account using your registered credentials</li>
+                        <li><strong>Dashboard:</strong> View all family members' vaccination status</li>
+                        <li><strong>Records:</strong> Click on any family member to see complete vaccination history</li>
+                        <li><strong>Download:</strong> Export records as PDF for school/college requirements</li>
+                        <li><strong>Print:</strong> Generate printable vaccination certificates</li>
+                        <li><strong>Share:</strong> Securely share records with healthcare providers</li>
+                    </ul>
+                    
+                    <div class="who-reference">
+                        <strong>Security Note:</strong> All records are encrypted and stored securely in compliance with international data protection standards. Your family's health information is completely private.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional FAQ Items -->
+            <div class="faq-item" data-category="general">
+                <input type="checkbox" id="faq9" class="accordion-input">
+                <label for="faq9" class="faq-question">
+                    <span>
+                        <span class="category-badge">General</span>
+                        What is herd immunity and why is it important?
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <div class="faq-answer">
+                    <p>Herd immunity occurs when a high percentage of a community is immune to a disease, making its spread unlikely. This protects vulnerable individuals who cannot be vaccinated.</p>
+                    
+                    <p><strong>Importance:</strong></p>
+                    <ul>
+                        <li>Protects newborns who are too young for vaccination</li>
+                        <li>Shields elderly with weakened immune systems</li>
+                        <li>Safeguards people with medical conditions preventing vaccination</li>
+                        <li>Helps eventually eliminate diseases from communities</li>
+                    </ul>
+                    
+                    <p><strong>Thresholds needed for herd immunity:</strong></p>
+                    <ul>
+                        <li>Measles: 95% vaccination rate</li>
+                        <li>Polio: 80-85% vaccination rate</li>
+                        <li>Diphtheria: 85% vaccination rate</li>
+                        <li>COVID-19: 70-90% depending on variants</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item" data-category="childhood">
+                <input type="checkbox" id="faq10" class="accordion-input">
+                <label for="faq10" class="faq-question">
+                    <span>
+                        <span class="category-badge">Childhood</span>
+                        Can my child receive multiple vaccines at once?
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <div class="faq-answer">
+                    <p>Yes, receiving multiple vaccines during a single visit is both safe and recommended. Here's why:</p>
+                    
+                    <ul>
+                        <li><strong>Immune Capacity:</strong> A child's immune system can handle thousands of antigens simultaneously. Even with multiple vaccines, we use only a tiny fraction of immune capacity.</li>
+                        <li><strong>Schedule Adherence:</strong> Giving multiple vaccines together ensures your child stays up-to-date with the immunization schedule</li>
+                        <li><strong>Fewer Visits:</strong> Reduces the number of clinic visits, saving time and reducing stress for children and parents</li>
+                        <li><strong>Same Efficacy:</strong> Each vaccine works as effectively when given alone or in combination</li>
+                    </ul>
+                    
+                    <div class="who-reference">
+                        <strong>WHO Position:</strong> Scientific data show that administering several vaccines at the same time has no adverse effect on a child's immune system. Combination vaccines reduce the number of injections and clinic visits.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- End FAQ Items Container -->
+
+    </div>
+    <!-- End FAQ Container -->
+
+   
+        <!-- Footer Start -->
+        <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
+            <div class="container py-5">
+                <div class="row g-5 mb-5 align-items-center">
+                    <div class="col-lg-7">
+                        <div class="position-relative mx-auto">
+                            <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
+                            <button type="button" class="btn btn-secondary rounded-pill position-absolute  top-0 end-0 py-2 px-4 mt-2 me-2 button-color">Subscribe</button>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="row g-5 align-items-center">
+                    <!--Column 1 About us-->
+                    <div class="col-md-6 col-lg-6 col-xl-4">
+                        <div class="footer-item d-flex flex-column">
+                            <div class="footer-item">
+                                <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>About Us</h3>
+                                <p class="mb-3">Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Column 2 Quick links-->
+                    <div class="col-md-6 col-lg-6 col-xl-4"> 
+                        <div class="footer-item d-flex flex-column align-items-center"> 
+                            <h4 class="text-white mb-4">Quick Links</h4>
+                            <a href="{% url 'index' %}"><i class="fas fa-angle-right me-2"></i> Home</a> 
+                            <a href="#"><i class="fas fa-angle-right me-2"></i> Schedule appointments</a>
+                            <a href="#"><i class="fas fa-angle-right me-2"></i> Track Records</a>
+                            <a href="{% url 'vpd' %}"><i class="fas fa-angle-right me-2"></i> VPDs</a>
+                            <a href="{% url 'nearby' %}"><i class="fas fa-angle-right me-2"></i> Find Centers</a>
+                            <a href="#"><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
+                        </div>
+                    </div>
+                    <!--Column 3 Center hours-->
+                    <div class="col-md-6 col-lg-6 col-xl-4">
+                        <div class="footer-item d-flex flex-column">
+                            <h4 class="text-white mb-4"> Center Hours </h4>
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-0">Mon - Friday:</h6>
+                                <p class="text-white mb-0">09.00 am to 02.00 pm</p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-0">Saturday:</h6>
+                                <p class="text-white mb-0">10.00 am to 05.00 pm</p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-0">Vacation:</h6>
+                                <p class="text-white mb-0">All Sunday is our vacation</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-secondary btn-lg-square rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'publicsite/lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'publicsite/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'publicsite/lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'publicsite/lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'publicsite/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    
+
+    <!-- Template Javascript -->
+    <script src="{% static 'publicsite/js/main.js' %}"></script>
+    </body>
+
+</html>

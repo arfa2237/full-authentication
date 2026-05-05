@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'Core',
     'Staff',
     'AdminPanel',
+    'publicsite',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,108 @@
+
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #0b3c5d;
+        }
+
+        .meta {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 30px;
+        }
+
+        .meta span {
+            margin-right: 15px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0077b6;
+            padding: 15px;
+            margin: 30px 0;
+        }
+
+        ul {
+            margin: 20px 0 30px 20px;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+        }
+        a {
+            color: #6884d3;
+            text-decoration: none;
+        }
+        a:hover {
+            color: #28375f !important;
+            text-decoration: none;
+        }
+        .about-who {    
+            color: #1f3c88;          
+            margin: 20px 0 10px;     
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        /* Adds gap below the breadcrumb header section */
+        .bg-breadcrumb {
+            margin-bottom: 40px;   /* increase/decrease as needed */
+        }
+        .container > h1 {
+            margin-top: 45px;
+        }
+        .meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;                 /* tighter space between items */
+            color: #6b7280;          /* text color (soft gray) */
+            font-size: 14px;
+       }
+
+        .meta span {
+           position: relative;
+           padding-right: 20px;    /* space before the separator line */
+       }
+
+        .meta span:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            right: 1px;             /* pulls the line closer to the text */
+            top: 50%;
+            transform: translateY(-50%);
+            height: 12px;           /* line height */
+            width: 2px;             /* slightly thicker for clarity */
+            background-color: #6884d3;  /* 🔵 your custom line color */
+            opacity: 9;           /* soften if needed */
+        }
+        /* Default (Light mode) */
+        .highlight {
+            background-color: #f1f8ff;   /* light background */
+            color: #0f172a;              /* dark text */
+            border-left: 4px solid #1f3c88;
+            padding: 16px 20px;
+            border-radius: 6px;
+            margin: 24px 0;
+        }
+
+        /* Dark mode override */
+        body.dark .highlight,
+        body.dark-mode .highlight {
+            background-color: #0b1f33;   /* dark blue background */
+            color: #e5e7eb;              /* light text */
+            border-left-color: #60a5fa;  /* brighter accent for dark mode */
+       }
+       /* Small date above blog title */
+       .blog-content .blog-date-small {
+           font-size: 0.85rem;        
+           font-weight: 500;
+           color: #1f3b7a;            
+           margin-bottom: 20px !important;        
+           letter-spacing: 0.5px;    
+    }
+    

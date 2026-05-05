@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'publicsite/css/patient.css' %}">
+    
+    <title>Patient Data</title>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- <form action="http://localhost/Trace%20and%20Immunize%20Pakistan/php/patientsave.php" method="post" id="form"> -->
+        <form id="form">   
+            <h1><u>Patient Data</u></h1>
+            <div class="field">
+                <label><b>Name:</b></label><br>
+                <input type="text" name="uname" id="user" placeholder="Enter your name">
+                <div  class="error" style="color: red;"></div>
+            </div>
+            <div class="field">
+                <label><b>Father Name/Guardian:</b></label><br>
+                <input type="text" name="fname" id="fname" placeholder="Enter father name or guardian">
+                <div class="error" style="color: red;"></div>
+            </div>
+            <div class=" field">
+                <label><b>Date of Birthday:</b></label><br>
+                <input type="date" name="dob" id="dob">
+                <div class="error" style="color: red;"></div>
+            </div>
+            <div class="radio" id="genderfield">
+                <b>Select your Gender:</b> <br>
+                <label for="101">
+                <input type="radio" value="male" name="gender" id="101">Male
+                </label>
+                <br>
+                <label for="102">
+                <input type="radio" value="female" name="gender" id="102">Female
+                </label>
+                <div class="error" style="color: red;"></div>
+            </div>
+            <div class="field" id="menu">
+                <b>Vaccine for:</b><br>
+                <select name="disease">
+                    <option value="child vaccination">Child vaccination</option>
+                    <option value="tetanus">Tetanus</option>
+                    <option value="pneumococcal">Pneumococcal</option>
+                    <option value="measles,mumps,rubella ">Measles, Mumps,Rubella </option>
+                    <option value="hepatitis B">Hepatitis B</option>
+                </select>
+            </div>
+            <div class="field">
+                <label><b>Vaccine type:</b></label><br>
+                <input type="text" name="vaccine" placeholder="e.g: MMR or BCG" id="vcntype">
+                <div class="error" style="color: red;"></div>
+            </div>
+            <div class="field">
+                <label><b>Contact number:</b></label><br>
+                <input type="text" name="phone" placeholder="e.g: 03xxxxxxxxx" id="phone">
+                <div class="error" style="color: red;"></div>
+            </div>
+            <div class="field">
+                <label><b>Email (Optional):</b></label><br>
+                <input type="email" name="uemail" placeholder="you@gmail.com">
+            </div>
+            <button type="submit">Save</button>
+            <!-- <input type="submit" value="Save" > -->
+        </form>
+    </div>
+    <script src="{% static 'publicsite/js/patient.js' %}"></script>
+</body>
+</html>

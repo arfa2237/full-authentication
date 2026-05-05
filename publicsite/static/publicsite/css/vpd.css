@@ -1,0 +1,11 @@
+.disease h2 a{ 
+    color: #6884d3; 
+    display: inline-block;  
+    transition: transform 0.3s ease; 
+} 
+
+.disease h2 :hover{
+    transform: scale(1.05);
+    /* color: #4D6FCC; */
+    color: #455ea3;
+}

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <title>Nearby centers, Trace and Immunize Gujranwala</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75..100,300..800;1,75..100,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+    <!-- Icon Fonts -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Leaflet CSS (free map - no API key needed) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+    <!-- Libs -->
+    <link href="{% static 'publicsite/lib/animate/animate.min.css' %}" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="{% static 'publicsite/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Site CSS -->
+    <link href="{% static 'publicsite/css/style.css' %}" rel="stylesheet">
+
+    <!-- Track page CSS -->
+    <link href="{% static 'publicsite/css/nearby.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Spinner -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <!-- NAVBAR  -->
+    <div class="container-fluid position-relative p-0">
+        <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+            <a href="{% url 'index' %}" class="navbar-brand p-0">
+                <img src="{% static 'publicsite/img/logo.png' %}" alt="Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="fa fa-bars"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto py-0">
+                    <a href="{% url 'index' %}"        class="nav-item nav-link">Home</a>
+                    <a href="{% url 'scheduling' %}"   class="nav-item nav-link">Schedule now</a>
+                    <a href=""                         class="nav-item nav-link ">Track now</a>
+                    <a href="{% url 'vpd' %}"          class="nav-item nav-link">VPDs</a>
+                    <a href="{% url 'nearby' %}"        class="nav-item nav-link active">Location nearby</a>
+                    <a href="{% url 'faq' %}"          class="nav-item nav-link">FAQs</a>
+                </div>
+            </div>
+            <div class="d-none d-xl-flex me-3">
+                <div class="d-flex flex-row pe-3 border-end">
+                    <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="language-toggle" id="languageToggle" title="Switch Language">EN</button>
+                </div>
+            </div>
+            <button class="btn btn-primary btn-md-square d-flex flex-shrink-0 mb-3 mb-lg-0 rounded-circle me-3"
+                    data-bs-toggle="modal" data-bs-target="#searchModal">
+                <i class="fas fa-search"></i>
+            </button>
+            <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">Login</a>
+        </nav>
+
+        <!-- BREADCRUMB HEADER -->
+        <div class="container-fluid bg-breadcrumb">
+            <div class="container text-center py-5" style="max-width:900px;">
+                <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">
+                    Track Vaccination Centers
+                </h4>
+                <p class="text-white mb-0 wow fadeInDown" data-wow-delay="0.2s">
+                    Find nearby vaccination centers in Gujranwala and track your immunization
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- Navbar & Hero End -->
+
+    <!-- ══════════════════════════════════════════  SEARCH BAR SECTION══════════════════════════════════════════ -->
+    <section class="track-search-section py-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="search-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="search-label">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Search Vaccination Centers in Gujranwala
+                        </div>
+                        <div class="search-input-wrap">
+                            <div class="input-group">
+                                <span class="input-group-text search-icon-box">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" id="hospitalSearch"
+                                       class="form-control search-input"
+                                       placeholder="Search by hospital name or area (e.g. DHQ, Satellite Town)...">
+                                <button class="btn btn-primary search-btn" onclick="doSearch()">
+                                    Search
+                                </button>
+                                <button class="btn btn-outline-secondary clear-btn" onclick="clearSearch()" title="Clear">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <!-- Live suggestions dropdown -->
+                            <div class="suggestions-box" id="suggestionsBox"></div>
+                        </div>
+                        <!-- Quick filter pills -->
+                        <div class="filter-pills mt-3">
+                            <span class="pill-label">Quick filters:</span>
+                            <button class="filter-pill active" onclick="filterCenters('all', this)">All Centers</button>
+                            <button class="filter-pill" onclick="filterCenters('govt', this)">Govt Hospitals</button>
+                            <button class="filter-pill" onclick="filterCenters('mch', this)">MCH Centers</button>
+                            <button class="filter-pill" onclick="filterCenters('epi', this)">EPI Centers</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         STATS BAR
+    ══════════════════════════════════════════ -->
+    <section class="stats-bar-section py-3">
+        <div class="container">
+            <div class="row g-3 justify-content-center">
+                <div class="col-6 col-md-3">
+                    <div class="stat-pill wow fadeInUp" data-wow-delay="0.1s">
+                        <i class="fas fa-hospital"></i>
+                        <div>
+                            <span class="stat-num" data-toggle="counter-up">12</span>
+                            <span class="stat-txt">Centers</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-pill wow fadeInUp" data-wow-delay="0.2s">
+                        <i class="fas fa-syringe"></i>
+                        <div>
+                            <span class="stat-num" data-toggle="counter-up">8</span>
+                            <span class="stat-txt">Vaccines Available</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-pill wow fadeInUp" data-wow-delay="0.3s">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <span class="stat-num">8am</span>
+                            <span class="stat-txt">Opens Daily</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-pill wow fadeInUp" data-wow-delay="0.4s">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <div>
+                            <span class="stat-num">Free</span>
+                            <span class="stat-txt">All Vaccines</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════ MAP SECTION ══════════════════════════════════════════ -->
+    <section class="map-section py-4">
+        <div class="container-fluid px-4">
+            <div class="map-outer wow fadeInUp" data-wow-delay="0.1s">
+
+                <!-- Map top bar -->
+                <div class="map-topbar">
+                    <div class="map-title">
+                        <i class="fas fa-map-marked-alt me-2"></i>
+                        Vaccination Centers — Gujranwala
+                    </div>
+                    <div class="map-controls">
+                        <div class="map-status-badge" id="mapStatusBadge">
+                            <span class="status-dot"></span>
+                            <span id="locStatusText">Click Allow Location to find nearby centers</span>
+                        </div>
+                        <button class="locate-btn" onclick="requestLocation()">
+                            <i class="fas fa-crosshairs me-1"></i> My Location
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Location permission overlay -->
+                <div class="loc-overlay" id="locPrompt">
+                    <div class="loc-prompt-card">
+                        <div class="loc-icon">
+                            <i class="fas fa-map-location-dot"></i>
+                        </div>
+                        <h4>Find Centers Near You</h4>
+                        <p>Allow location access to see vaccination centers closest to your current location in Gujranwala.</p>
+                        <button class="btn btn-primary rounded-pill px-4 py-2" onclick="requestLocation()">
+                            <i class="fas fa-crosshairs me-2"></i>Allow My Location
+                        </button>
+                        <br>
+                        <span class="skip-link" onclick="loadDefaultMap()">
+                            Skip — show Gujranwala map
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Leaflet map renders here -->
+                <div id="tig-map"></div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════ HOSPITAL CARDS SECTION ══════════════════════════════════════════ -->
+    <section class="centers-section py-5">
+        <div class="container">
+
+            <div class="section-title text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-secondary text-uppercase fw-bold mb-2">
+                    <i class="fas fa-hospital me-2"></i>Vaccination Centers
+                </h6>
+                <h2 class="display-6 fw-bold">Major Centers in Gujranwala</h2>
+                <p class="text-muted mt-2">All centers provide free vaccines under Pakistan's EPI programme</p>
+            </div>
+
+            <div class="row g-4" id="centersGrid">
+
+                <!-- Card 1 -->
+                <div class="col-md-6 col-xl-4 wow fadeInUp center-card-wrap" data-wow-delay="0.1s"
+                     data-name="dhq teaching hospital gujranwala city" data-type="govt">
+                    <div class="center-card" id="card-dist1" onclick="flyTo(32.1617, 74.1883, 'dist1')">
+                        <div class="center-card-header govt">
+                            <div class="center-icon-wrap">
+                                <i class="fas fa-hospital"></i>
+                            </div>
+                            <span class="center-badge">Govt Hospital</span>
+                        </div>
+                        <div class="center-card-body">
+                            <h5 class="center-name">DHQ Teaching Hospital</h5>
+                            <p class="center-area">
+                                <i class="fas fa-map-marker-alt me-1"></i>Gujranwala City
+                            </p>
+                            <div class="center-meta">
+                                <span><i class="fas fa-clock me-1"></i>8am – 4pm</span>
+                                <span><i class="fas fa-calendar me-1"></i>Mon – Sat</span>
+                            </div>
+                            <div class="vaccine-tags">
+                                <span class="vtag">BCG</span>
+                                <span class="vtag">OPV</span>
+                                <span class="vtag">Pentavalent</span>
+                                <span class="vtag">Measles</span>
+                                <span class="vtag">PCV</span>
+                            </div>
+                            <div class="center-distance" id="dist1">
+                                <i class="fas fa-route me-1"></i>Enable location for distance
+                            </div>
+                        </div>
+                        <div class="center-card-footer">
+                            <button class="btn btn-primary rounded-pill btn-sm px-3"
+                                    onclick="flyTo(32.1617,74.1883,'dist1'); event.stopPropagation();">
+                                <i class="fas fa-map-pin me-1"></i>View on Map
+                            </button>
+                            <a href="tel:+925511234567" class="btn btn-outline-secondary rounded-pill btn-sm px-3"
+                               onclick="event.stopPropagation();">
+                                <i class="fas fa-phone me-1"></i>Call
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-md-6 col-xl-4 wow fadeInUp center-card-wrap" data-wow-delay="0.2s"
+                     data-name="civil hospital vaccination unit satellite town" data-type="govt">
+                    <div class="center-card" id="card-dist2" onclick="flyTo(32.1877, 74.1945, 'dist2')">
+                        <div class="center-card-header govt">
+                            <div class="center-icon-wrap">
+                                <i class="fas fa-clinic-medical"></i>
+                            </div>
+                            <span class="center-badge">Govt Hospital</span>
+                        </div>
+                        <div class="center-card-body">
+                            <h5 class="center-name">Civil Hospital Vaccination Unit</h5>
+                            <p class="center-area">
+                                <i class="fas fa-map-marker-alt me-1"></i>Satellite Town
+                            </p>
+                            <div class="center-meta">
+                                <span><i class="fas fa-clock me-1"></i>9am – 3pm</span>
+                                <span><i class="fas fa-calendar me-1"></i>Mon – Fri</span>
+                            </div>
+                            <div class="vaccine-tags">
+                                <span class="vtag">OPV</span>
+                                <span class="vtag">Pentavalent</span>
+                                <span class="vtag">Hepatitis B</span>
+                                <span class="vtag">Measles</span>
+                            </div>
+                            <div class="center-distance" id="dist2">
+                                <i class="fas fa-route me-1"></i>Enable location for distance
+                            </div>
+                        </div>
+                        <div class="center-card-footer">
+                            <button class="btn btn-primary rounded-pill btn-sm px-3"
+                                    onclick="flyTo(32.1877,74.1945,'dist2'); event.stopPropagation();">
+                                <i class="fas fa-map-pin me-1"></i>View on Map
+                            </button>
+                            <a href="tel:+925511234568" class="btn btn-outline-secondary rounded-pill btn-sm px-3"
+                               onclick="event.stopPropagation();">
+                                <i class="fas fa-phone me-1"></i>Call
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-md-6 col-xl-4 wow fadeInUp center-card-wrap" data-wow-delay="0.3s"
+                     data-name="mch center gujranwala model town" data-type="mch">
+                    <div class="center-card" id="card-dist3" onclick="flyTo(32.1712, 74.2021, 'dist3')">
+                        <div class="center-card-header mch">
+                            <div class="center-icon-wrap">
+                                <i class="fas fa-house-medical"></i>
+                            </div>
+                            <span class="center-badge">MCH Center</span>
+                        </div>
+                        <div class="center-card-body">
+                            <h5 class="center-name">MCH Center Gujranwala</h5>
+                            <p class="center-area">
+                                <i class="fas fa-map-marker-alt me-1"></i>Model Town
+                            </p>
+                            <div class="center-meta">
+                                <span><i class="fas fa-clock me-1"></i>8am – 2pm</span>
+                                <span><i class="fas fa-calendar me-1"></i>Mon – Sat</span>
+                            </div>
+                            <div class="vaccine-tags">
+                                <span class="vtag">BCG</span>
+                                <span class="vtag">OPV</span>
+                                <span class="vtag">Tetanus</span>
+                                <span class="vtag">MMR</span>
+                            </div>
+                            <div class="center-distance" id="dist3">
+                                <i class="fas fa-route me-1"></i>Enable location for distance
+                            </div>
+                        </div>
+                        <div class="center-card-footer">
+                            <button class="btn btn-primary rounded-pill btn-sm px-3"
+                                    onclick="flyTo(32.1712,74.2021,'dist3'); event.stopPropagation();">
+                                <i class="fas fa-map-pin me-1"></i>View on Map
+                            </button>
+                            <a href="tel:+925511234569" class="btn btn-outline-secondary rounded-pill btn-sm px-3"
+                               onclick="event.stopPropagation();">
+                                <i class="fas fa-phone me-1"></i>Call
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="col-md-6 col-xl-4 wow fadeInUp center-card-wrap" data-wow-delay="0.1s"
+                     data-name="epi centre kamoke road gujranwala" data-type="epi">
+                    <div class="center-card" id="card-dist4" onclick="flyTo(32.1750, 74.1760, 'dist4')">
+                        <div class="center-card-header epi">
+                            <div class="center-icon-wrap">
+                                <i class="fas fa-syringe"></i>
+                            </div>
+                            <span class="center-badge">EPI Center</span>
+                        </div>
+                        <div class="center-card-body">
+                            <h5 class="center-name">EPI Centre — Kamoke Road</h5>
+                            <p class="center-area">
+                                <i class="fas fa-map-marker-alt me-1"></i>Kamoke Road, Gujranwala
+                            </p>
+                            <div class="center-meta">
+                                <span><i class="fas fa-clock me-1"></i>8am – 3pm</span>
+                                <span><i class="fas fa-calendar me-1"></i>Mon – Sat</span>
+                            </div>
+                            <div class="vaccine-tags">
+                                <span class="vtag">OPV</span>
+                                <span class="vtag">Pentavalent</span>
+                                <span class="vtag">PCV</span>
+                                <span class="vtag">Rotavirus</span>
+                            </div>
+                            <div class="center-distance" id="dist4">
+                                <i class="fas fa-route me-1"></i>Enable location for distance
+                            </div>
+                        </div>
+                        <div class="center-card-footer">
+                            <button class="btn btn-primary rounded-pill btn-sm px-3"
+                                    onclick="flyTo(32.1750,74.1760,'dist4'); event.stopPropagation();">
+                                <i class="fas fa-map-pin me-1"></i>View on Map
+                            </button>
+                            <a href="tel:+925511234570" class="btn btn-outline-secondary rounded-pill btn-sm px-3"
+                               onclick="event.stopPropagation();">
+                                <i class="fas fa-phone me-1"></i>Call
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="col-md-6 col-xl-4 wow fadeInUp center-card-wrap" data-wow-delay="0.2s"
+                     data-name="district health office gujranwala wazirabad road" data-type="govt">
+                    <div class="center-card" id="card-dist5" onclick="flyTo(32.1550, 74.1920, 'dist5')">
+                        <div class="center-card-header govt">
+                            <div class="center-icon-wrap">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <span class="center-badge">Govt Hospital</span>
+                        </div>
+                        <div class="center-card-body">
+                            <h5 class="center-name">District Health Office</h5>
+                            <p class="center-area">
+                                <i class="fas fa-map-marker-alt me-1"></i>Wazirabad Road
+                            </p>
+                            <div class="center-meta">
+                                <span><i class="fas fa-clock me-1"></i>9am – 4pm</span>
+                                <span><i class="fas fa-calendar me-1"></i>Mon – Fri</span>
+                            </div>
+                            <div class="vaccine-tags">
+                                <span class="vtag">All EPI</span>
+                                <span class="vtag">Hepatitis B</span>
+                                <span class="vtag">MMR</span>
+                            </div>
+                            <div class="center-distance" id="dist5">
+                                <i class="fas fa-route me-1"></i>Enable location for distance
+                            </div>
+                        </div>
+                        <div class="center-card-footer">
+                            <button class="btn btn-primary rounded-pill btn-sm px-3"
+                                    onclick="flyTo(32.1550,74.1920,'dist5'); event.stopPropagation();">
+                                <i class="fas fa-map-pin me-1"></i>View on Map
+                            </button>
+                            <a href="tel:+925511234571" class="btn btn-outline-secondary rounded-pill btn-sm px-3"
+                               onclick="event.stopPropagation();">
+                                <i class="fas fa-phone me-1"></i>Call
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="col-md-6 col-xl-4 wow fadeInUp center-card-wrap" data-wow-delay="0.3s"
+                     data-name="tehsil headquarters hospital nowshera virkan" data-type="govt">
+                    <div class="center-card" id="card-dist6" onclick="flyTo(32.1980, 74.1700, 'dist6')">
+                        <div class="center-card-header govt">
+                            <div class="center-icon-wrap">
+                                <i class="fas fa-hospital-user"></i>
+                            </div>
+                            <span class="center-badge">THQ Hospital</span>
+                        </div>
+                        <div class="center-card-body">
+                            <h5 class="center-name">THQ Hospital Nowshera Virkan</h5>
+                            <p class="center-area">
+                                <i class="fas fa-map-marker-alt me-1"></i>Nowshera Virkan
+                            </p>
+                            <div class="center-meta">
+                                <span><i class="fas fa-clock me-1"></i>8am – 2pm</span>
+                                <span><i class="fas fa-calendar me-1"></i>Mon – Sat</span>
+                            </div>
+                            <div class="vaccine-tags">
+                                <span class="vtag">BCG</span>
+                                <span class="vtag">OPV</span>
+                                <span class="vtag">Pentavalent</span>
+                                <span class="vtag">Measles</span>
+                            </div>
+                            <div class="center-distance" id="dist6">
+                                <i class="fas fa-route me-1"></i>Enable location for distance
+                            </div>
+                        </div>
+                        <div class="center-card-footer">
+                            <button class="btn btn-primary rounded-pill btn-sm px-3"
+                                    onclick="flyTo(32.1980,74.1700,'dist6'); event.stopPropagation();">
+                                <i class="fas fa-map-pin me-1"></i>View on Map
+                            </button>
+                            <a href="tel:+925511234572" class="btn btn-outline-secondary rounded-pill btn-sm px-3"
+                               onclick="event.stopPropagation();">
+                                <i class="fas fa-phone me-1"></i>Call
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end row -->
+
+            <!-- No results message -->
+            <div class="no-results text-center py-5 d-none" id="noResults">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No centers found matching your search</h5>
+                <button class="btn btn-primary rounded-pill mt-2" onclick="clearSearch()">Show All Centers</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════ INFO BANNER ══════════════════════════════════════════ -->
+    <section class="info-banner py-4 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container">
+            <div class="info-banner-inner">
+                <div class="info-icon"><i class="fas fa-info-circle"></i></div>
+                <div class="info-text">
+                    <strong>All vaccines listed are free</strong> under Pakistan's Expanded Programme on Immunization (EPI).
+                    If you want to schedule an appointment — Click here.
+                </div>
+                <a href="{% url 'scheduling' %}" class="btn btn-primary rounded-pill px-4">
+                    <i class="fas fa-calendar-check me-2"></i>Book Appointment
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Start -->
+        <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
+            <div class="container py-5">
+                <div class="row g-5 mb-5 align-items-center">
+                    <div class="col-lg-7">
+                        <div class="position-relative mx-auto">
+                            <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
+                            <button type="button" class="btn btn-secondary rounded-pill position-absolute  top-0 end-0 py-2 px-4 mt-2 me-2 button-color">Subscribe</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="d-flex align-items-center justify-content-center justify-content-lg-end">
+                            <a class="btn btn-secondary btn-md-square rounded-circle me-3 button-app" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-secondary btn-md-square rounded-circle me-3 button-app" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-secondary btn-md-square rounded-circle me-3 button-app" href=""><i class="fab fa-instagram"></i></a>
+                            <a class="btn btn-secondary btn-md-square rounded-circle me-0 button-app" href=""><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-5">
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="footer-item d-flex flex-column">
+                            <div class="footer-item">
+                                <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>About Us</h3>
+                                <p class="mb-3">Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility.</p>
+                            </div>
+                           <!-- <div class="position-relative">
+                                <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
+                                <button type="button" class="btn btn-secondary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">SignUp</button>
+                            </div>-->
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="footer-item d-flex flex-column">
+                            <h4 class="text-white mb-4">Quick Links</h4>
+                            <a href="{% url 'index' %}"><i class="fas fa-angle-right me-2"></i> Home</a>
+                            <a href="#"><i class="fas fa-angle-right me-2"></i> Schedule appointments</a>
+                            <a href="#"><i class="fas fa-angle-right me-2"></i> Track Records</a>
+                            <a href="{% url 'vpd' %}"><i class="fas fa-angle-right me-2"></i> Vaccine Information</a>
+                            <a href="{% url 'nearby' %}"><i class="fas fa-angle-right me-2"></i> Find Centers</a>
+                            <a href="#"><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="footer-item d-flex flex-column">
+                            <h4 class="text-white mb-4"> Center Hours </h4>
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-0">Mon - Friday:</h6>
+                                <p class="text-white mb-0">09.00 am to 02.00 pm</p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-0">Saturday:</h6>
+                                <p class="text-white mb-0">10.00 am to 05.00 pm</p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-0">Vacation:</h6>
+                                <p class="text-white mb-0">All Sunday is our vacation</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="footer-item d-flex flex-column">
+                            <h4 class="text-white mb-4">Contact Us</h4>
+                            <a href="#"><i class="fa fa-map-marker-alt me-2"></i> Address here</a>
+                            <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> trace&immunize.com</a>
+                           <!-- <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> info@example.com</a>-->
+                            <a href="tel:+012 345 67890"><i class="fas fa-phone me-2"></i> +92 300 1234567</a>
+                            <a href="tel:+012 345 67890" class="mb-3"><i class="fas fa-print me-2"></i> +92 300 1234567</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+    <!-- Back to top -->
+    <a href="#" class="btn btn-primary btn-lg-square back-to-top">
+        <i class="bi bi-arrow-up"></i>
+    </a>
+
+    <!-- ══════════════════════════════════════════
+         SCRIPTS
+    ══════════════════════════════════════════ -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="{% static 'publicsite/lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'publicsite/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'publicsite/lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'publicsite/lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'publicsite/js/main.js' %}"></script>
+    <script src="{% static 'publicsite/js/nearby.js' %}"></script>
+
+</body>
+</html>

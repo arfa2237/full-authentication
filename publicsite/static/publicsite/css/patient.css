@@ -1,0 +1,73 @@
+*{
+    margin: 0;
+    padding: 0;     
+}
+body{
+    background-image: url(../img/vaccine.jpg);
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: large;
+}
+.wrapper{
+    justify-content: center;
+    width: 350px;
+    margin: 50px;
+    background-color: white;
+    border-radius: 20px;
+    padding: 50px;
+    padding-left: 80px;
+    border: 1px solid black;
+}
+.wrapper h1{
+    text-align: center;
+    padding-top: 10px;
+    /* color: #ba8dea; */
+}
+.wrapper .field{
+    position: relative;
+    width: 300px;
+    height: 50px;
+    margin: 40px 0;
+}
+.wrapper .radio{
+     width: 300px;
+    height: 50px;
+    margin: 30px 0;
+}
+.field input{
+    width: 100%;
+    height: 100%;
+    border-radius: 40px;
+    border: 1px solid black;
+    border: 2px solid rgbd(255,255,255,2);
+    font-size: 16px;
+    padding: 0 10px;
+}
+.field select{
+    width: 100%;
+    height: 100%;
+    border-radius: 40px;
+    border: 1px solid black;
+    border: 2px solid rgbd(255,255,255,2);
+    font-size: 16px;
+    padding: 0 10px;
+}
+button{
+    width: 100%;
+    height: 50px;
+    border-radius: 40px;
+    background-color: #ba8dea;
+    cursor: pointer;
+    margin-top:20px;
+    /* margin-left: 180px; */
+    font-size: 18px;
+}
+.field.error input {
+    border-color: #ff3860;
+}
+.field {
+    padding: 10px;
+}
