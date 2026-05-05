@@ -1026,7 +1026,7 @@ body.dark-theme {
 
 /* Dark Theme Specific Styles */
 body.dark-theme .navbar-light .navbar-nav .nav-link {
-    color: #f8f8f8;
+    color: #b0b0b0;
 }
 
 body.dark-theme .navbar-light .navbar-nav .nav-link:hover,
@@ -1036,12 +1036,12 @@ body.dark-theme .navbar-light .navbar-nav .nav-link.active {
 
 /* Dark Theme Sticky Navbar */
 body.dark-theme .sticky-top.navbar-light {
-    background: var(--dark-bg) !important;
+    background: #1a1a1a !important;
     border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 body.dark-theme .sticky-top.navbar-light .navbar-nav .nav-link {
-    color: #f8f8f8;
+    color: #b0b0b0;
 }
 
 body.dark-theme .sticky-top.navbar-light .navbar-nav .nav-link:hover,
