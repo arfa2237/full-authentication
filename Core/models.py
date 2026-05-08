@@ -30,9 +30,9 @@ class PatientProfile(models.Model):
 class VaccinationCenter(models.Model):
     name         = models.CharField(max_length=200)
     address      = models.CharField(max_length=300)
-    latitude     = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    longitude    = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    availability = models.CharField(max_length=100, default="Open 8am–4pm")
+    latitude     = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True) #North or South
+    longitude    = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True) #East or West
+    availability = models.CharField(max_length=100, default="Open 10am–2pm")
     is_active    = models.BooleanField(default=True)
 
     def __str__(self):
