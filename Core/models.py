@@ -1,5 +1,4 @@
 from django.db import models
-from django.db import models
 from django.contrib.auth.models import User
 import uuid
 
@@ -26,7 +25,7 @@ class PatientProfile(models.Model):
     
 
     
-# ── NEW: Vaccination Center ───────────────────────────────────────────────────
+# NEW: Vaccination Center
 
 class VaccinationCenter(models.Model):
     name         = models.CharField(max_length=200)
@@ -39,7 +38,7 @@ class VaccinationCenter(models.Model):
     def __str__(self):
         return self.name
     
-# ── NEW: Appointment ──────────────────────────────────────────────────────────
+# NEW: Appointment 
 
 class Appointment(models.Model):
 
