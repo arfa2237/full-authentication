@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 from Core.models import VaccinationCenter
 
@@ -31,3 +32,4 @@ class StaffProfile(models.Model):
     @property
     def is_approved(self):
         return self.status == 'approved'
+   
