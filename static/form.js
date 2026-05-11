@@ -28,9 +28,55 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     html += "</ul>";
     errorBox.innerHTML = html;
-    errorBox.style.display = "block";   // 👈 yeh line add karo
+    errorBox.style.display = "block";   
     errorBox.scrollIntoView({ behavior: "smooth", block: "center" });
   }
+  // ─── Password Strength Meter ───────────────────────────────────────────────
+ 
+  function getStrength(pwd) {
+    let score = 0;
+    if (pwd.length >= 8)  score++;
+    if (pwd.length >= 12) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[a-z]/.test(pwd)) score++;
+    if (/\d/.test(pwd))    score++;
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(pwd)) score++;
+    if (score <= 2) return { label: 'Weak',   color: '#f06272', width: '25%' };
+    if (score <= 4) return { label: 'Fair',   color: '#ffb74d', width: '55%' };
+    if (score <= 5) return { label: 'Good',   color: '#64b5f6', width: '75%' };
+    return              { label: 'Strong', color: '#43a047', width: '100%' };
+  }
+  // Inject meter HTML right after the password field's parent element
+  const meter = document.createElement('div');
+  meter.id = 'pwd-strength-meter';
+  meter.style.cssText = 'margin-top:6px;display:none;';
+  meter.innerHTML = `
+    <div style="height:4px;background:#e8ecf7;border-radius:4px;overflow:hidden;">
+      <div id="pwd-strength-bar" style="height:100%;width:0;border-radius:4px;transition:width 0.3s,background 0.3s;"></div>
+    </div>
+    <span id="pwd-strength-label" style="font-size:10px;font-weight:600;color:#6b7db3;margin-top:3px;display:block;"></span>
+  `;
+  password.parentElement.insertAdjacentElement('afterend', meter);
+ 
+  const strengthMeter = document.getElementById('pwd-strength-meter');
+  const strengthBar   = document.getElementById('pwd-strength-bar');
+  const strengthLabel = document.getElementById('pwd-strength-label');
+ 
+  password.addEventListener('input', function () {
+    const val = this.value;
+    if (!val) {
+      strengthMeter.style.display = 'none';
+      return;
+    }
+    strengthMeter.style.display = 'block';
+    const s = getStrength(val);
+    strengthBar.style.width      = s.width;
+    strengthBar.style.background = s.color;
+    strengthLabel.style.color    = s.color;
+    strengthLabel.textContent    = s.label;
+  });
+ 
+  // ──────────────────────────────────────────────────────────────────────────
 
   form.addEventListener("submit", function (e) {
     let errors = [];
@@ -159,6 +205,6 @@ if (!password1) {
 
     // Clear errors if everything is valid
     errorBox.innerHTML = "";
-    errorBox.style.display = "none";   // 👈 yeh bhi add karo
+    errorBox.style.display = "none";   
   });
 });
