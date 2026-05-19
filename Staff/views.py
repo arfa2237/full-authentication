@@ -8,6 +8,7 @@ from django.conf import settings
 from datetime import date
 from Core.models import Appointment, VaccinationCenter, PatientProfile
 from .models import StaffProfile
+import dns.resolver
 
 
 # ── Helper decorator ─────────────────────────────────────────────────────────
@@ -51,6 +52,16 @@ def StaffSignup(request):
 
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Email is already registered.')
+            has_error = True
+
+        # If email domain is correct check:
+        elif not is_email_domain_valid(email):
+            messages.error(request, 'Please enter a valid email address with a real domain.')
+            has_error = True
+
+        # Block disposable emails
+        elif not is_email_allowed(email):
+            messages.error(request, 'Disposable or temporary email addresses are not allowed.')
             has_error = True
 
         if len(password) < 8:
@@ -331,3 +342,23 @@ def _send_email(subject, body, to_email):
         email.send()
     except Exception:
         pass
+
+#______________ Email domian exisitence check helper _________________
+def is_email_domain_valid(email):
+    """Check if the email domain has valid MX records."""
+    try:
+        domain = email.split('@')[1]
+        dns.resolver.resolve(domain, 'MX')
+        return True
+    except Exception:
+        return False
+    
+BLOCKED_DOMAINS = [
+    'mailinator.com', 'guerrillamail.com', 'tempmail.com',
+    'throwaway.email', 'fakeinbox.com', 'yopmail.com',
+    'sharklasers.com', 'trashmail.com', 'maildrop.cc'
+]
+
+def is_email_allowed(email):
+    domain = email.split('@')[1].lower()
+    return domain not in BLOCKED_DOMAINS
