@@ -78,7 +78,7 @@ def AdminDashboard(request):
 
     # Vaccine stats for chart
     vaccine_stats = []
-    VACCINES = ['Hepatitis B', 'MMR', 'Tetanus', 'Pneumococcal', 'Child Vaccination', 'COVID-19']
+    VACCINES = ['Child Vaccine - At Birth', 'Child Vaccine - 10 week', 'Child Vaccine - 14 week', 'Child Vaccine - 9 months', 'Child Vaccine - 15 months']
     for vac in VACCINES:
         count = Appointment.objects.filter(
             vaccine_type=vac,
