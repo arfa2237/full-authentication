@@ -719,7 +719,7 @@
                     <!-- ── STEP 1: SELECT VACCINE ── -->
                     <div class="form-step active" id="formStep1">
                         <div class="step-title"><i class="fa-solid fa-syringe"></i> Select Vaccine Type</div>
-                        <p class="step-desc">Choose the vaccine you want to schedule. You can book one appointment at a time.</p>
+                        <p class="step-desc">Choose the vaccine you want to schedule. You can book <strong>one</strong> appointment at a time.</p>
 
                         <div class="vaccine-grid">
                             {% for vaccine in vaccines %}
@@ -734,40 +734,40 @@
                             </div>
                             {% empty %}
                             <!-- Static fallback if no vaccines from DB yet -->
-                            <div class="vaccine-option" onclick="selectVaccine(this, 'Hepatitis B')">
-                                <input type="radio" name="vaccine_radio" value="Hepatitis B">
+                            <div class="vaccine-option" onclick="selectVaccine(this, 'Child Vaccine - At Birth')">
+                                <input type="radio" name="vaccine_radio" value="Child Vaccine - At Birth">
                                 <div class="vac-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                                <div><div class="vac-name">Hepatitis B</div><div class="vac-doses">3 doses</div></div>
+                                <div><div class="vac-name">Child Vaccine - At Birth</div><div class="vac-doses">1st dose</div></div>
                                 <div class="check-mark"><i class="fa-solid fa-check"></i></div>
                             </div>
-                            <div class="vaccine-option" onclick="selectVaccine(this, 'MMR')">
-                                <input type="radio" name="vaccine_radio" value="MMR">
+                            <div class="vaccine-option" onclick="selectVaccine(this, 'Child Vaccine - 6 week')">
+                                <input type="radio" name="vaccine_radio" value="Child Vaccine - 6 week">
                                 <div class="vac-icon"><i class="fa-solid fa-virus-slash"></i></div>
-                                <div><div class="vac-name">MMR</div><div class="vac-doses">2 doses</div></div>
+                                <div><div class="vac-name">Child Vaccine - 6 week</div><div class="vac-doses">2nd dose</div></div>
                                 <div class="check-mark"><i class="fa-solid fa-check"></i></div>
                             </div>
-                            <div class="vaccine-option" onclick="selectVaccine(this, 'Tetanus')">
-                                <input type="radio" name="vaccine_radio" value="Tetanus">
+                            <div class="vaccine-option" onclick="selectVaccine(this, 'Child Vaccine - 10 week')">
+                                <input type="radio" name="vaccine_radio" value="Child Vaccine - 10 week">
                                 <div class="vac-icon"><i class="fa-solid fa-syringe"></i></div>
-                                <div><div class="vac-name">Tetanus</div><div class="vac-doses">3 doses</div></div>
+                                <div><div class="vac-name">Child Vaccine - 10 week</div><div class="vac-doses">3rd dose</div></div>
                                 <div class="check-mark"><i class="fa-solid fa-check"></i></div>
                             </div>
-                            <div class="vaccine-option" onclick="selectVaccine(this, 'Pneumococcal')">
-                                <input type="radio" name="vaccine_radio" value="Pneumococcal">
+                            <div class="vaccine-option" onclick="selectVaccine(this, 'Child Vaccine - 14 week')">
+                                <input type="radio" name="vaccine_radio" value="Child Vaccine - 14 week">
                                 <div class="vac-icon"><i class="fa-solid fa-lungs"></i></div>
-                                <div><div class="vac-name">Pneumococcal</div><div class="vac-doses">2 doses</div></div>
+                                <div><div class="vac-name">Child Vaccine - 14 week</div><div class="vac-doses">4th dose</div></div>
                                 <div class="check-mark"><i class="fa-solid fa-check"></i></div>
                             </div>
-                            <div class="vaccine-option" onclick="selectVaccine(this, 'Child Vaccination')">
-                                <input type="radio" name="vaccine_radio" value="Child Vaccination">
+                            <div class="vaccine-option" onclick="selectVaccine(this, 'Child Vaccine - 9 months')">
+                                <input type="radio" name="vaccine_radio" value="Child Vaccine - 9 months">
                                 <div class="vac-icon"><i class="fa-solid fa-baby"></i></div>
-                                <div><div class="vac-name">Child Vaccination</div><div class="vac-doses">EPI Schedule</div></div>
+                                <div><div class="vac-name">Child Vaccine - 9 months</div><div class="vac-doses">5th dose</div></div>
                                 <div class="check-mark"><i class="fa-solid fa-check"></i></div>
                             </div>
-                            <div class="vaccine-option" onclick="selectVaccine(this, 'COVID-19')">
-                                <input type="radio" name="vaccine_radio" value="COVID-19">
+                            <div class="vaccine-option" onclick="selectVaccine(this, 'Child Vaccine - 15 months')">
+                                <input type="radio" name="vaccine_radio" value="Child Vaccine - 15 months">
                                 <div class="vac-icon"><i class="fa-solid fa-biohazard"></i></div>
-                                <div><div class="vac-name">COVID-19</div><div class="vac-doses">2 doses</div></div>
+                                <div><div class="vac-name">Child Vaccine - 15 months</div><div class="vac-doses">6th dose</div></div>
                                 <div class="check-mark"><i class="fa-solid fa-check"></i></div>
                             </div>
                             {% endfor %}
@@ -779,10 +779,12 @@
                                 <label><i class="fa-solid fa-hashtag"></i> Which dose number?</label>
                             </div>
                             <div class="dose-pills">
-                                <div class="dose-pill" onclick="selectDose(this, 1)">Dose 1</div>
-                                <div class="dose-pill" onclick="selectDose(this, 2)">Dose 2</div>
-                                <div class="dose-pill" onclick="selectDose(this, 3)">Dose 3</div>
-                                <div class="dose-pill" onclick="selectDose(this, 0)">Booster</div>
+                                <div class="dose-pill" onclick="selectDose(this, 1)">At Birth</div>
+                                <div class="dose-pill" onclick="selectDose(this, 2)">2nd Visit</div>
+                                <div class="dose-pill" onclick="selectDose(this, 3)">3rd Visit</div>
+                                <div class="dose-pill" onclick="selectDose(this, 4)">4th Visit</div>
+                                <div class="dose-pill" onclick="selectDose(this, 5)">5th Visit</div>
+                                <div class="dose-pill" onclick="selectDose(this, 6)">6th Visit</div>
                             </div>
                         </div>
 
@@ -853,14 +855,11 @@
                             <div class="field-group">
                                 <label><i class="fa-regular fa-clock"></i> Available Time Slots</label>
                                 <div class="time-slots" id="timeSlots">
-                                    <div class="time-slot" onclick="selectTime(this, '08:00')">8:00 AM</div>
-                                    <div class="time-slot" onclick="selectTime(this, '09:00')">9:00 AM</div>
-                                    <div class="time-slot" onclick="selectTime(this, '10:00')">10:00 AM</div>
-                                    <div class="time-slot" onclick="selectTime(this, '11:00')">11:00 AM</div>
-                                    <div class="time-slot" onclick="selectTime(this, '12:00')">12:00 PM</div>
-                                    <div class="time-slot" onclick="selectTime(this, '14:00')">2:00 PM</div>
-                                    <div class="time-slot" onclick="selectTime(this, '15:00')">3:00 PM</div>
-                                    <div class="time-slot" onclick="selectTime(this, '16:00')">4:00 PM</div>
+                                    <div class="time-slot" onclick="selectTime(this, '08:00')">10:00 AM</div>
+                                    <div class="time-slot" onclick="selectTime(this, '09:00')">11:00 AM</div>
+                                    <div class="time-slot" onclick="selectTime(this, '10:00')">12:00 PM</div>
+                                    <div class="time-slot" onclick="selectTime(this, '11:00')">1:00 PM</div>
+                                    <div class="time-slot" onclick="selectTime(this, '12:00')">2:00 PM</div>
                                 </div>
                             </div>
                         </div>
