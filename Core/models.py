@@ -51,12 +51,12 @@ class Appointment(models.Model):
     ]
 
     VACCINE_CHOICES = [
-        ('Hepatitis B',       'Hepatitis B'),
-        ('MMR',               'MMR'),
-        ('Tetanus',           'Tetanus'),
-        ('Pneumococcal',      'Pneumococcal'),
-        ('Child Vaccination', 'Child Vaccination'),
-        ('COVID-19',          'COVID-19'),
+        ('Child Vaccine - At Birth',       'Child Vaccine - At Birth'),
+        ('Child Vaccine - 6 week',               'Child Vaccine - 6 week'),
+        ('Child Vaccine - 10 week',           'Child Vaccine - 10 week'),
+        ('Child Vaccine - 14 week',      'Child Vaccine - 14 week'),
+        ('Child Vaccine - 9 months', 'Child Vaccine - 9 months'),
+        ('Child Vaccine - 15 months',          'Child Vaccine - 15 months'),
     ]
 
     patient          = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
