@@ -633,9 +633,12 @@
 
     <nav class="sidebar-nav">
         <div class="nav-label">Main Menu</div>
-        <a class="nav-item" href="{% url 'home' %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a class="nav-item" href="{% url 'index' %}"><i class="fa-solid fa-house"></i> Home </a>
         <a class="nav-item active" href="{% url 'book-appointment' %}"><i class="fa-solid fa-calendar-plus"></i> Book Appointment</a>
-        <a class="nav-item" href="{% url 'my-appointments' %}"><i class="fa-solid fa-calendar-check"></i> My Appointments {% if pending_count %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}</a>
+        <a class="nav-item" href="{% url 'my-appointments' %}">
+            <i class="fa-solid fa-calendar-check"></i> My Appointments 
+            {% if pending_count %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}
+        </a> 
         <a class="nav-item" href="{% url 'vaccine-card' %}"><i class="fa-solid fa-id-card"></i> My Vaccine Card</a>
         <a class="nav-item" href="{% url 'my-records' %}"><i class="fa-solid fa-chart-line"></i> My Records</a>
     </nav>
