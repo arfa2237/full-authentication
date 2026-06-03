@@ -3,8 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.Home, name='home'),
-    path('register/', views.RegisterView, name='register'),
-    path('login/', views.LoginView, name='login'),
+    path('register/', views.RegisterView, name='register'), 
+    path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView, name='logout'),
     path('forgot-password/', views.ForgotPassword, name='forgot-password'),
     path('password-reset-sent/<str:reset_id>/', views.PasswordResetSent, name='password-reset-sent'),
@@ -16,3 +16,4 @@ urlpatterns = [
     path('download-vaccine-card/', views.DownloadVaccineCard, name='download-vaccine-card'),
     path('my-records/', views.MyRecords, name='my-records'),
 ]
+

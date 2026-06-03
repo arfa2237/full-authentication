@@ -633,18 +633,14 @@
 
     <nav class="sidebar-nav">
         <div class="nav-label">Main Menu</div>
-        <a class="nav-item" href="{% url 'home' %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a class="nav-item" href="{% url 'index' %}"><i class="fa-solid fa-house"></i> Home </a>
         <a class="nav-item active" href="{% url 'book-appointment' %}"><i class="fa-solid fa-calendar-plus"></i> Book Appointment</a>
-        <a class="nav-item" href="{% url 'my-appointments' %}"><i class="fa-solid fa-calendar-check"></i> My Appointments {% if pending_count %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}</a>
-        <a class="nav-item" href="#"><i class="fa-solid fa-id-card"></i> My Vaccine Card</a>
-        <a class="nav-item" href="#"><i class="fa-solid fa-chart-line"></i> My Records</a>
-        <div class="nav-label" style="margin-top:8px">Information</div>
-        <a class="nav-item" href="#"><i class="fa-solid fa-location-dot"></i> Find Centers</a>
-        <a class="nav-item" href="#"><i class="fa-solid fa-shield-virus"></i> VPDs Info</a>
-        <a class="nav-item" href="#"><i class="fa-solid fa-newspaper"></i> Blogs &amp; News</a>
-        <a class="nav-item" href="#"><i class="fa-solid fa-circle-question"></i> FAQs</a>
-        <div class="nav-label" style="margin-top:8px">Account</div>
-        <a class="nav-item" href="#"><i class="fa-solid fa-user"></i> My Profile</a>
+        <a class="nav-item" href="{% url 'my-appointments' %}">
+            <i class="fa-solid fa-calendar-check"></i> My Appointments 
+            {% if pending_count %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}
+        </a> 
+        <a class="nav-item" href="{% url 'vaccine-card' %}"><i class="fa-solid fa-id-card"></i> My Vaccine Card</a>
+        <a class="nav-item" href="{% url 'my-records' %}"><i class="fa-solid fa-chart-line"></i> My Records</a>
     </nav>
 
     <div class="sidebar-footer">
@@ -652,7 +648,7 @@
     </div>
 </aside>
 
-<!-- ════════ MAIN ════════ -->
+<!-- .................. MAIN ................. -->
 <div class="main">
 
     <!-- TOPBAR -->
@@ -779,12 +775,12 @@
                                 <label><i class="fa-solid fa-hashtag"></i> Which dose number?</label>
                             </div>
                             <div class="dose-pills">
-                                <div class="dose-pill" onclick="selectDose(this, 1)">At Birth</div>
-                                <div class="dose-pill" onclick="selectDose(this, 2)">2nd Visit</div>
-                                <div class="dose-pill" onclick="selectDose(this, 3)">3rd Visit</div>
-                                <div class="dose-pill" onclick="selectDose(this, 4)">4th Visit</div>
-                                <div class="dose-pill" onclick="selectDose(this, 5)">5th Visit</div>
-                                <div class="dose-pill" onclick="selectDose(this, 6)">6th Visit</div>
+                                <div class="dose-pill" onclick="selectDose(this, 1)">1st Dose</div>
+                                <div class="dose-pill" onclick="selectDose(this, 2)">2nd Dose</div>
+                                <div class="dose-pill" onclick="selectDose(this, 3)">3rd Dose</div>
+                                <div class="dose-pill" onclick="selectDose(this, 4)">4th Dose</div>
+                                <div class="dose-pill" onclick="selectDose(this, 5)">5th Dose</div>
+                                <div class="dose-pill" onclick="selectDose(this, 6)">6th Dose</div>
                             </div>
                         </div>
 
