@@ -43,12 +43,12 @@ def Home(request):
 
     # Vaccine progress for progress bars
     VACCINE_TOTAL_DOSES = {
-        'Hepatitis B':       3,
-        'MMR':               2,
-        'Tetanus':           3,
-        'Pneumococcal':      2,
-        'Child Vaccination': 1,
-        'COVID-19':          2,
+        'Child Vaccine - At Birth':     1,
+        'Child Vaccine - 6 week':       2,
+        'Child Vaccine - 10 week':      3,
+        'Child Vaccine - 14 week':      4,
+        'Child Vaccine - 9 months':     5,
+        'Child Vaccine - 15 months':    6,
     }
     COLORS = ['green', 'purple', 'orange', 'purple', 'green', 'blue']
 
@@ -292,12 +292,12 @@ def BookAppointment(request):
 
     # Static vaccine list (jb tk static rehy gy Vaccine mode ni bnaty)
     vaccines = [
-        {'name': 'Hepatitis B',       'doses': 3,  'icon': 'fa-solid fa-shield-halved'},
-        {'name': 'MMR',               'doses': 2,  'icon': 'fa-solid fa-virus-slash'},
-        {'name': 'Tetanus',           'doses': 3,  'icon': 'fa-solid fa-syringe'},
-        {'name': 'Pneumococcal',      'doses': 2,  'icon': 'fa-solid fa-lungs'},
-        {'name': 'Child Vaccination', 'doses': 1,  'icon': 'fa-solid fa-baby'},
-        {'name': 'COVID-19',          'doses': 2,  'icon': 'fa-solid fa-biohazard'},
+        {'name': 'Child Vaccine - At Birth',        'doses': 1,  'icon': 'fa-solid fa-shield-halved'},
+        {'name': 'Child Vaccine - 6 week',          'doses': 2,  'icon': 'fa-solid fa-virus-slash'},
+        {'name': 'Child Vaccine - 10 week',         'doses': 3,  'icon': 'fa-solid fa-syringe'},
+        {'name': 'Child Vaccine - 14 week',         'doses': 4,  'icon': 'fa-solid fa-lungs'},
+        {'name': 'Child Vaccine - 9 months',        'doses': 5,  'icon': 'fa-solid fa-baby'},
+        {'name': 'Child Vaccine - 15 months',       'doses': 6,  'icon': 'fa-solid fa-biohazard'},
     ]
 
     if request.method == 'POST':
@@ -462,12 +462,12 @@ def VaccineCard(request):
 
     # Vaccine progress calculation
     VACCINE_TOTAL_DOSES = {
-        'Hepatitis B':       3,
-        'MMR':               2,
-        'Tetanus':           3,
-        'Pneumococcal':      2,
-        'Child Vaccination': 1,
-        'COVID-19':          2,
+        'Child Vaccine - At Birth':     1,
+        'Child Vaccine - 6 week':       2,
+        'Child Vaccine - 10 week':      3,
+        'Child Vaccine - 14 week':      4,
+        'Child Vaccine - 9 months':     5,
+        'Child Vaccine - 15 months':    6,
     }
 
     COLORS = ['purple', 'green', 'orange', 'blue', 'purple', 'green']
@@ -692,12 +692,12 @@ def MyRecords(request):
 
     # Vaccine progress ............................................................
     VACCINE_TOTAL_DOSES = {
-        'Hepatitis B':       3,
-        'MMR':               2,
-        'Tetanus':           3,
-        'Pneumococcal':      2,
-        'Child Vaccination': 1,
-        'COVID-19':          2,
+        'Child Vaccine - At Birth':     1,
+        'Child Vaccine - 6 week':       2,
+        'Child Vaccine - 10 week':      3,
+        'Child Vaccine - 14 week':      4,
+        'Child Vaccine - 9 months':     5,
+        'Child Vaccine - 15 months':    6,
     }
     TOTAL_DOSES = sum(VACCINE_TOTAL_DOSES.values())  # 13
 
