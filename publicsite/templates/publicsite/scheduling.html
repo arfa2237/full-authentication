@@ -138,18 +138,24 @@
             <div class="container-fluid bg-breadcrumb">
                 <div class="container text-center py-5" style="max-width: 900px;">
                     <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Schedule your Vaccines</h4>
-                    <div class="carousel-caption-2-content-btn fadeInLeft animated" data-animation="fadeInLeft" data-delay="1s" style="animation-delay: 0.5s;">
+                    <p class="text-white mb-4 wow fadeInDown" data-wow-delay="0.2s" style="font-size: 17px; opacity: 0.9;"> Book your vaccination appointment quickly and easily, choose your preferred date and time.</p>
+                    <!--Botton Centered-->
+                    <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap wow fadeInUp" data-wow-delay="0.3s">
                        {% if user.is_authenticated %}
-                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
+                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-4 me-2"
                                 href="/patient/book-appointment/">
                                     <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
                             </a>
                         {% else %}
-                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
+                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-4 me-2"
                                 href="/patient/login/?next=/patient/book-appointment/"> 
                                     <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
                             </a>
                         {% endif %} 
+
+                        <!-- Learn More Button -->
+                        <a href="{% url 'vpd' %}" class="btn btn-outline-light rounded-pill py-3 px-5 schedule-hero-btn-outline"> 
+                        <i class="fas fa-info-circle me-2"></i>Learn About Vaccines</a>
                     </div>
                 </div>
             </div>
