@@ -244,6 +244,16 @@
         .center-option .check-mark { top: 50%; transform: translateY(-50%); right: 14px; }
 
         /* ── DATE/TIME PICKER ── */
+        .time-slot.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .time-slot.selected {
+            background: #007bff;
+            color: white;
+        }
         .dt-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -806,30 +816,12 @@
                             </div>
                             {% empty %}
                             <!-- Static fallback -->
-                            <div class="center-option" onclick="selectCenter(this, '1', 'DHQ Teaching Hospital')">
+                            <div class="center-option" onclick="selectCenter(this, '1', 'Ayesha Dispersary')">
                                 <input type="radio" name="center_radio" value="1">
                                 <div class="c-icon"><i class="fa-solid fa-hospital"></i></div>
                                 <div class="c-info" style="flex:1">
-                                    <div class="c-title">DHQ Teaching Hospital</div>
-                                    <div class="c-meta"><i class="fa-solid fa-location-dot"></i> Gujranwala City &middot; Open 8am–4pm</div>
-                                </div>
-                                <div class="check-mark" style="position:static;width:18px;height:18px;border-radius:50%;background:var(--accent-color);color:white;display:none;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;"><i class="fa-solid fa-check"></i></div>
-                            </div>
-                            <div class="center-option" onclick="selectCenter(this, '2', 'Civil Hospital Vaccination Unit')">
-                                <input type="radio" name="center_radio" value="2">
-                                <div class="c-icon"><i class="fa-solid fa-clinic-medical"></i></div>
-                                <div class="c-info" style="flex:1">
-                                    <div class="c-title">Civil Hospital Vaccination Unit</div>
-                                    <div class="c-meta"><i class="fa-solid fa-location-dot"></i> Satellite Town &middot; Open 9am–3pm</div>
-                                </div>
-                                <div class="check-mark" style="position:static;width:18px;height:18px;border-radius:50%;background:var(--accent-color);color:white;display:none;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;"><i class="fa-solid fa-check"></i></div>
-                            </div>
-                            <div class="center-option" onclick="selectCenter(this, '3', 'MCH Center Gujranwala')">
-                                <input type="radio" name="center_radio" value="3">
-                                <div class="c-icon"><i class="fa-solid fa-house-medical"></i></div>
-                                <div class="c-info" style="flex:1">
-                                    <div class="c-title">MCH Center Gujranwala</div>
-                                    <div class="c-meta"><i class="fa-solid fa-location-dot"></i> Model Town &middot; Open 8am–2pm</div>
+                                    <div class="c-title">Ayesha Dispersary</div>
+                                    <div class="c-meta"><i class="fa-solid fa-location-dot"></i> Peoples Colony, Gujranwala City &middot; Open 10am–2pm</div>
                                 </div>
                                 <div class="check-mark" style="position:static;width:18px;height:18px;border-radius:50%;background:var(--accent-color);color:white;display:none;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;"><i class="fa-solid fa-check"></i></div>
                             </div>
@@ -851,11 +843,10 @@
                             <div class="field-group">
                                 <label><i class="fa-regular fa-clock"></i> Available Time Slots</label>
                                 <div class="time-slots" id="timeSlots">
-                                    <div class="time-slot" onclick="selectTime(this, '08:00')">10:00 AM</div>
-                                    <div class="time-slot" onclick="selectTime(this, '09:00')">11:00 AM</div>
-                                    <div class="time-slot" onclick="selectTime(this, '10:00')">12:00 PM</div>
-                                    <div class="time-slot" onclick="selectTime(this, '11:00')">1:00 PM</div>
-                                    <div class="time-slot" onclick="selectTime(this, '12:00')">2:00 PM</div>
+                                    <div class="time-slot" onclick="selectTime(this, '10:00')">10:00 AM</div>
+                                    <div class="time-slot" onclick="selectTime(this, '11:00')">11:00 AM</div>
+                                    <div class="time-slot" onclick="selectTime(this, '12:00')">12:00 PM</div>
+                                    <div class="time-slot" onclick="selectTime(this, '13:00')">1:00 PM</div>
                                 </div>
                             </div>
                         </div>
@@ -1047,29 +1038,75 @@
 
     // ── TIME SELECTION ──
     function selectTime(el, time) {
-        document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-        el.classList.add('selected');
-        document.getElementById('hid_time').value = time;
-        updateSummary('sum-time', el.textContent);
+
+    const selectedDate = document.getElementById('apptDate').value;
+
+    if (!selectedDate) {
+        alert('Please select a date first.');
+        return;
     }
 
-    // ── DATE CHANGE ──
+    const now = new Date();
+    const appointmentDateTime = new Date(`${selectedDate}T${time}:00`);
+
+    // Appointment must be at least 1 hour ahead
+    const minimumAllowedTime = new Date(now.getTime() + (60 * 60 * 1000));
+
+    if (appointmentDateTime < minimumAllowedTime) {
+        alert('This time slot is <strong>no longer available</strong>, Please choose a time at least 1 hour from now.');
+        return;
+    }
+
+    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+
+    el.classList.add('selected');
+    document.getElementById('hid_time').value = time;
+    updateSummary('sum-time', el.textContent);
+}
+
+    // -- DATE CHANGE --
     document.getElementById('apptDate').addEventListener('change', function() {
         const d = new Date(this.value);
         const options = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
         updateSummary('sum-date', d.toLocaleDateString('en-PK', options));
     });
 
-    // ── SUMMARY UPDATE ──
+    // -- SUMMARY UPDATE --
     function updateSummary(id, value) {
         const el = document.getElementById(id);
         el.textContent = value;
         el.classList.remove('empty');
     }
 
-    // ── SET MIN DATE (today) ──
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('apptDate').min = today;
+    //  -- SET MIN DATE (today) --
+    //const today = new Date().toISOString().split('T')[0];
+    //document.getElementById('apptDate').min = today;
+    // Disable expired slots when date changes
+document.getElementById('apptDate').addEventListener('change', updateTimeSlots);
+
+function updateTimeSlots() {
+
+    const selectedDate = document.getElementById('apptDate').value;
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    document.querySelectorAll('.time-slot').forEach(slot => {
+
+        slot.classList.remove('disabled');
+
+        if (selectedDate === todayStr) {
+
+            const time = slot.getAttribute('onclick').match(/'([^']+)'/)[1];
+
+            const now = new Date();
+            const slotDateTime = new Date(`${selectedDate}T${time}:00`);
+            const minimumAllowedTime = new Date(now.getTime() + (60 * 60 * 1000));
+
+            if (slotDateTime < minimumAllowedTime) {
+                slot.classList.add('disabled');
+            }
+        }
+    });
+}
 
     // ── FORM VALIDATION ON SUBMIT ──
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
@@ -1078,6 +1115,7 @@
         if (!date) { e.preventDefault(); alert('Please select an appointment date.'); return; }
         if (!time) { e.preventDefault(); alert('Please select a time slot.'); return; }
     });
+    updateTimeSlots();
 </script>
 
 </body>

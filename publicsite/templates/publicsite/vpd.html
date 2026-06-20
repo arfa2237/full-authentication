@@ -50,23 +50,23 @@
         <div class="container-fluid position-relative p-0">
             <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
                 <a href="" class="navbar-brand p-0">
-                    <img src="{% static "img/logo.png" %}" alt="Logo">
+                    <img src="{% static 'img/logo.png' %}" alt="Logo">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="fa fa-bars"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
-                        <a href="{% url "home" %}" class="nav-item nav-link">Home</a>
-                        <a href="{% url "scheduling" %}" class="nav-item nav-link">Schedule now</a>
+                        <a href="{% url 'home' %}" class="nav-item nav-link">Home</a>
+                        <a href="{% url 'scheduling' %}" class="nav-item nav-link">Schedule now</a>
                         {% if user.is_authenticated %}
                             <a href="/patient/my-appointments/" class="nav-item nav-link">Track now</a>
                         {% else %}
                             <a href="/patient/login/?next=/patient/my-appointments/" class="nav-item nav-link">Track now</a>
                         {% endif %} 
-                        <a href="{% url "vpd" %}" class="nav-item nav-link active">VPDs</a>
-                        <a href="{% url "nearby" %}" class="nav-item nav-link">Location nearby</a>
-                        <a href="{% url "faq" %}" class="nav-item nav-link">FAQ</a>                          
+                        <a href="{% url 'vpd' %}" class="nav-item nav-link active">VPDs</a>
+                        <a href="{% url 'nearby' %}" class="nav-item nav-link">Location nearby</a>
+                        <a href="{% url 'faq' %}" class="nav-item nav-link">FAQ</a>                          
                         </div>
                       <!--Code for theme Toggle -->
                     </div>
