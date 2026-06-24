@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pneumococcal Information Portal </title>
+    <link rel="stylesheet" href="{% static 'publicsite/css/Pneumococcal.css' %}">
+</head>
+<body>
+    <!-- HEADER SECTION -->
+    <header class="header">
+        <div class="main-container">
+            <div class="logo">Pneumococcal Information Portal</div>
+            <p class="header-subtitle">Pneumococcal - Vaccine Preventable Diseases</p>
+
+        </div>
+    </header>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="nav-bar">
+        <a href="#overview" class="nav-link">Overview</a>
+        <a href="#symptoms" class="nav-link">Symptoms</a>
+        <a href="#prevention" class="nav-link">Prevention</a>
+        <a href="#consequences" class="nav-link">Consequences</a>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+        <!-- ========== OVERVIEW SECTION ========== -->
+        <section id="overview" class="content-section">
+            <h1 class="main-heading">Pneumococcal Disease</h1>
+            
+            <h2 class="section-heading">Overview</h2>
+            <p>Pneumococcal disease is caused by the bacterium Streptococcus pneumoniae, which can lead to serious infections in the lungs (pneumonia), bloodstream (bacteremia), and brain/spinal cord (meningitis).</p>
+            
+            <div class="highlight-box">
+                <p>Pneumococcal bacteria are common inhabitants of the upper respiratory tract and can be spread through respiratory droplets from coughing or sneezing. While many people carry the bacteria without symptoms, it can cause severe illness in vulnerable populations.</p>
+            </div>
+            
+            <p>The pneumococcal vaccine is highly effective in preventing the most serious forms of pneumococcal disease. WHO recommends pneumococcal conjugate vaccines (PCV) for all children and high-risk adults.</p>
+            
+            <!-- STATISTICS -->
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-number">826,000</div>
+                    <p>Child deaths annually (under 5 years)</p>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">90+</div>
+                    <p>Serotypes of pneumococcal bacteria</p>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">80% ↓</div>
+                    <p>Reduction in invasive disease with PCV</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== SYMPTOMS SECTION ========== -->
+        <section id="symptoms" class="content-section">
+            <h2 class="section-heading">Pneumococcal Disease Symptoms</h2>
+            
+            <div class="highlight-box">
+                <p><strong>Symptoms vary depending on the type of infection.</strong> Pneumococcal disease can manifest as pneumonia, meningitis, or bacteremia, each with distinct symptoms.</p>
+            </div>
+            
+            <!-- SYMPTOMS GRID -->
+            <div class="symptoms-container">
+                <div class="symptom-box">
+                    <h3 class="symptom-title">Pneumonia Symptoms</h3>
+                    <p>Fever, chills, cough, rapid breathing, chest pain, and difficulty breathing</p>
+                </div>
+                <div class="symptom-box">
+                    <h3 class="symptom-title">Meningitis Symptoms</h3>
+                    <p>Stiff neck, fever, headache, nausea, vomiting, sensitivity to light, confusion</p>
+                </div>
+                <div class="symptom-box">
+                    <h3 class="symptom-title">Bacteremia Symptoms</h3>
+                    <p>Fever, chills, low alertness, abdominal pain, joint pain in children</p>
+                </div>
+                <div class="symptom-box">
+                    <h3 class="symptom-title">Middle Ear Infection</h3>
+                    <p>Ear pain, red or swollen eardrum, fever, sleep disturbances in children</p>
+                </div>
+                <div class="symptom-box">
+                    <h3 class="symptom-title">Sinus Infections</h3>
+                    <p>Headache, stuffy or runny nose, loss of smell, facial pain or pressure</p>
+                </div>
+                <div class="symptom-box">
+                    <h3 class="symptom-title">General Symptoms</h3>
+                    <p>Fatigue, loss of appetite, irritability (especially in young children)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== PREVENTION SECTION ========== -->
+        <section id="prevention" class="content-section">
+            <h2 class="section-heading">Prevention & Vaccination</h2>
+            
+            <!-- PREVENTION GRID -->
+            <div class="prevention-container">
+                <div class="prevention-box">
+                    <h3>PCV13 Vaccine</h3>
+                    <p class="vaccine-status">For Children & Adults</p>
+                    <p>Protects against 13 pneumococcal serotypes</p>
+                    <p><small>Recommended for all infants and high-risk adults</small></p>
+                </div>
+                <div class="prevention-box">
+                    <h3>PPSV23 Vaccine</h3>
+                    <p class="vaccine-status">For Adults & High-risk</p>
+                    <p>Protects against 23 pneumococcal serotypes</p>
+                    <p><small>Available in Pakistan</small></p>
+                </div>
+                <div class="prevention-box">
+                    <h3>PCV15 Vaccine</h3>
+                    <p class="vaccine-status">Newer Option</p>
+                    <p>Extended protection with 15 serotypes</p>
+                    <p><small>Available in many countries</small></p>
+                </div>
+                <div class="prevention-box">
+                    <h3>Hygiene Practices</h3>
+                    <p class="vaccine-status">Additional Protection</p>
+                    <p>Hand washing, covering coughs, avoiding sick people</p>
+                    <p><small>Reduces transmission risk</small></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== CONSEQUENCES SECTION ========== -->
+        <section id="consequences" class="content-section">
+            <h2 class="section-heading">If Pneumococcal Vaccines Are Not Taken</h2>
+            
+            <div class="highlight-box">
+                <p><strong>Pneumococcal disease remains a leading cause of vaccine-preventable deaths worldwide.</strong> Without vaccination, vulnerable populations face severe complications.</p>
+            </div>
+            
+            <!-- CONSEQUENCES GRID -->
+            <div class="consequences-container">
+                <div class="consequence-box">
+                    <h3 class="consequence-title">Pneumonia Complications</h3>
+                    <p>Respiratory failure, lung abscesses, pleural effusion (fluid around lungs), and sepsis</p>
+                </div>
+                <div class="consequence-box">
+                    <h3 class="consequence-title">Meningitis Damage</h3>
+                    <p>Brain damage, hearing loss, learning disabilities, seizures, and permanent neurological damage</p>
+                </div>
+                <div class="consequence-box">
+                    <h3 class="consequence-title">Bacteremia Outcomes</h3>
+                    <p>Septic shock, organ failure, tissue damage, and potential limb amputation in severe cases</p>
+                </div>
+                <div class="consequence-box">
+                    <h3 class="consequence-title">Long-term Disabilities</h3>
+                    <p>Developmental delays in children, cognitive impairment, and permanent physical disabilities</p>
+                </div>
+                <div class="consequence-box">
+                    <h3 class="consequence-title">Hearing & Vision Loss</h3>
+                    <p>Permanent hearing impairment and vision problems due to nerve damage from infection</p>
+                </div>
+                <div class="consequence-box">
+                    <h3 class="consequence-title">Death</h3>
+                    <p>Mortality rates up to 20% for pneumococcal meningitis and 5-7% for bacteremic pneumonia</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>WHO Impact Data:</h3>
+                <p>According to WHO, pneumococcal pneumonia kills approximately 826,000 children under 5 years annually, making it the leading vaccine-preventable cause of childhood mortality. Vaccination has reduced invasive pneumococcal disease by up to 80% in vaccinated populations.</p>
+            </div>
+        </section>
+
+        
+            <!-- SOURCE INFORMATION -->
+            <div class="source-info">
+                <h3 class="info-heading">Information Source:</h3>
+                <p>All information based on World Health Organization (WHO) data and guidelines.</p>
+                <p>For latest updates, visit: <a href="https://www.who.int/health-topics/pneumococcal" target="_blank">WHO Pneumococcal Information</a></p>
+            </div>
+        </section>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="main-container">
+            <p>© 2025 Pneumococcal Information Portal | Based on WHO Guidelines</p>
+        </div>
+    </footer>
+</body>
+</html>
