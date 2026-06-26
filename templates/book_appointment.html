@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link rel="stylesheet" href="{% static 'dashboard.css' %}"/>
     <style>
-        /* ── BOOKING PAGE EXTRAS ── */
+        /*  BOOKING PAGE EXTRAS  */
         .booking-grid {
             display: grid;
             grid-template-columns: 1.4fr 1fr;
@@ -16,7 +16,7 @@
             align-items: start;
         }
 
-        /* ── STEPPER ── */
+        /*  STEPPER  */
         .stepper {
             display: flex;
             align-items: center;
@@ -85,7 +85,7 @@
         .step.active .step-label { color: var(--accent-deeper); }
         .step.done  .step-label  { color: var(--success); }
 
-        /* ── FORM CARD ── */
+        /*  FORM CARD  */
         .form-section {
             background: white;
             border-radius: var(--radius);
@@ -118,7 +118,7 @@
             line-height: 1.6;
         }
 
-        /* ── VACCINE SELECTOR CARDS ── */
+        /*  VACCINE SELECTOR CARDS  */
         .vaccine-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -197,7 +197,7 @@
 
         .vaccine-option.selected .check-mark { display: flex; }
 
-        /* ── CENTER SELECTOR ── */
+        /*  CENTER SELECTOR  */
         .center-options {
             display: flex;
             flex-direction: column;
@@ -243,7 +243,7 @@
 
         .center-option .check-mark { top: 50%; transform: translateY(-50%); right: 14px; }
 
-        /* ── DATE/TIME PICKER ── */
+        /*  DATE/TIME PICKER  */
         .time-slot.disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -340,7 +340,7 @@
             pointer-events: none;
         }
 
-        /* ── NAV BUTTONS - the next button ── */
+        /*  NAV BUTTONS - the next button  */
         .form-nav {
             display: flex;
             justify-content: space-between;
@@ -401,7 +401,7 @@
 
         .btn-submit:hover { background: #388e3c; transform: translateY(-1px); }
 
-        /* ── SUMMARY SIDEBAR ── */
+        /*  SUMMARY SIDEBAR  */
         .summary-card {
             background: white;
             border-radius: var(--radius);
@@ -511,7 +511,7 @@
             line-height: 1.5;
         }
 
-        /* ── SUCCESS STATE ── */
+        /*  SUCCESS STATE  */
         .success-state {
             display: none;
             flex-direction: column;
@@ -624,7 +624,7 @@
 </head>
 <body>
 
-<!-- ════════ SIDEBAR ════════ -->
+<!-- ....... SIDEBAR ....... -->
 <aside class="sidebar">
     <div class="sidebar-logo">
         <div class="logo-icon">
@@ -722,7 +722,7 @@
 
                 <div class="form-section">
 
-                    <!-- ── STEP 1: SELECT VACCINE ── -->
+                    <!-- -- STEP 1: SELECT VACCINE  -->
                     <div class="form-step active" id="formStep1">
                         <div class="step-title"><i class="fa-solid fa-syringe"></i> Select Vaccine Type</div>
                         <p class="step-desc">Choose the vaccine you want to schedule. You can book <strong>one</strong> appointment at a time.</p>
@@ -796,7 +796,7 @@
 
                     </div><!-- end formStep1 -->
 
-                    <!-- ── STEP 2: SELECT CENTER ── -->
+                    <!--  STEP 2: SELECT CENTER  -->
                     <div class="form-step" id="formStep2">
                         <div class="step-title"><i class="fa-solid fa-hospital"></i> Choose Vaccination Center</div>
                         <p class="step-desc">Select the vaccination center where you want to get vaccinated.</p>
@@ -830,7 +830,7 @@
 
                     </div><!-- end formStep2 -->
 
-                    <!-- ── STEP 3: DATE & TIME ── -->
+                    <!--  STEP 3: DATE & TIME  -->
                     <div class="form-step" id="formStep3">
                         <div class="step-title"><i class="fa-solid fa-calendar-days"></i> Pick Date &amp; Time</div>
                         <p class="step-desc">Choose your preferred appointment date and available time slot.</p>
@@ -955,7 +955,7 @@
 </button>
 
 <script>
-    // ── STEP NAVIGATION ──
+    // -- STEP NAVIGATION --
     let currentStep = 1;
     const totalSteps = 3;
 
@@ -1003,7 +1003,7 @@
         if (currentStep > 1) goToStep(currentStep - 1);
     }
 
-    // ── VACCINE SELECTION ──
+    // -- VACCINE SELECTION --
     function selectVaccine(el, name) {
         document.querySelectorAll('.vaccine-option').forEach(v => v.classList.remove('selected'));
         el.classList.add('selected');
@@ -1012,7 +1012,7 @@
         updateSummary('sum-vaccine', name);
     }
 
-    // ── DOSE SELECTION ──
+    // -- DOSE SELECTION --
     function selectDose(el, num) {
         document.querySelectorAll('.dose-pill').forEach(p => p.classList.remove('active'));
         el.classList.add('active');
@@ -1021,7 +1021,7 @@
         updateSummary('sum-dose', label);
     }
 
-    // ── CENTER SELECTION ──
+    // -- CENTER SELECTION --
     function selectCenter(el, id, name) {
         document.querySelectorAll('.center-option').forEach(c => {
             c.classList.remove('selected');
@@ -1036,7 +1036,7 @@
         updateSummary('sum-center', name);
     }
 
-    // ── TIME SELECTION ──
+    // -- TIME SELECTION --
     function selectTime(el, time) {
 
     const selectedDate = document.getElementById('apptDate').value;
@@ -1108,7 +1108,7 @@ function updateTimeSlots() {
     });
 }
 
-    // ── FORM VALIDATION ON SUBMIT ──
+    // -- FORM VALIDATION ON SUBMIT --
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
         const date = document.querySelector('input[name=appt_date]').value;
         const time = document.getElementById('hid_time').value;
