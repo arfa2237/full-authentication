@@ -1003,13 +1003,30 @@
         if (currentStep > 1) goToStep(currentStep - 1);
     }
 
-    // -- VACCINE SELECTION --
+
+    // -- VACCINE SELECTION → DOSE MAPPING --
+    const vaccineDoseMap = {
+      'Child Vaccine - At Birth':   1,
+      'Child Vaccine - 6 week':     2,
+      'Child Vaccine - 10 week':    3,
+      'Child Vaccine - 14 week':    4,
+      'Child Vaccine - 9 months':   5,
+      'Child Vaccine - 15 months':  6,
+    };
+
     function selectVaccine(el, name) {
-        document.querySelectorAll('.vaccine-option').forEach(v => v.classList.remove('selected'));
-        el.classList.add('selected');
-        el.querySelector('input[type=radio]').checked = true;
-        document.getElementById('hid_vaccine').value = name;
-        updateSummary('sum-vaccine', name);
+      document.querySelectorAll('.vaccine-option').forEach(v => v.classList.remove('selected'));
+      el.classList.add('selected');
+      el.querySelector('input[type=radio]').checked = true;
+      document.getElementById('hid_vaccine').value = name;
+      updateSummary('sum-vaccine', name);
+
+    // ── AUTO-SELECT DOSE ──
+    const doseNum = vaccineDoseMap[name];
+    if (doseNum) {
+        const dosePill = document.querySelectorAll('.dose-pill')[doseNum - 1];
+        if (dosePill) selectDose(dosePill, doseNum);
+    }
     }
 
     // -- DOSE SELECTION --
