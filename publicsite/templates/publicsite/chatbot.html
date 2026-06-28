@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/> 
+        <link rel="stylesheet" href="{% static 'publicsite/css/chatbot.css' %}">
+    </head>
+    <body>
+        <div id="chatbot-container"> 
+                <button id="chatbot-btn">
+                    <span class="fab-tooltip">Ask AI Chatbot</span>
+                    <i class="fas fa-robot"></i> 
+                </button>
+
+                <div id="chatbot-box">
+                    <div class="chat-header">
+                        <span>Vaccine Assistant by TIG</span>
+                        <button id="close-chat">&times;</button> 
+                    </div>  
+
+                    <div class="chat-body">
+                        <p class="bot-msg">Hi! Ask me about vaccines</p>
+                    </div> 
+
+                    <div class="chat-footer">
+                        <textarea rows="1" id="chat-input" placeholder="Type a message..."></textarea>
+                        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+        </div> 
+
+        <script src="{% static 'publicsite/js/chatbot.js' %}"></script>
+        
+    </body> 
+</html>
