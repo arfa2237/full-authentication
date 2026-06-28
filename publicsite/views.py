@@ -78,3 +78,6 @@ def blog3(request):
     return render(request, 'publicsite/blog3.html')
 def nearby(request):
     return render(request, 'publicsite/nearby.html')
+
+def chatbot(request):
+    return render(request, "chatbot.html")
