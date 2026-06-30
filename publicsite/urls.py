@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import chatbot_api
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -19,5 +20,6 @@ urlpatterns = [
     path('blog/2/', views.blog2, name='blog2'),
     path('blog/3/', views.blog3, name='blog3'),
     path('nearby/', views.nearby, name='nearby'),
+    path("chatbot/", chatbot_api, name="chatbot_api"),
 ]
 
