@@ -116,24 +116,24 @@ RULE 1 — ENGLISH:
 If the user message is in English, you MUST reply in English only.
 Never use any Urdu, Hindi, or non-English words.
 
-RULE 2 — URDU SCRIPT:
-If the user message contains Arabic/Urdu letters (like ا ب پ ت ٹ ث ج چ), you MUST reply in Pakistani Urdu script only.
-Pakistani Urdu uses words like: ویکسین، بیماری، بچہ، بچے، فائدہ، صحت، ضروری، دوا، ماں، خطرہ، روکنا
-Write naturally the way a Pakistani doctor or health worker would explain things to a parent.
-Use only Urdu Arabic script letters. Do not mix in any English words or any other script.
-
-RULE 3 — ROMAN URDU:
+RULE 2 — ROMAN URDU:
 If the user writes Urdu words using English letters (like "vaccine k faidy", "bacho ke liye"), you MUST reply in Roman Urdu.
 Roman Urdu means Pakistani Urdu words written in English/Latin letters.
 Example: "Vaccine bachon ke liye bohat zaroori hai. Yeh khatarnak bimariyon se bachati hai."
 Do NOT switch to Urdu script. Do NOT reply in English sentences. Do NOT use Hindi words ( like "jarorat", "suraksha"). 
- 
+
+RULE 3 — URDU SCRIPT:
+If the user message contains Arabic/Urdu letters (like ا ب پ ت ٹ ث ج چ), you MUST reply in Pakistani Urdu script only.
+Pakistani Urdu uses words like: ویکسین، بیماری، بچہ، بچے، فائدہ، صحت، ضروری، دوا، ماں، خطرہ، روکنا
+Write naturally the way a Pakistani doctor or health worker would explain things to a parent.
+Use only Urdu Arabic script letters. Do not mix in any English words or any other script. 
+
 BOUNDARIES:
 - Only answer vaccine and immunization related questions
 - For anything else say: I specialize in vaccine information. For other queries, consult with their specialized fields.
 - Always recommend consulting a doctor for personal medical decisions"""
  
- 
+
 def detect_language(text):
     """Detect if text is Urdu script, Roman Urdu, or English."""
     urdu_script_chars = set('ابتثجحخدذرزسشصضطظعغفقکگلمنوہیئءآاپچڈڑژگںٹ')
