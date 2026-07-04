@@ -307,12 +307,36 @@ def BookAppointment(request):
         appt_date    = request.POST.get('appt_date',    '').strip()
         appt_time    = request.POST.get('appt_time',    '').strip()
         notes        = request.POST.get('notes',        '').strip()
+        # NEW fields
+        child_name     = request.POST.get('child_name',     '').strip()
+        child_gender   = request.POST.get('child_gender',   '').strip()
+        guardian_name  = request.POST.get('guardian_name',  '').strip()
+        guardian_cnic  = request.POST.get('guardian_cnic',  '').strip()
 
         # .......................... Validation ..........................................
         has_error = False
 
         if not vaccine_type:
             messages.error(request, 'Please select a vaccine type.')
+            has_error = True
+        if not child_name:
+            messages.error(request, 'Please enter the child\'s name.')
+            has_error = True
+
+        if not child_gender:
+            messages.error(request, 'Please select the child\'s gender.')
+            has_error = True
+
+        if not guardian_cnic:
+            messages.error(request, 'Please enter guardian CNIC.')
+            has_error = True
+        
+        elif len(guardian_cnic.replace('-', '')) != 13:
+            messages.error(request, 'CNIC must be 13 digits.')
+            has_error = True
+
+        if not guardian_name:
+            messages.error(request, 'Please enter guardian name.')
             has_error = True
 
         if not appt_date:
@@ -380,6 +404,10 @@ def BookAppointment(request):
             appointment_time = parsed_time,
             notes            = notes,
             status           = 'pending', #default status when booking an appointment
+            child_name       = child_name,
+            child_gender     = child_gender,
+            guardian_name    = guardian_name,
+            guardian_cnic    = guardian_cnic,
         )
         messages.success(
             request,
@@ -395,8 +423,6 @@ def BookAppointment(request):
     })
 
 
-
-    # ADD THESE TWO FUNCTIONS in your views.py ........................
 
 @login_required
 def MyAppointments(request):
@@ -460,6 +486,13 @@ def VaccineCard(request):
 
     pending_count = appointments.filter(status='pending').count()
 
+    #  Get child info from latest appointment 
+    latest = appointments.first()
+    child_name    = latest.child_name    if latest else None
+    child_gender  = latest.child_gender  if latest else None
+    guardian_name = latest.guardian_name if latest else None
+    guardian_cnic = latest.guardian_cnic if latest else None
+
     # Vaccine progress calculation
     VACCINE_TOTAL_DOSES = {
         'Child Vaccine - At Birth':     1,
@@ -494,6 +527,10 @@ def VaccineCard(request):
         'completed_doses':  completed_doses,
         'pending_count':    pending_count,
         'vaccine_progress': vaccine_progress,
+        'child_name':       child_name,
+        'child_gender':     child_gender,
+        'guardian_name':    guardian_name,
+        'guardian_cnic':    guardian_cnic,
     })
 
 
