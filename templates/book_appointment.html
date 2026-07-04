@@ -243,6 +243,126 @@
 
         .center-option .check-mark { top: 50%; transform: translateY(-50%); right: 14px; }
 
+        .child-info-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin: 22px 0;
+            overflow: hidden;
+            border: 1px solid var(--input-color);
+        }
+
+        .child-info-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 22px;
+            background: linear-gradient(120deg, var(--accent-deeper), var(--accent-color));
+            color: white;
+        }
+
+        .child-info-header i {
+            font-size: 22px;
+        }
+
+        .child-info-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .child-info-sub {
+            font-size: 11px;
+            opacity: 0.85;
+            margin-top: 2px;
+        }
+
+        .child-info-body {
+            padding: 22px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .child-info-body .field-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-deeper);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .child-info-body .field-group label i {
+            color: var(--accent-color);
+        }
+
+        .child-info-body .req {
+            color: #e53935;
+        }
+
+        .child-info-body input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--input-color);
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            background: var(--input-color);
+            transition: all 0.2s;
+        }
+
+        .child-info-body input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(104,132,211,0.12);
+        }
+
+        .child-info-body small {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            display: block;
+        }
+
+        .gender-pills {
+            display: flex;
+            gap: 10px;
+        }
+
+        .gender-pill {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border: 2px solid var(--input-color);
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .gender-pill input {
+            display: none;
+        }
+
+        .gender-pill:has(input:checked) {
+            border-color: var(--accent-color);
+            background: #f0f2ff;
+            color: var(--accent-deeper);
+        }
+
+        @media (max-width: 600px) {
+            .child-info-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /*  DATE/TIME PICKER  */
         .time-slot.disabled {
             opacity: 0.5;
@@ -828,7 +948,51 @@
                             {% endfor %}
                         </div>
 
+                        <!-- ── Child Information Section ── -->
+                        <div class="child-info-card">
+                            <div class="child-info-header">
+                                <i class="fa-solid fa-baby"></i>
+                                <div>
+                                    <div class="child-info-title">Child / Patient Information</div>
+                                    <div class="child-info-sub">Please provide accurate details for vaccination records</div>
+                                </div>
+                            </div>
+
+                            <div class="child-info-body">
+                                <div class="field-group">
+                                    <label><i class="fa-solid fa-user"></i> Child's Full Name <span class="req">*</span></label>
+                                    <input type="text" name="child_name" placeholder="e.g. Muhammad Hassan" required>
+                                </div>
+
+                                <div class="field-group">
+                                    <label><i class="fa-solid fa-venus-mars"></i> Child's Gender <span class="req">*</span></label>
+                                    <div class="gender-pills">
+                                        <label class="gender-pill">
+                                            <input type="radio" name="child_gender" value="male">
+                                            <i class="fas fa-mars"></i> Boy
+                                        </label>
+                                        <label class="gender-pill">
+                                            <input type="radio" name="child_gender" value="female">
+                                            <i class="fas fa-venus"></i> Girl
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="field-group">
+                                    <label><i class="fa-solid fa-id-card"></i> Guardian / Parent CNIC <span class="req">*</span></label>
+                                    <input type="text" name="guardian_cnic" placeholder="35202-1234567-1" maxlength="15" required>
+                                    <small>Format: 35202-1234567-1</small>
+                                </div>
+
+                                <div class="field-group">
+                                    <label><i class="fa-solid fa-user-shield"></i> Guardian / Parent Name <span class="req">*</span></label>
+                                    <input type="text" name="guardian_name" placeholder="e.g. Muhammad Imran" required>
+                                </div>
+                            </div>
+                        </div>
                     </div><!-- end formStep2 -->
+
+                   
 
                     <!--  STEP 3: DATE & TIME  -->
                     <div class="form-step" id="formStep3">
@@ -995,7 +1159,32 @@
                 alert('Please select a vaccination center.');
                 return;
             }
+
+            const childName = document.querySelector('input[name="child_name"]').value.trim();
+            const childGender = document.querySelector('input[name="child_gender"]:checked');
+            const guardianCnic = document.querySelector('input[name="guardian_cnic"]').value.trim();
+            const guardianName = document.querySelector('input[name="guardian_name"]').value.trim();
+            const namePattern = /^[A-Za-z\s]{3,}$/;       // letters + spaces, min 3 chars
+            const cnicPattern = /^\d{5}-\d{7}-\d{1}$/;    // full 13-digit CNIC with dashes
+
+            if (!namePattern.test(childName)) {
+                alert("Please enter the child's complete full name (letters only, at least 3 characters).");
+                return;
+            }
+            if (!childGender) {
+                alert("Please select the child's gender.");
+                return;
+            }
+            if (!cnicPattern.test(guardianCnic)) {
+                alert('Please enter a valid CNIC (format: XXXXX-XXXXXXX-X).');
+                return;
+            }
+            if (!namePattern.test(guardianName)) {
+                alert('Please enter the guardian/parent complete full name (letters only, at least 3 characters).');
+                return;
+            }
         }
+
         if (currentStep < totalSteps) goToStep(currentStep + 1);
     }
 
@@ -1133,6 +1322,19 @@ function updateTimeSlots() {
         if (!time) { e.preventDefault(); alert('Please select a time slot.'); return; }
     });
     updateTimeSlots();
+
+    // -- CNIC proper formatting --
+    const cnicInput = document.querySelector('input[name="guardian_cnic"]');
+     cnicInput.addEventListener('input', function() {
+    let digits = this.value.replace(/\D/g, '').slice(0, 13); // only digits, max 13
+    let formatted = digits;
+    if (digits.length > 5 && digits.length <= 12) {
+        formatted = digits.slice(0, 5) + '-' + digits.slice(5);
+    } else if (digits.length > 12) {
+        formatted = digits.slice(0, 5) + '-' + digits.slice(5, 12) + '-' + digits.slice(12);
+    }
+    this.value = formatted;
+    });
 </script>
 
 </body>
