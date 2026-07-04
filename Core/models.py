@@ -49,6 +49,10 @@ class Appointment(models.Model):
         ('missed',    'Missed'),
         ('cancelled', 'Cancelled'),
     ]
+    GENDER_CHOICES = [
+        ('male',   'Male (Boy)'),
+        ('female', 'Female (Girl)'),
+    ]
 
     VACCINE_CHOICES = [
         ('Child Vaccine - At Birth',       'Child Vaccine - At Birth'),
@@ -63,12 +67,21 @@ class Appointment(models.Model):
     center           = models.ForeignKey(VaccinationCenter, on_delete=models.SET_NULL,
                                          null=True, blank=True, related_name='appointments')
     vaccine_type     = models.CharField(max_length=100, choices=VACCINE_CHOICES)
-    dose_number      = models.PositiveSmallIntegerField(default=1)   # 0 = booster
+    dose_number      = models.PositiveSmallIntegerField(default=1)   
     appointment_date = models.DateField()
     appointment_time = models.TimeField()
     notes            = models.TextField(blank=True, null=True)
     status           = models.CharField(max_length=20, choices=STATUS_CHOICES, default='scheduled')
     created_at       = models.DateTimeField(auto_now_add=True)
+
+    # Child/Patient Information
+    child_name       = models.CharField(max_length=100, blank=True, null=True)
+    child_gender     = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
+    guardian_name    = models.CharField(max_length=100, blank=True, null=True)
+    guardian_cnic    = models.CharField(max_length=15, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.child_name or self.patient.username} — {self.vaccine_type}"
 
     class Meta:
         ordering = ['appointment_date', 'appointment_time']
