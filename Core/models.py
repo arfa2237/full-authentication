@@ -73,7 +73,6 @@ class Appointment(models.Model):
     notes            = models.TextField(blank=True, null=True)
     status           = models.CharField(max_length=20, choices=STATUS_CHOICES, default='scheduled')
     created_at       = models.DateTimeField(auto_now_add=True)
-
     # Child/Patient Information
     child_name       = models.CharField(max_length=100, blank=True, null=True)
     child_gender     = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
