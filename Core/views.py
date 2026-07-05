@@ -582,32 +582,51 @@ def DownloadVaccineCard(request):
     # .............................. PATIENT INFO SECTION ................................
     y = height - 160
 
+    latest_appt   = appointments.first()
+    child_name    = latest_appt.child_name    if latest_appt and latest_appt.child_name    else ''
+    child_gender  = latest_appt.child_gender  if latest_appt and latest_appt.child_gender  else ''
+    guardian_name = latest_appt.guardian_name if latest_appt and latest_appt.guardian_name else ''
+    guardian_cnic = latest_appt.guardian_cnic if latest_appt and latest_appt.guardian_cnic else ''
+
     # Patient info box
     p.setFillColor(light_bg)
-    p.roundRect(30, y - 70, width - 60, 80, 10, fill=1, stroke=0)
+    p.roundRect(30, y - 110, width - 60, 120, 10, fill=1, stroke=0)
 
+    # Child Name (big title)
     p.setFillColor(navy)
     p.setFont('Helvetica-Bold', 14)
-    full_name = f'{request.user.first_name} {request.user.last_name}'.strip() or request.user.username
-    p.drawString(50, y - 25, full_name)
+    display_name = child_name if child_name else f'{request.user.first_name} {request.user.last_name}'.strip()
+    p.drawString(50, y - 22, f'Patient: {display_name}')
 
+    # Gender
     p.setFont('Helvetica', 10)
     p.setFillColor(muted)
-    p.drawString(50, y - 42, f'PIN: {profile.unique_pin}')
-    p.drawString(50, y - 58, f'Email: {request.user.email}')
+    if child_gender:
+        gender_text = 'Boy (Male)' if child_gender == 'male' else 'Girl (Female)'
+        p.drawString(50, y - 40, f'Gender: {gender_text}')
 
-    # Completed doses badge on right
+    # Guardian Name
+    if guardian_name:
+        p.drawString(50, y - 58, f'Guardian: {guardian_name}')
+
+    # Guardian CNIC
+    if guardian_cnic:
+        p.drawString(50, y - 74, f'CNIC: {guardian_cnic}')
+
+    # PIN
+    p.drawString(50, y - 92, f'PIN: {profile.unique_pin}')
+
+    # ── Completed doses badge (right side) ────────────────────────────────
     completed_doses = appointments.filter(status='completed').count()
     p.setFillColor(accent)
-    p.roundRect(width - 160, y - 62, 120, 50, 8, fill=1, stroke=0)
+    p.roundRect(width - 160, y - 100, 120, 78, 8, fill=1, stroke=0)
     p.setFillColor(white)
-    p.setFont('Helvetica-Bold', 24)
-    p.drawCentredString(width - 100, y - 35, str(completed_doses))
+    p.setFont('Helvetica-Bold', 28)
+    p.drawCentredString(width - 100, y - 55, str(completed_doses))
     p.setFont('Helvetica', 8)
-    p.drawCentredString(width - 100, y - 52, 'Doses Completed')
-
+    p.drawCentredString(width - 100, y - 75, 'Doses Completed')
     # ........................ VACCINATION RECORDS TABLE ..............................
-    y = y - 100
+    y = y - 130
 
     # Table title
     p.setFillColor(navy)
