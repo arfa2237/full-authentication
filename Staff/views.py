@@ -11,7 +11,7 @@ from .models import StaffProfile
 import dns.resolver
 
 
-# ── Child Vaccine Schedule ────────────────────────────────────────────────────
+#  Child Vaccine Schedule 
 CHILD_VACCINE_SCHEDULE = [
     ('Child Vaccine - At Birth',  None),  # first dose
     ('Child Vaccine - 6 week',    6),     # 6 weeks after birth
@@ -63,7 +63,7 @@ def staff_required(view_func):
     return wrapper
 
 
-# ── Staff Signup ──────────────────────────────────────────────────────────────
+#  Staff Signup 
 def StaffSignup(request):
     centers = VaccinationCenter.objects.filter(is_active=True)
 
