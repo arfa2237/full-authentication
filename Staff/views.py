@@ -310,13 +310,13 @@ def UpdateAppointmentStatus(request, appt_id):
 
         elif action == 'complete' and patient_email:
 
-            # ── Calculate next 2 doses ───────────────────────────────────
+            # .......... Calculate next 2 doses ..........
             next_doses = get_next_two_doses(
                 appt.vaccine_type,
                 appt.appointment_date
             )
 
-            # ── Build next dose section ──────────────────────────────────
+            # .......... Build next dose section ..........
             if next_doses:
                 next_dose_lines = (
                     f'\n'
