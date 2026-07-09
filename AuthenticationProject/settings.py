@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'Staff',
     'AdminPanel',
     'publicsite',
-    #'django_apscheduler',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -139,8 +139,7 @@ EMAIL_PORT=465
 EMAIL_USE_SSL=True
 EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-#EMAIL_HOST_USER="callmearfa2237@gmail.com"
-#EMAIL_HOST_PASSWORD="bson slcb lift sebj"
+
 
 
 
