@@ -277,6 +277,8 @@ def UpdateAppointmentStatus(request, appt_id):
         appt_time     = appt.appointment_time.strftime("%I:%M %p")
         center_name   = appt.center.name if appt.center else "the center"
 
+        child_display = appt.child_name if appt.child_name else patient_name
+
         if action == 'confirm' and patient_email:
             subject = f'TIG — Appointment Confirmed: {vaccine}'
             body = (
@@ -350,7 +352,7 @@ def UpdateAppointmentStatus(request, appt_id):
                     f'to the recommended vaccination schedule.\n'
                 )
 
-            child_display = appt.child_name if appt.child_name else patient_name
+            
 
             subject = f'TIG — Vaccination Update: {vaccine}'
             body = (
