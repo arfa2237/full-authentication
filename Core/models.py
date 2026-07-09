@@ -78,6 +78,7 @@ class Appointment(models.Model):
     child_gender     = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
     guardian_name    = models.CharField(max_length=100, blank=True, null=True)
     guardian_cnic    = models.CharField(max_length=15, blank=True, null=True)
+    reminder_sent    = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.child_name or self.patient.username} — {self.vaccine_type}"
