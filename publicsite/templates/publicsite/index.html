@@ -8,6 +8,9 @@
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
 
         <!-- Google Web Fonts Open Sans, Used in SCSS-->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,12 +57,16 @@
                     <div class="navbar-nav ms-auto py-0">
                         <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
                         <a href="{% url 'scheduling' %}" class="nav-item nav-link">Schedule now</a>
-                        <a href="" class="nav-item nav-link">Track now</a>
+                        {% comment %} <a href="{% url 'tracking' %}" class="nav-item nav-link">Track now</a> {% endcomment %}
+                        {% if user.is_authenticated %}
+                            <a href="/patient/my-appointments/" class="nav-item nav-link">Track now</a>
+                        {% else %}
+                            <a href="/patient/login/?next=/patient/my-appointments/" class="nav-item nav-link">Track now</a>
+                        {% endif %}
                         <a href="{% url 'vpd' %}" class="nav-item nav-link">VPDs</a>
                         <a href="{% url 'nearby' %}" class="nav-item nav-link">Location nearby</a>
-                        <a href="{% url 'faq' %}" class="nav-item nav-link">FAQs</a>
-                        
-                        </div>
+                        <a href="{% url 'faq' %}" class="nav-item nav-link">FAQ</a>                 
+                        </div> 
                       <!--Code for theme Toggle -->
                     </div>
                    <div class="d-none d-xl-flex me-3">
@@ -71,7 +78,57 @@
                         </div>
                     </div>
                     <button class="btn btn-primary btn-md-square d-flex flex-shrink-0 mb-3 mb-lg-0 rounded-circle me-3" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search"></i></button>
-                    <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">Login</a>
+                    {% comment %} <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">Login</a> {% endcomment %}
+                    {% if user.is_authenticated %}
+                        <div class="dropdown"> 
+                            <button class="btn btn-primary rounded-pill d-inline-flex align-items-center flex-shrink-0 py-2 px-3 dropdown-toggle" 
+                                    type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span style="width:28px; height:28px; background:rgba(255,255,255,0.3); 
+                                            border-radius:50%; display:inline-flex; align-items:center; 
+                                            justify-content:center; font-weight:700; font-size:14px;">
+                                    {{ user.username|first|upper }}
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown"
+                                style="border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.12); border:none; padding:8px;">
+                                <li>
+                                    <div style="padding:12px 16px; border-bottom:1px solid #f0f0f0; margin-bottom:6px;">
+                                        <div style="font-weight:700; color:#28375f; font-size:14px;">
+                                            {{ user.first_name }} {{ user.last_name }}
+                                        </div>
+                                        <div style="font-size:11px; color:#6b7db3;">{{ user.email }}</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/patient/my-appointments/"
+                                    style="border-radius:8px; font-size:13px; padding:8px 16px;">
+                                        <i class="fas fa-calendar-check me-2 text-primary"></i> My Appointments
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/patient/book-appointment/"
+                                    style="border-radius:8px; font-size:13px; padding:8px 16px;">
+                                        <i class="fas fa-calendar-plus me-2 text-primary"></i> Book Appointment
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/patient/vaccine-card/"
+                                    style="border-radius:8px; font-size:13px; padding:8px 16px;">
+                                        <i class="fas fa-id-card me-2 text-primary"></i> Vaccine Card
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{% url 'logout' %}"
+                                    style="border-radius:8px; font-size:13px; padding:8px 16px;">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %} 
+                            <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">Login</a>
+                    {% endif %}
                 </div>
             </nav>
        
@@ -94,10 +151,28 @@
                                     <p class="mb-5 fs-5 text-white fadeInLeft animated" data-animation="fadeInLeft" data-delay="1.5s" style="animation-delay: 1s;">Revolutionizing healthcare in Gujranwala with our online vaccination platform. Schedule appointments, track your vaccine history, and access important health information all in one place.</p>
                                     <!--big button style or icon here-->
                                     <div class="carousel-caption-1-content-btn fadeInLeft animated" data-animation="fadeInLeft" data-delay="1.7s" style="animation-delay: 1s;">
-                                        <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2" href="#">
-                                            <i class ="fas fa-calendar-check me-3"></i>Schedule Appointment</a>
-                                        <a class="btn btn-secondary rounded-pill flex-shrink-0 py-3 px-5 ms-2" href="#">
-                                            <i class="fas fa-search me-3 "></i>Track Your Vaccine</a>
+                                        {% if user.is_authenticated %}
+                                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
+                                                href="/patient/book-appointment/">
+                                                    <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
+                                            </a>
+                                        {% else %}
+                                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
+                                                href="/patient/login/?next=/patient/book-appointment/">
+                                                    <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
+                                            </a>
+                                        {% endif %}          
+                                        {% if user.is_authenticated %}
+                                            <a class="btn btn-secondary rounded-pill flex-shrink-0 py-3 px-5 ms-2"
+                                                href="/patient/my-appointments/">
+                                                    <i class="fas fa-search me-3"></i>Track Your Vaccine
+                                            </a>
+                                        {% else %}
+                                            <a class="btn btn-secondary rounded-pill flex-shrink-0 py-3 px-5 ms-2"
+                                                href="/patient/login/?next=/patient/my-appointments/">
+                                                    <i class="fas fa-search me-3"></i>Track Your Vaccine
+                                            </a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -112,10 +187,28 @@
 
 
                                     <div class="carousel-caption-2-content-btn fadeInLeft animated" data-animation="fadeInLeft" data-delay="1s" style="animation-delay: 0.5s;">
-                                        <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2" href="#">
-                                            <i class="fas fa-calendar-check me-3"></i>Schedule Appointment</a>
-                                        <a class="btn btn-secondary rounded-pill flex-shrink-0 py-3 px-5 ms-2" href="#">
-                                            <i class="fas fa-search me-3"></i>track Your Vaccine</a>
+                                        {% if user.is_authenticated %}
+                                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
+                                                href="/patient/book-appointment/">
+                                                    <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
+                                            </a>
+                                        {% else %}
+                                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
+                                                href="/patient/login/?next=/patient/book-appointment/">
+                                                    <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
+                                            </a>
+                                        {% endif %}          
+                                        {% if user.is_authenticated %}
+                                            <a class="btn btn-secondary rounded-pill flex-shrink-0 py-3 px-5 ms-2"
+                                                href="/patient/my-appointments/">
+                                                    <i class="fas fa-search me-3"></i>Track Your Vaccine
+                                            </a>
+                                        {% else %}
+                                            <a class="btn btn-secondary rounded-pill flex-shrink-0 py-3 px-5 ms-2"
+                                                href="/patient/login/?next=/patient/my-appointments/">
+                                                    <i class="fas fa-search me-3"></i>Track Your Vaccine 
+                                            </a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -599,11 +692,19 @@
                         <div class="footer-item d-flex flex-column">
                             <h4 class="text-white mb-4">Quick Links</h4>
                             <a href="{% url 'index' %}"><i class="fas fa-angle-right me-2"></i> Home</a>
-                            <a href="#"><i class="fas fa-angle-right me-2"></i> Schedule appointments</a>
-                            <a href="#"><i class="fas fa-angle-right me-2"></i> Track Records</a>
-                            <a href="{% url 'vpd' %}"><i class="fas fa-angle-right me-2"></i> Vaccine Information</a>
+                            <a href="{% url 'scheduling' %}"><i class="fas fa-angle-right me-2"></i> Schedule appointments</a>
+                            {% if user.is_authenticated %}
+                                <a href="/patient/my-appointments/">
+                                    <i class="fas fa-angle-right me-2"></i> Track now
+                                </a>
+                            {% else %}
+                                <a href="/patient/login/?next=/patient/my-appointments/">
+                                    <i class="fas fa-angle-right me-2"></i> Track now
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'vpd' %}"><i class="fas fa-angle-right me-2"></i> VPDs</a>
                             <a href="{% url 'nearby' %}"><i class="fas fa-angle-right me-2"></i> Find Centers</a>
-                            <a href="#"><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
+                            <a href="{% url 'faq' %}"><i class="fas fa-angle-right me-2"></i>FAQ</a>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
