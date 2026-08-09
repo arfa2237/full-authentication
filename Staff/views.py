@@ -5,12 +5,46 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.conf import settings
-from datetime import date
+from datetime import date, timedelta
 from Core.models import Appointment, VaccinationCenter, PatientProfile
 from .models import StaffProfile
+import dns.resolver
 
 
-# ── Helper decorator ─────────────────────────────────────────────────────────
+#  Child Vaccine Schedule 
+CHILD_VACCINE_SCHEDULE = [
+    ('Child Vaccine - At Birth',  None),  # first dose
+    ('Child Vaccine - 6 week',    6),     # 6 weeks after birth
+    ('Child Vaccine - 10 week',   4),     # 4 weeks after 6-week
+    ('Child Vaccine - 14 week',   4),     # 4 weeks after 10-week
+    ('Child Vaccine - 9 months',  23),    # 23 weeks after 14-week
+    ('Child Vaccine - 15 months', 26),    # 26 weeks after 9-month
+]
+
+def get_next_two_doses(current_vaccine, completed_date):
+    """Returns next 2 upcoming doses with calculated dates."""
+    vaccine_names = [v[0] for v in CHILD_VACCINE_SCHEDULE]
+    weeks_list    = [v[1] for v in CHILD_VACCINE_SCHEDULE]
+
+    if current_vaccine not in vaccine_names:
+        return []
+
+    current_index = vaccine_names.index(current_vaccine)
+    next_doses    = []
+    running_date  = completed_date
+
+    for i in range(current_index + 1,
+                   min(current_index + 3, len(vaccine_names))):
+        weeks        = weeks_list[i] or 0
+        running_date = running_date + timedelta(weeks=weeks)
+        next_doses.append({
+            'vaccine':  vaccine_names[i],
+            'date_str': running_date.strftime("%A, %d %B %Y"),
+        })
+
+    return next_doses
+
+#  Helper decorator to check if the user is an approved staff member
 def staff_required(view_func):
     """Only allow approved staff members."""
     def wrapper(request, *args, **kwargs):
@@ -29,7 +63,7 @@ def staff_required(view_func):
     return wrapper
 
 
-# ── Staff Signup ──────────────────────────────────────────────────────────────
+#  Staff Signup 
 def StaffSignup(request):
     centers = VaccinationCenter.objects.filter(is_active=True)
 
@@ -51,6 +85,16 @@ def StaffSignup(request):
 
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Email is already registered.')
+            has_error = True
+
+        # If email domain is correct check:
+        elif not is_email_domain_valid(email):
+            messages.error(request, 'Please enter a valid email address with a real domain.')
+            has_error = True
+
+        # Block disposable emails
+        elif not is_email_allowed(email):
+            messages.error(request, 'Disposable or temporary email addresses are not allowed.')
             has_error = True
 
         if len(password) < 8:
@@ -94,7 +138,7 @@ def StaffSignup(request):
     return render(request, 'staff/staff_signup.html', {'centers': centers})
 
 
-# ── Staff Login ───────────────────────────────────────────────────────────────
+#  Staff Login 
 def StaffLogin(request):
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
@@ -124,13 +168,13 @@ def StaffLogin(request):
     return render(request, 'staff/staff_login.html')
 
 
-# ── Staff Logout ──────────────────────────────────────────────────────────────
+#  Staff Logout 
 def StaffLogout(request):
     logout(request)
     return redirect('staff-login')
 
 
-# ── Staff Dashboard ───────────────────────────────────────────────────────────
+#  Staff Dashboard 
 @staff_required
 def StaffDashboard(request):
     sp    = request.user.staff_profile
@@ -160,7 +204,7 @@ def StaffDashboard(request):
     })
 
 
-# ── Staff Appointments (full list) ────────────────────────────────────────────
+#  Staff Appointments (full list) 
 @staff_required
 def StaffAppointments(request):
     sp    = request.user.staff_profile
@@ -195,7 +239,7 @@ def StaffAppointments(request):
     })
 
 
-# ── Update Appointment Status ─────────────────────────────────────────────────
+#  Update Appointment Status 
 @staff_required
 def UpdateAppointmentStatus(request, appt_id):
     if request.method == 'POST':
@@ -225,7 +269,7 @@ def UpdateAppointmentStatus(request, appt_id):
         appt.status = new_status
         appt.save()
 
-        # ── Send Email Notification to Patient ────────────────────────────
+        #  Send Email Notification to Patient
         patient_email = appt.patient.email
         patient_name  = appt.patient.get_full_name() or appt.patient.username
         vaccine       = appt.vaccine_type
@@ -233,16 +277,21 @@ def UpdateAppointmentStatus(request, appt_id):
         appt_time     = appt.appointment_time.strftime("%I:%M %p")
         center_name   = appt.center.name if appt.center else "the center"
 
+        child_display = appt.child_name if appt.child_name else patient_name
+
         if action == 'confirm' and patient_email:
             subject = f'TIG — Appointment Confirmed: {vaccine}'
             body = (
                 f'Dear {patient_name},\n\n'
                 f'Your vaccination appointment has been CONFIRMED.\n\n'
                 f'Details:\n'
-                f'  Vaccine  : {vaccine} — Dose {appt.dose_number}\n'
+                f'  Patient (Child) : {child_display}\n'
+                f'  Vaccine  : {vaccine} - Dose {appt.dose_number}\n'
+                f'  Dose Number     : {appt.dose_number}\n'
                 f'  Date     : {appt_date}\n'
                 f'  Time     : {appt_time}\n'
-                f'  Center   : {center_name}\n\n'
+                f'  Center   : {center_name}\n'
+                f'  Status   : CONFIRMED\n\n'
                 f'Please arrive 10 minutes early and bring your vaccine card.\n\n'
                 f'Regards,\n'
                 f'Trace and Immunize Gujranwala (TIG)'
@@ -253,11 +302,14 @@ def UpdateAppointmentStatus(request, appt_id):
             subject = f'TIG — Appointment Cancelled: {vaccine}'
             body = (
                 f'Dear {patient_name},\n\n'
-                f'Your vaccination appointment has been CANCELLED by healthcare staff.\n\n'
+                f'Your vaccination appointment has been <strong>CANCELLED</strong> by healthcare staff.\n\n'
                 f'Details:\n'
-                f'  Vaccine  : {vaccine} — Dose {appt.dose_number}\n'
+                f'  Patient (Child) : {child_display}\n'
+                f'  Vaccine  : {vaccine} - Dose {appt.dose_number}\n'
+                f'  Dose Number     : {appt.dose_number}\n'
                 f'  Date     : {appt_date}\n'
-                f'  Center   : {center_name}\n\n'
+                f'  Center   : {center_name}\n'
+                f'  Status    : CANCELLED\n\n'
                 f'Please log in to book a new appointment.\n\n'
                 f'Regards,\n'
                 f'Trace and Immunize Gujranwala (TIG)'
@@ -265,15 +317,67 @@ def UpdateAppointmentStatus(request, appt_id):
             _send_email(subject, body, patient_email)
 
         elif action == 'complete' and patient_email:
-            subject = f'TIG — Vaccination Completed: {vaccine}'
+
+            # .......... Calculate next 2 doses ..........
+            next_doses = get_next_two_doses(
+                appt.vaccine_type,
+                appt.appointment_date
+            )
+
+            # .......... Build next dose section ..........
+            if next_doses:
+                next_dose_lines = (
+                    f'\n'
+                    f'-------------------------------------------\n'
+                    f' NEXT RECOMMENDED DOSES \n'
+                    f'-------------------------------------------\n'
+                )
+                for i, nd in enumerate(next_doses, 1):
+                    next_dose_lines += (
+                        f'\n  {i}.  {nd["vaccine"]}\n'
+                        f'      Recommended Date: {nd["date_str"]}\n'
+                    )
+                next_dose_lines += (
+                    f'\n'
+                    f'Please remember to book your next appointment on time\n'
+                    f'to ensure your child receives complete immunization.\n'
+                )
+            else:
+                next_dose_lines = (
+                    f'\n'
+                    f'-------------------------------------------\n'
+                    f'\U0001F389  Congratulations!\n'
+                    f'-------------------------------------------\n'
+                    f'Your child is now fully immunized according\n'
+                    f'to the recommended vaccination schedule.\n'
+                )
+
+            
+
+            subject = f'TIG — Vaccination Update: {vaccine}'
             body = (
                 f'Dear {patient_name},\n\n'
-                f'Your vaccination has been marked as COMPLETED.\n\n'
-                f'  Vaccine  : {vaccine} — Dose {appt.dose_number}\n'
-                f'  Date     : {appt_date}\n'
-                f'  Center   : {center_name}\n\n'
-                f'You can download your updated vaccine card from your dashboard.\n\n'
+                f'Vaccination Dose Completed\n\n'
+                f'-------------------------------------------\n'
+                f'COMPLETED APPOINTMENT DETAILS\n'
+                f'-------------------------------------------\n\n'
+                f'  Patient (Child) : {child_display}\n'
+                f'  Vaccine         : {vaccine}\n'
+                f'  Dose Number     : {appt.dose_number}\n'
+                f'  Date Completed  : {appt_date}\n'
+                f'  Time            : {appt_time}\n'
+                f'  Center          : {center_name}\n'
+                f'  Status          : COMPLETED\n'
+                f'{next_dose_lines}\n'
+                f'-------------------------------------------\n'
+                f'You can download your updated Digital Vaccine\n'
+                f'Card by logging in to your TIG account.\n'
+                f'-------------------------------------------\n\n'
+                f'Thank you for choosing TIG.\n'
+                f'\n'
+                f'Our mission is to protect every child through complete and timely immunization \n\n'
                 f'Regards,\n'
+                f'\n'
                 f'Trace and Immunize Gujranwala (TIG)'
             )
             _send_email(subject, body, patient_email)
@@ -284,7 +388,7 @@ def UpdateAppointmentStatus(request, appt_id):
     return redirect('staff-appointments')
 
 
-# ── Staff Patients List ───────────────────────────────────────────────────────
+#  Staff Patients List 
 @staff_required
 def StaffPatients(request):
     sp    = request.user.staff_profile
@@ -318,7 +422,7 @@ def StaffPatients(request):
     })
 
 
-# ── Email Helper ──────────────────────────────────────────────────────────────
+#  Email Helper 
 def _send_email(subject, body, to_email):
     try:
         email = EmailMessage(
@@ -331,3 +435,23 @@ def _send_email(subject, body, to_email):
         email.send()
     except Exception:
         pass
+
+#.......... Email domain existence check helper .......... 
+def is_email_domain_valid(email):
+    """Check if the email domain has valid MX records."""
+    try:
+        domain = email.split('@')[1]
+        dns.resolver.resolve(domain, 'MX')
+        return True
+    except Exception:
+        return False
+    
+BLOCKED_DOMAINS = [
+    'mailinator.com', 'guerrillamail.com', 'tempmail.com',
+    'throwaway.email', 'fakeinbox.com', 'yopmail.com',
+    'sharklasers.com', 'trashmail.com', 'maildrop.cc'
+]
+
+def is_email_allowed(email):
+    domain = email.split('@')[1].lower()
+    return domain not in BLOCKED_DOMAINS

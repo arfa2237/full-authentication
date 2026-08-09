@@ -1,0 +1,1 @@
+web: gunicorn AuthenticationProject.wsgi --log-file -

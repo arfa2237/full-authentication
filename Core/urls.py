@@ -16,3 +16,4 @@ urlpatterns = [
     path('download-vaccine-card/', views.DownloadVaccineCard, name='download-vaccine-card'),
     path('my-records/', views.MyRecords, name='my-records'),
 ]
+

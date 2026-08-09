@@ -43,12 +43,12 @@ def Home(request):
 
     # Vaccine progress for progress bars
     VACCINE_TOTAL_DOSES = {
-        'Hepatitis B':       3,
-        'MMR':               2,
-        'Tetanus':           3,
-        'Pneumococcal':      2,
-        'Child Vaccination': 1,
-        'COVID-19':          2,
+        'Child Vaccine - At Birth':     1,
+        'Child Vaccine - 6 week':       2,
+        'Child Vaccine - 10 week':      3,
+        'Child Vaccine - 14 week':      4,
+        'Child Vaccine - 9 months':     5,
+        'Child Vaccine - 15 months':    6,
     }
     COLORS = ['green', 'purple', 'orange', 'purple', 'green', 'blue']
 
@@ -292,12 +292,12 @@ def BookAppointment(request):
 
     # Static vaccine list (jb tk static rehy gy Vaccine mode ni bnaty)
     vaccines = [
-        {'name': 'Hepatitis B',       'doses': 3,  'icon': 'fa-solid fa-shield-halved'},
-        {'name': 'MMR',               'doses': 2,  'icon': 'fa-solid fa-virus-slash'},
-        {'name': 'Tetanus',           'doses': 3,  'icon': 'fa-solid fa-syringe'},
-        {'name': 'Pneumococcal',      'doses': 2,  'icon': 'fa-solid fa-lungs'},
-        {'name': 'Child Vaccination', 'doses': 1,  'icon': 'fa-solid fa-baby'},
-        {'name': 'COVID-19',          'doses': 2,  'icon': 'fa-solid fa-biohazard'},
+        {'name': 'Child Vaccine - At Birth',        'doses': 1,  'icon': 'fa-solid fa-shield-halved'},
+        {'name': 'Child Vaccine - 6 week',          'doses': 2,  'icon': 'fa-solid fa-virus-slash'},
+        {'name': 'Child Vaccine - 10 week',         'doses': 3,  'icon': 'fa-solid fa-syringe'},
+        {'name': 'Child Vaccine - 14 week',         'doses': 4,  'icon': 'fa-solid fa-lungs'},
+        {'name': 'Child Vaccine - 9 months',        'doses': 5,  'icon': 'fa-solid fa-baby'},
+        {'name': 'Child Vaccine - 15 months',       'doses': 6,  'icon': 'fa-solid fa-biohazard'},
     ]
 
     if request.method == 'POST':
@@ -307,12 +307,36 @@ def BookAppointment(request):
         appt_date    = request.POST.get('appt_date',    '').strip()
         appt_time    = request.POST.get('appt_time',    '').strip()
         notes        = request.POST.get('notes',        '').strip()
+        # NEW fields
+        child_name     = request.POST.get('child_name',     '').strip()
+        child_gender   = request.POST.get('child_gender',   '').strip()
+        guardian_name  = request.POST.get('guardian_name',  '').strip()
+        guardian_cnic  = request.POST.get('guardian_cnic',  '').strip()
 
         # .......................... Validation ..........................................
         has_error = False
 
         if not vaccine_type:
             messages.error(request, 'Please select a vaccine type.')
+            has_error = True
+        if not child_name:
+            messages.error(request, 'Please enter the child\'s name.')
+            has_error = True
+
+        if not child_gender:
+            messages.error(request, 'Please select the child\'s gender.')
+            has_error = True
+
+        if not guardian_cnic:
+            messages.error(request, 'Please enter guardian CNIC.')
+            has_error = True
+        
+        elif len(guardian_cnic.replace('-', '')) != 13:
+            messages.error(request, 'CNIC must be 13 digits.')
+            has_error = True
+
+        if not guardian_name:
+            messages.error(request, 'Please enter guardian name.')
             has_error = True
 
         if not appt_date:
@@ -380,6 +404,10 @@ def BookAppointment(request):
             appointment_time = parsed_time,
             notes            = notes,
             status           = 'pending', #default status when booking an appointment
+            child_name       = child_name,
+            child_gender     = child_gender,
+            guardian_name    = guardian_name,
+            guardian_cnic    = guardian_cnic,
         )
         messages.success(
             request,
@@ -396,8 +424,11 @@ def BookAppointment(request):
 
 
 
+<<<<<<< HEAD
     # ADD THESE TWO FUNCTIONS in your views.py ........................
 
+=======
+>>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
 @login_required
 def MyAppointments(request):
     profile, _ = PatientProfile.objects.get_or_create(user=request.user)
@@ -460,14 +491,21 @@ def VaccineCard(request):
 
     pending_count = appointments.filter(status='pending').count()
 
+    #  Get child info from latest appointment 
+    latest = appointments.first()
+    child_name    = latest.child_name    if latest else None
+    child_gender  = latest.child_gender  if latest else None
+    guardian_name = latest.guardian_name if latest else None
+    guardian_cnic = latest.guardian_cnic if latest else None
+
     # Vaccine progress calculation
     VACCINE_TOTAL_DOSES = {
-        'Hepatitis B':       3,
-        'MMR':               2,
-        'Tetanus':           3,
-        'Pneumococcal':      2,
-        'Child Vaccination': 1,
-        'COVID-19':          2,
+        'Child Vaccine - At Birth':     1,
+        'Child Vaccine - 6 week':       2,
+        'Child Vaccine - 10 week':      3,
+        'Child Vaccine - 14 week':      4,
+        'Child Vaccine - 9 months':     5,
+        'Child Vaccine - 15 months':    6,
     }
 
     COLORS = ['purple', 'green', 'orange', 'blue', 'purple', 'green']
@@ -494,6 +532,10 @@ def VaccineCard(request):
         'completed_doses':  completed_doses,
         'pending_count':    pending_count,
         'vaccine_progress': vaccine_progress,
+        'child_name':       child_name,
+        'child_gender':     child_gender,
+        'guardian_name':    guardian_name,
+        'guardian_cnic':    guardian_cnic,
     })
 
 
@@ -545,32 +587,58 @@ def DownloadVaccineCard(request):
     # .............................. PATIENT INFO SECTION ................................
     y = height - 160
 
+    latest_appt   = appointments.first()
+    child_name    = latest_appt.child_name    if latest_appt and latest_appt.child_name    else ''
+    child_gender  = latest_appt.child_gender  if latest_appt and latest_appt.child_gender  else ''
+    guardian_name = latest_appt.guardian_name if latest_appt and latest_appt.guardian_name else ''
+    guardian_cnic = latest_appt.guardian_cnic if latest_appt and latest_appt.guardian_cnic else ''
+
     # Patient info box
     p.setFillColor(light_bg)
-    p.roundRect(30, y - 70, width - 60, 80, 10, fill=1, stroke=0)
+    p.roundRect(30, y - 110, width - 60, 120, 10, fill=1, stroke=0)
 
+    # Child Name (big title)
     p.setFillColor(navy)
     p.setFont('Helvetica-Bold', 14)
-    full_name = f'{request.user.first_name} {request.user.last_name}'.strip() or request.user.username
-    p.drawString(50, y - 25, full_name)
+    display_name = child_name if child_name else f'{request.user.first_name} {request.user.last_name}'.strip()
+    p.drawString(50, y - 22, f'Patient: {display_name}')
 
+    # Gender
     p.setFont('Helvetica', 10)
     p.setFillColor(muted)
-    p.drawString(50, y - 42, f'PIN: {profile.unique_pin}')
-    p.drawString(50, y - 58, f'Email: {request.user.email}')
+    if child_gender:
+        gender_text = 'Boy (Male)' if child_gender == 'male' else 'Girl (Female)'
+        p.drawString(50, y - 40, f'Gender: {gender_text}')
 
-    # Completed doses badge on right
+    # Guardian Name
+    if guardian_name:
+        p.drawString(50, y - 58, f'Guardian: {guardian_name}')
+
+    # Guardian CNIC
+    if guardian_cnic:
+        p.drawString(50, y - 74, f'CNIC: {guardian_cnic}')
+
+    # PIN
+    p.drawString(50, y - 92, f'PIN: {profile.unique_pin}')
+
+    # ── Completed doses badge (right side) ────────────────────────────────
     completed_doses = appointments.filter(status='completed').count()
     p.setFillColor(accent)
-    p.roundRect(width - 160, y - 62, 120, 50, 8, fill=1, stroke=0)
+    p.roundRect(width - 160, y - 100, 120, 78, 8, fill=1, stroke=0)
     p.setFillColor(white)
-    p.setFont('Helvetica-Bold', 24)
-    p.drawCentredString(width - 100, y - 35, str(completed_doses))
+    p.setFont('Helvetica-Bold', 28)
+    p.drawCentredString(width - 100, y - 55, str(completed_doses))
     p.setFont('Helvetica', 8)
+<<<<<<< HEAD
     p.drawCentredString(width - 100, y - 52, 'Doses Completed')
 
     # ........................ VACCINATION RECORDS TABLE ..............................
     y = y - 100
+=======
+    p.drawCentredString(width - 100, y - 75, 'Doses Completed')
+    # ........................ VACCINATION RECORDS TABLE ..............................
+    y = y - 130
+>>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
 
     # Table title
     p.setFillColor(navy)
@@ -692,12 +760,12 @@ def MyRecords(request):
 
     # Vaccine progress ............................................................
     VACCINE_TOTAL_DOSES = {
-        'Hepatitis B':       3,
-        'MMR':               2,
-        'Tetanus':           3,
-        'Pneumococcal':      2,
-        'Child Vaccination': 1,
-        'COVID-19':          2,
+        'Child Vaccine - At Birth':     1,
+        'Child Vaccine - 6 week':       2,
+        'Child Vaccine - 10 week':      3,
+        'Child Vaccine - 14 week':      4,
+        'Child Vaccine - 9 months':     5,
+        'Child Vaccine - 15 months':    6,
     }
     TOTAL_DOSES = sum(VACCINE_TOTAL_DOSES.values())  # 13
 

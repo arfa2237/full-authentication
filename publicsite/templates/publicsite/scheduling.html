@@ -32,9 +32,15 @@
         <link href="{% static 'publicsite/css/bootstrap.min.css' %}" rel="stylesheet">
 
         <!-- CSS Stylesheet -->
+<<<<<<< HEAD
         <link rel="stylesheet" href="{% static "publicsite/css/style.css" %}">
         <link rel="stylesheet" href="{% static "publicsite/css/vpd.css" %}">
         <link rel="stylesheet" href="{% static "publicsite/css/scheduling.css" %}"> 
+=======
+        <link rel="stylesheet" href="{% static 'publicsite/css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'publicsite/css/vpd.css' %}">
+        <link rel="stylesheet" href="{% static 'publicsite/css/scheduling.css' %}"> 
+>>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
     </head>
 
     <body>
@@ -138,21 +144,40 @@
             <div class="container-fluid bg-breadcrumb">
                 <div class="container text-center py-5" style="max-width: 900px;">
                     <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Schedule your Vaccines</h4>
+<<<<<<< HEAD
                     <div class="carousel-caption-2-content-btn fadeInLeft animated" data-animation="fadeInLeft" data-delay="1s" style="animation-delay: 0.5s;">
                         {% comment %} <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2" href="{% url "appointment" %}">
                             <i class="fas fa-calendar-check me-3"></i>Schedule Appointment</a> {% endcomment %}
                         <!-- Login authentication -->
                        {% if user.is_authenticated %}
                             <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
+=======
+                    <p class="text-white mb-4 wow fadeInDown" data-wow-delay="0.2s" style="font-size: 17px; opacity: 0.9;"> Book your vaccination appointment quickly and easily, choose your preferred date and time.</p>
+                    <!--Botton Centered-->
+                    <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap wow fadeInUp" data-wow-delay="0.3s">
+                       {% if user.is_authenticated %}
+                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-4 me-2"
+>>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
                                 href="/patient/book-appointment/">
                                     <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
                             </a>
                         {% else %}
+<<<<<<< HEAD
                             <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
+=======
+                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-4 me-2"
+>>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
                                 href="/patient/login/?next=/patient/book-appointment/"> 
                                     <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
                             </a>
                         {% endif %} 
+<<<<<<< HEAD
+=======
+
+                        <!-- Learn More Button -->
+                        <a href="{% url 'vpd' %}" class="btn btn-outline-light rounded-pill py-3 px-5 schedule-hero-btn-outline"> 
+                        <i class="fas fa-info-circle me-2"></i>Learn About Vaccines</a>
+>>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
                     </div>
                 </div>
             </div>
@@ -183,45 +208,81 @@
         <div class="container-fluid service bg-light overflow-hidden py-5">
             <div class="container py-5">
                 <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.2s" style="max-width: 800px;">
-                    <h1 class="display-3 text-capitalize mb-3">The Vaccine Charts and Graphs</h1>
+                    <h1 class="display-3 text-capitalize mb-3">Child Vaccination Schedule Guide</h1>
                 </div>
             
                 <!---Diseases 1 child vaccination--> 
                     <div class="disease">
-                        <h2><a href="{% url 'child_vaccination' %}">Child Vaccination</a></h2>
+                        <h2><a href="#">Child Vaccination</a></h2>
                         <p>Child vaccination is very important because it protects children from dangerous diseases like measles, polio, diphtheria, and whooping cough. Vaccines help strengthen a child’s immune system and prevent serious illness, disability, or even death.</p>
-                    </div>   
-                <!---Disease 2 Pneumococcal-->
-                <div class="disease">
-                    <h2><a href="#">Pneumococcal</a></h2>
-                    <p>Pneumococcal disease is caused by the bacterium Streptococcus pneumoniae and can lead to serious infections such as pneumonia, meningitis, and bloodstream infections (sepsis). It commonly affects young children, older adults, and people with weakened immune systems. Symptoms vary depending on the infection but may include fever, cough, difficulty breathing, and severe headache.</p>
-                </div>
-                <!---Diseases 3 Tetanus-->
-                <div class="disease">
-                    <h2><a href="#">Tetanus</a></h2>
-                    <p>Tetanus is a serious disease caused by the bacterium Clostridium tetani, which produces a toxin affecting the nervous system and causing severe muscle stiffness and spasms, often starting with the jaw (lockjaw). It can enter the body through cuts, wounds, or burns, and can be life-threatening if it affects breathing. Pregnent women and newborn babies are highly affected by tetanus.</p>
-                </div>
-                <!---Diseases 4 Hepatitis B-->
-                <div class="disease">
-                    <h2><a href="#">Hepatitis B</a></h2>
-                    <p>It spreads through exchange of infected blood or other body fluids of an infected person or from mother to child during birth or unsafe injections. Unlike Hepatitis A, Hepatitis B can become  chronic and lead to severe complications like liver cirrhosis or liver cancer.</p>
-                </div>
-                <!---Diseases 5 Measles-->
-                <div class="disease">
-                    <h2><a href="#">Measles</a></h2>
-                    <p>Measles is a highly contagious viral disease caused by the measles virus. It is characterized by high fever, cough, runny nose, red eyes, and a distinctive red rash that usually starts on the face and spreads across the body. Measles spreads through airborne droplets from coughing and sneezing.</p>
-                </div>
-                <!---Diseases 6 Mumps-->
-                <div class="disease">
-                    <h2><a href="#">Mumps</a></h2>
-                    <p>Mumps is a contagious viral infection caused by the mumps virus, primarily affecting the salivary glands, leading to swelling and pain, especially near the jaw. Common symptoms include fever, headache, muscle aches, and fatigue.</p>
-                </div>
-                 <!---Diseases 7 Rubella-->
-                <div class="disease">
-                    <h2><a href="#">Rubella</a></h2>
-                    <p>Rubella, also known as German measles, usually causes a mild fever, rash, and swollen lymph nodes. While often mild in children and adults, rubella can be very dangerous during pregnancy, as it can lead to congenital rubella syndrome, causing birth defects in the baby.</p>
-                </div> 
-
+                    
+                        <!--Schedule table for child vaccination-->
+                        <table class="chart">
+                            <p id="cap"><b>Child Vaccination Schedule</b></p>
+                            <tr>
+                                <th>Doses</th>
+                                <th>Age</th>
+                                <th>Vaccines</th>
+                            </tr>
+                            <tbody>
+                            <tr>
+                                <td>1st </td>
+                                <td>At Birth</td>
+                                <td class="data">
+                                    <span>BCG</span>
+                                    <span>OPV-0</span>
+                                    <span>Hep-B</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2nd</td>
+                                <td>6 weeks</td>
+                                <td class="data">
+                                    <span>OPV-I</span>
+                                    <span>Rotavirus-I</span>
+                                    <span>Pneumococcal-I</span>
+                                    <span>Pentavalent-I</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3rd</td>
+                                <td>10 weeks</td>
+                                <td class="data">
+                                    <span>OPV-II</span>
+                                    <span>Rotavirus-II</span>
+                                    <span>Pneumococcal-II</span>
+                                    <span>Pentavalent-II</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4th</td>
+                                <td>14 weeks</td>
+                                <td class="data">
+                                    <span>OPV-III</span>
+                                    <span>IPV-I</span>
+                                    <span>Pneumococcal-III</span>
+                                    <span>Pentavalent-III</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5th</td>
+                                <td>9 months</td>
+                                <td class="data">
+                                    <span>MR-I</span>
+                                    <span>IPV-II</span>
+                                    <span>Typhoid</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>6th</td>
+                                <td>15 months</td>
+                                <td class="data">
+                                    <span>MR-II</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>   <br>  
             </div>
         </div>               
                      
@@ -253,11 +314,15 @@
                             <div class="footer-item">
                                 <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>About Us</h3>
                                 <p class="mb-3">Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility.</p>
+<<<<<<< HEAD
                             </div>
                            <!-- <div class="position-relative">
                                 <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
                                 <button type="button" class="btn btn-secondary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">SignUp</button>
                             </div>-->
+=======
+                            </div> 
+>>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
@@ -301,7 +366,10 @@
                             <h4 class="text-white mb-4">Contact Us</h4>
                             <a href="#"><i class="fa fa-map-marker-alt me-2"></i> Address here</a>
                             <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> trace&immunize.com</a>
+<<<<<<< HEAD
                            <!-- <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> info@example.com</a>-->
+=======
+>>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
                             <a href="tel:+012 345 67890"><i class="fas fa-phone me-2"></i> +92 300 1234567</a>
                             <a href="tel:+012 345 67890" class="mb-3"><i class="fas fa-print me-2"></i> +92 300 1234567</a>
                         </div>
@@ -314,6 +382,8 @@
         <!-- Back to Top -->
         <a href="#" class="btn btn-secondary btn-lg-square rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
 
+        <!-- Chatbot link --> 
+        {% include "publicsite/chatbot.html" %}
         
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>

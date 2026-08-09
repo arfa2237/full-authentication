@@ -1,17 +1,24 @@
+# Environment variables NEVER push!
+.env
+
 # Python cache
 __pycache__/
 *.pyc
+*.pyo
 
 # Local database
 db.sqlite3
 
-# Django static files build
+# Django static files
 staticfiles/
 
 # Virtual environment
 venv/
-.env
 
 # OS files
 .DS_Store
 Thumbs.db
+Desktop.ini
+
+# VS Code
+.vscode/

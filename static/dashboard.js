@@ -6,9 +6,7 @@
 
 // ── Vaccination Centers (coordinates) ──
 const CENTERS = [
-  { name: "DHQ Teaching Hospital",       lat: 32.1617, lng: 74.1883, hours: "8am–4pm", distId: "dist1" },
-  { name: "Civil Hospital Vaccination",  lat: 32.1877, lng: 74.1945, hours: "9am–3pm", distId: "dist2" },
-  { name: "MCH Center Gujranwala",       lat: 32.1712, lng: 74.2021, hours: "8am–2pm", distId: "dist3" }
+  { name: "Ayesha Free Dispensary",       lat: 32.14021, lng: 74.21348, hours: "10am–2pm", distId: "dist1" },
 ];
 
 // ── Global variables ──

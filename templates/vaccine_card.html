@@ -359,21 +359,14 @@
 
     <nav class="sidebar-nav">
         <div class="nav-label">Main Menu</div>
-        <a class="nav-item" href="{% url 'home' %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a class="nav-item" href="{% url 'index' %}"><i class="fa-solid fa-house"></i> Home </a>
         <a class="nav-item" href="{% url 'book-appointment' %}"><i class="fa-solid fa-calendar-plus"></i> Book Appointment</a>
         <a class="nav-item" href="{% url 'my-appointments' %}">
             <i class="fa-solid fa-calendar-check"></i> My Appointments
             {% if pending_count %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}
         </a>
         <a class="nav-item active" href="{% url 'vaccine-card' %}"><i class="fa-solid fa-id-card"></i> My Vaccine Card</a>
-        <a class="nav-item" href="#"><i class="fa-solid fa-chart-line"></i> My Records</a>
-        <div class="nav-label" style="margin-top:8px">Information</div>
-        <a class="nav-item" href="#"><i class="fa-solid fa-location-dot"></i> Find Centers</a>
-        <a class="nav-item" href="#"><i class="fa-solid fa-shield-virus"></i> VPDs Info</a>
-        <a class="nav-item" href="#"><i class="fa-solid fa-newspaper"></i> Blogs &amp; News</a>
-        <a class="nav-item" href="#"><i class="fa-solid fa-circle-question"></i> FAQs</a>
-        <div class="nav-label" style="margin-top:8px">Account</div>
-        <a class="nav-item" href="#"><i class="fa-solid fa-user"></i> My Profile</a>
+        <a class="nav-item" href="{% url 'my-records' %}"><i class="fa-solid fa-chart-line"></i> My Records</a>     
     </nav>
 
     <div class="sidebar-footer">
@@ -410,12 +403,54 @@
 
             <!-- LEFT: Digital Card + Download -->
             <div>
-                <!-- Digital Card Visual -->
                 <div class="digital-card">
                     <div class="card-chip"><i class="fa-solid fa-microchip"></i></div>
                     <div class="card-org">Trace &amp; Immunize Gujranwala</div>
-                    <div class="card-name">{{ request.user.first_name }} {{ request.user.last_name }}</div>
+
+                    <!-- Patient/Child Name -->
+                    <div class="card-name">
+                        {{ child_name|default:request.user.get_full_name }}
+                    </div>
+
+                    <!-- Gender Badge -->
+                    {% if child_gender %}
+                    <div style="margin-bottom:6px;position:relative;z-index:1;">
+                        <span style="background:rgba(255,255,255,0.15);
+                                    padding:3px 10px;border-radius:20px;
+                                    font-size:11px;font-weight:600;letter-spacing:1px;">
+                            {% if child_gender == 'male' %}
+                                ♂ Boy (Male)
+                            {% else %}
+                                ♀ Girl (Female)
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
+
                     <div class="card-pin">PIN: {{ profile.unique_pin }}</div>
+
+                    <!-- Guardian Info -->
+                    {% if guardian_name %}
+                    <div style="margin-top:8px;position:relative;z-index:1;">
+                        <div style="font-size:10px;opacity:0.65;letter-spacing:1.5px;
+                                    text-transform:uppercase;">Guardian</div>
+                        <div style="font-size:13px;font-weight:600;opacity:0.90;">
+                            {{ guardian_name }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if guardian_cnic %}
+                    <div style="margin-top:4px;position:relative;z-index:1;">
+                        <div style="font-size:10px;opacity:0.65;letter-spacing:1.5px;
+                                    text-transform:uppercase;">CNIC</div>
+                        <div style="font-family:monospace;font-size:12px;
+                                    opacity:0.85;letter-spacing:2px;">
+                            {{ guardian_cnic }}
+                        </div>
+                    </div>
+                    {% endif %}
+
                     <div class="card-footer">
                         <div class="card-doses-info">
                             <strong>{{ completed_doses }}</strong>
@@ -496,12 +531,12 @@
                             <td>
                                 <div class="vax-name-cell">
                                     <div class="vax-icon-sm">
-                                        {% if appt.vaccine_type == 'Hepatitis B' %}<i class="fa-solid fa-shield-halved"></i>
-                                        {% elif appt.vaccine_type == 'MMR' %}<i class="fa-solid fa-virus-slash"></i>
-                                        {% elif appt.vaccine_type == 'Tetanus' %}<i class="fa-solid fa-syringe"></i>
-                                        {% elif appt.vaccine_type == 'Pneumococcal' %}<i class="fa-solid fa-lungs"></i>
-                                        {% elif appt.vaccine_type == 'Child Vaccination' %}<i class="fa-solid fa-baby"></i>
-                                        {% elif appt.vaccine_type == 'COVID-19' %}<i class="fa-solid fa-biohazard"></i>
+                                        {% if appt.vaccine_type == 'Child Vaccine - At Birth' %}<i class="fa-solid fa-shield-halved"></i>
+                                        {% elif appt.vaccine_type == 'Child Vaccine - 6 week' %}<i class="fa-solid fa-virus-slash"></i>
+                                        {% elif appt.vaccine_type == 'Child Vaccine - 10 week' %}<i class="fa-solid fa-syringe"></i>
+                                        {% elif appt.vaccine_type == 'Child Vaccine - 14 week' %}<i class="fa-solid fa-lungs"></i>
+                                        {% elif appt.vaccine_type == 'Child Vaccine - 9 months' %}<i class="fa-solid fa-baby"></i>
+                                        {% elif appt.vaccine_type == 'Child Vaccine - 15 months' %}<i class="fa-solid fa-biohazard"></i>
                                         {% else %}<i class="fa-solid fa-syringe"></i>{% endif %}
                                     </div>
                                     <div>
