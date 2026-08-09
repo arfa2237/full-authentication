@@ -8,6 +8,9 @@
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
 
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,8 +32,9 @@
         <link href="{% static 'publicsite/css/bootstrap.min.css' %}" rel="stylesheet">
 
         <!-- CSS Stylesheet -->
-        <link href="{% static 'publicsite/css/style.css' %}" rel="stylesheet">
-        <link rel="stylesheet" href="{% static 'publicsite/css/vpd.css' %}">
+        <link rel="stylesheet" href="{% static "publicsite/css/style.css" %}">
+        <link rel="stylesheet" href="{% static "publicsite/css/vpd.css" %}">
+        <link rel="stylesheet" href="{% static "publicsite/css/scheduling.css" %}"> 
     </head>
 
     <body>
@@ -56,10 +60,14 @@
                     <div class="navbar-nav ms-auto py-0">
                         <a href="{% url 'index' %}" class="nav-item nav-link">Home</a>
                         <a href="{% url 'scheduling' %}" class="nav-item nav-link active">Schedule now</a>
-                        <a href="" class="nav-item nav-link">Track now</a>
+                        {% if user.is_authenticated %}
+                            <a href="/patient/my-appointments/" class="nav-item nav-link">Track now</a>
+                        {% else %}
+                            <a href="/patient/login/?next=/patient/my-appointments/" class="nav-item nav-link">Track now</a>
+                        {% endif %}
                         <a href="{% url 'vpd' %}" class="nav-item nav-link">VPDs</a>
                         <a href="{% url 'nearby' %}" class="nav-item nav-link">Location nearby</a>
-                        <a href="{% url 'faq' %}" class="nav-item nav-link">FAQs</a>
+                        <a href="{% url 'faq' %}" class="nav-item nav-link">FAQ</a>
                         
                         </div>
                       <!--Code for theme Toggle -->
@@ -73,7 +81,56 @@
                         </div>
                     </div>
                     <button class="btn btn-primary btn-md-square d-flex flex-shrink-0 mb-3 mb-lg-0 rounded-circle me-3" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search"></i></button>
-                    <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">Login</a><!--Order now-->
+                    {% if user.is_authenticated %}
+                        <div class="dropdown"> 
+                            <button class="btn btn-primary rounded-pill d-inline-flex align-items-center flex-shrink-0 py-2 px-3 dropdown-toggle" 
+                                    type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span style="width:28px; height:28px; background:rgba(255,255,255,0.3); 
+                                            border-radius:50%; display:inline-flex; align-items:center; 
+                                            justify-content:center; font-weight:700; font-size:14px;">
+                                    {{ user.username|first|upper }}
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown"
+                                style="border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.12); border:none; padding:8px;">
+                                <li>
+                                    <div style="padding:12px 16px; border-bottom:1px solid #f0f0f0; margin-bottom:6px;">
+                                        <div style="font-weight:700; color:#28375f; font-size:14px;">
+                                            {{ user.first_name }} {{ user.last_name }}
+                                        </div>
+                                        <div style="font-size:11px; color:#6b7db3;">{{ user.email }}</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/patient/my-appointments/"
+                                    style="border-radius:8px; font-size:13px; padding:8px 16px;">
+                                        <i class="fas fa-calendar-check me-2 text-primary"></i> My Appointments
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/patient/book-appointment/"
+                                    style="border-radius:8px; font-size:13px; padding:8px 16px;">
+                                        <i class="fas fa-calendar-plus me-2 text-primary"></i> Book Appointment
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/patient/vaccine-card/"
+                                    style="border-radius:8px; font-size:13px; padding:8px 16px;">
+                                        <i class="fas fa-id-card me-2 text-primary"></i> Vaccine Card
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{% url 'logout' %}"
+                                    style="border-radius:8px; font-size:13px; padding:8px 16px;">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %} 
+                            <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">Login</a>
+                    {% endif %}
                 </div>
             </nav>
 
@@ -81,6 +138,22 @@
             <div class="container-fluid bg-breadcrumb">
                 <div class="container text-center py-5" style="max-width: 900px;">
                     <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Schedule your Vaccines</h4>
+                    <div class="carousel-caption-2-content-btn fadeInLeft animated" data-animation="fadeInLeft" data-delay="1s" style="animation-delay: 0.5s;">
+                        {% comment %} <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2" href="{% url "appointment" %}">
+                            <i class="fas fa-calendar-check me-3"></i>Schedule Appointment</a> {% endcomment %}
+                        <!-- Login authentication -->
+                       {% if user.is_authenticated %}
+                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
+                                href="/patient/book-appointment/">
+                                    <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
+                            </a>
+                        {% else %}
+                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
+                                href="/patient/login/?next=/patient/book-appointment/"> 
+                                    <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
+                            </a>
+                        {% endif %} 
+                    </div>
                 </div>
             </div>
             <!-- Header End -->
@@ -165,39 +238,48 @@
                             <button type="button" class="btn btn-secondary rounded-pill position-absolute  top-0 end-0 py-2 px-4 mt-2 me-2 button-color">Subscribe</button>
                         </div>
                     </div>
-                    <!-- <div class="col-lg-5">
+                    <div class="col-lg-5">
                         <div class="d-flex align-items-center justify-content-center justify-content-lg-end">
                             <a class="btn btn-secondary btn-md-square rounded-circle me-3 button-app" href=""><i class="fab fa-facebook-f"></i></a>
                             <a class="btn btn-secondary btn-md-square rounded-circle me-3 button-app" href=""><i class="fab fa-twitter"></i></a>
                             <a class="btn btn-secondary btn-md-square rounded-circle me-3 button-app" href=""><i class="fab fa-instagram"></i></a>
                             <a class="btn btn-secondary btn-md-square rounded-circle me-0 button-app" href=""><i class="fab fa-linkedin-in"></i></a>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
-                <div class="row g-5 align-items-center">
-                    <!--Column 1 About us-->
-                    <div class="col-md-6 col-lg-6 col-xl-4">
+                <div class="row g-5">
+                    <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
                             <div class="footer-item">
                                 <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>About Us</h3>
                                 <p class="mb-3">Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility.</p>
                             </div>
+                           <!-- <div class="position-relative">
+                                <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
+                                <button type="button" class="btn btn-secondary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">SignUp</button>
+                            </div>-->
                         </div>
                     </div>
-                    <!--Column 2 Quick links-->
-                    <div class="col-md-6 col-lg-6 col-xl-4"> 
-                        <div class="footer-item d-flex flex-column align-items-center"> 
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="footer-item d-flex flex-column">
                             <h4 class="text-white mb-4">Quick Links</h4>
-                            <a href="{% url 'index' %}"><i class="fas fa-angle-right me-2"></i> Home</a> 
-                            <a href="#"><i class="fas fa-angle-right me-2"></i> Schedule appointments</a>
-                            <a href="#"><i class="fas fa-angle-right me-2"></i> Track Records</a>
+                            <a href="{% url 'index' %}"><i class="fas fa-angle-right me-2"></i> Home</a>
+                            <a href="{% url 'scheduling' %}"><i class="fas fa-angle-right me-2"></i> Schedule appointments</a>
+                            {% if user.is_authenticated %}
+                                <a href="/patient/my-appointments/">
+                                    <i class="fas fa-angle-right me-2"></i> Track now
+                                </a>
+                            {% else %}
+                                <a href="/patient/login/?next=/patient/my-appointments/">
+                                    <i class="fas fa-angle-right me-2"></i> Track now
+                                </a>
+                            {% endif %}
                             <a href="{% url 'vpd' %}"><i class="fas fa-angle-right me-2"></i> VPDs</a>
-                            <a href="#"><i class="fas fa-angle-right me-2"></i> Find Centers</a>
-                            <a href="#"><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
+                            <a href="{% url 'nearby' %}"><i class="fas fa-angle-right me-2"></i> Find Centers</a>
+                            <a href="{% url 'faq' %}"><i class="fas fa-angle-right me-2"></i>FAQ</a>
                         </div>
                     </div>
-                    <!--Column 3 Center hours-->
-                    <div class="col-md-6 col-lg-6 col-xl-4">
+                    <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
                             <h4 class="text-white mb-4"> Center Hours </h4>
                             <div class="mb-3">
@@ -214,16 +296,16 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="col-md-6 col-lg-6 col-xl-3">
+                    <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
                             <h4 class="text-white mb-4">Contact Us</h4>
                             <a href="#"><i class="fa fa-map-marker-alt me-2"></i> Address here</a>
                             <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> trace&immunize.com</a>
-                           <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> info@example.com</a>
+                           <!-- <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> info@example.com</a>-->
                             <a href="tel:+012 345 67890"><i class="fas fa-phone me-2"></i> +92 300 1234567</a>
                             <a href="tel:+012 345 67890" class="mb-3"><i class="fas fa-print me-2"></i> +92 300 1234567</a>
                         </div>
-                    </div>  -->
+                    </div>
                 </div>
             </div>
         </div>

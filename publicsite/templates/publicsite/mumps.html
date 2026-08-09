@@ -1,0 +1,187 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mumps Information - Vaccine Preventable Disease</title>
+    <link rel="stylesheet" href="{% static "publicsite/css/mumps.css" %}"> 
+</head>
+<body>
+    <!-- HEADER SECTION -->
+    <header class="header">
+        <div class="main-container">
+            <div class="header-content">
+                <div class="logo">Mumps Information Portal</div>
+                <p class="header-subtitle">Mumps - A Vaccine Preventable Disease</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="nav-bar">
+        <a href="#overview" class="nav-link">Overview</a>
+        <a href="#symptoms" class="nav-link">Symptoms</a>
+        <a href="#prevention" class="nav-link">Prevention</a>
+        <a href="#complications" class="nav-link">Complications</a>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+        <!-- OVERVIEW SECTION -->
+        <section id="overview" class="content-section">
+            <h1 class="main-heading">Mumps (Epidemic Parotitis)</h1>
+            
+            <h2 class="section-heading">Overview</h2>
+            <p>Mumps is a contagious viral infection caused by the paramyxovirus. It is best known for the painful swelling of the salivary glands, particularly the parotid glands (parotitis). Mumps was a common childhood disease before the introduction of the mumps vaccine.</p>
+            
+            <div class="highlight-box">
+                <p>The mumps vaccine has been available since 1967. The MMR vaccine provides about 88% protection against mumps after two doses. While mumps is usually mild in children, it can cause serious complications in adolescents and adults, including infertility in males.</p>
+            </div>
+            
+            <p>Before the mumps vaccine, nearly everyone got mumps during childhood. Since vaccination programs began, mumps cases have decreased by more than 99% in countries with high vaccination coverage. However, outbreaks still occur, particularly in close-contact settings like schools and colleges.</p>
+            
+            <!-- STATISTICS -->
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-number">88%</div>
+                    <p>MMR vaccine effectiveness against mumps</p>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">15-30%</div>
+                    <p>Asymptomatic cases (no symptoms)</p>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">1 in 3</div>
+                    <p>Post-pubertal males may develop orchitis</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SYMPTOMS SECTION -->
+        <section id="symptoms" class="content-section">
+            <h2 class="section-heading">Symptoms of Mumps</h2>
+            
+            <div class="highlight-box">
+                <p><strong>Symptoms typically appear 12-25 days after exposure to the virus.</strong> About one-third of infected people have mild or no symptoms.</p>
+            </div>
+            
+            <!-- SYMPTOMS GRID -->
+            <div class="symptoms-container">
+                <div class="symptom-box">
+                    <h3 class="symptom-title">Early Symptoms</h3>
+                    <p>Fever, headache, muscle aches, tiredness, loss of appetite, and general malaise</p>
+                </div>
+                <div class="symptom-box">
+                    <h3 class="symptom-title">Parotitis (Swollen Glands)</h3>
+                    <p>Painful swelling of one or both parotid glands (salivary glands located below the ears and jaw)</p>
+                </div>
+                <div class="symptom-box">
+                    <h3 class="symptom-title">Pain While Chewing</h3>
+                    <p>Swelling causes pain and tenderness when chewing, swallowing, or drinking acidic liquids</p>
+                </div>
+                <div class="symptom-box">
+                    <h3 class="symptom-title">Fever Pattern</h3>
+                    <p>Low to moderate fever (101-103°F) that typically lasts 3-4 days</p>
+                </div>
+                <div class="symptom-box">
+                    <h3 class="symptom-title">Contagious Period</h3>
+                    <p>From 2 days before to 5 days after salivary gland swelling begins</p>
+                </div>
+                <div class="symptom-box">
+                    <h3 class="symptom-title">Duration</h3>
+                    <p>Illness typically lasts 7-10 days, with swelling gradually subsiding</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PREVENTION SECTION -->
+        <section id="prevention" class="content-section">
+            <h2 class="section-heading">Prevention & Vaccination</h2>
+            
+            <div class="prevention-container">
+                <div class="prevention-box">
+                    <h3>MMR Vaccine</h3>
+                    <p class="vaccine-status">Primary Prevention</p>
+                    <p>Two doses: First at 12-15 months, second at 4-6 years</p>
+                    <p><small>88% effective against mumps</small></p>
+                </div>
+                <div class="prevention-box">
+                    <h3>Outbreak Control</h3>
+                    <p class="vaccine-status">Third Dose</p>
+                    <p>During outbreaks, a third MMR dose may be recommended for high-risk groups</p>
+                    <p><small>Especially in college settings</small></p>
+                </div>
+                <div class="prevention-box">
+                    <h3>Isolation</h3>
+                    <p class="vaccine-status">During Illness</p>
+                    <p>Stay home for 5 days after gland swelling begins to prevent spread</p>
+                    <p><small>Avoid contact with unvaccinated individuals</small></p>
+                </div>
+                <div class="prevention-box">
+                    <h3>Healthcare Workers</h3>
+                    <p class="vaccine-status">Required Immunity</p>
+                    <p>Healthcare personnel should have documented immunity to mumps</p>
+                    <p><small>Two doses of MMR vaccine recommended</small></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPLICATIONS SECTION -->
+        <section id="complications" class="content-section">
+            <h2 class="section-heading">Complications of Mumps</h2>
+            
+            <div class="highlight-box">
+                <p><strong>Mumps complications are more common in adolescents and adults</strong> than in children. While mumps is usually mild, complications can be serious and permanent.</p>
+            </div>
+            
+            <!-- COMPLICATIONS GRID -->
+            <div class="complications-container">
+                <div class="complication-box">
+                    <h3 class="complication-title">Orchitis</h3>
+                    <p>Testicular inflammation occurs in 15-30% of post-pubertal males. Can cause testicular atrophy and rarely sterility.</p>
+                </div>
+                <div class="complication-box">
+                    <h3 class="complication-title">Oophoritis</h3>
+                    <p>Ovarian inflammation in 5% of post-pubertal females. Causes lower abdominal pain and fever.</p>
+                </div>
+                <div class="complication-box">
+                    <h3 class="complication-title">Meningitis</h3>
+                    <p>Viral meningitis occurs in 1-10% of mumps cases. Usually resolves without long-term problems.</p>
+                </div>
+                <div class="complication-box">
+                    <h3 class="complication-title">Encephalitis</h3>
+                    <p>Brain inflammation occurs in 1 in 6,000 cases. Can cause permanent neurological damage.</p>
+                </div>
+                <div class="complication-box">
+                    <h3 class="complication-title">Hearing Loss</h3>
+                    <p>Sudden sensorineural hearing loss in about 1 in 20,000 cases. Usually permanent and unilateral.</p>
+                </div>
+                <div class="complication-box">
+                    <h3 class="complication-title">Pancreatitis</h3>
+                    <p>Inflammation of the pancreas occurs in about 4% of cases. Causes severe abdominal pain.</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>WHO Global Impact Data:</h3>
+                <p>Before vaccination, mumps was a common childhood disease with annual epidemics. Since the introduction of the mumps vaccine, cases have decreased by over 99% in countries with high vaccination coverage. However, mumps still causes outbreaks, particularly among young adults in close-contact settings like schools and universities.</p>
+            </div>
+        </section>
+
+        <!-- SOURCE INFORMATION -->
+        <div class="source-info">
+            <h3 class="info-heading">Information Source:</h3>
+            <p>All information based on World Health Organization (WHO) data, guidelines, and publications including:</p>
+            <p>• WHO Mumps Fact Sheets<br>
+            • Weekly Epidemiological Record (WER) publications<br>
+            • Global Vaccine Action Plan</p>
+            <p>For latest updates, visit: <a href="https://www.who.int/health-topics/mumps" target="_blank" style="color: var(--primary-blue);">WHO Mumps Information</a></p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="main-container">
+            <p>© 

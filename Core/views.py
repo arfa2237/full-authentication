@@ -14,13 +14,16 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.utils import timezone
 from django.urls import reverse
+from django.views import View
+from django.utils.cache import add_never_cache_headers
+from datetime import date, datetime
+from .models import PatientProfile, VaccinationCenter, Appointment
 from .models import *
 
 
 # Create your views here.
 @login_required
 def Home(request):
-    #return render(request, 'dashboard.html')
     profile, created = PatientProfile.objects.get_or_create(user=request.user)
     today = date.today().strftime("%A, %d %B %Y")
     # All appointments
@@ -111,32 +114,20 @@ def RegisterView(request):
                 password=password
             )
 
-            PatientProfile.objects.create(user=new_user)  # ✅ ADD THIS LINE HERE
+            PatientProfile.objects.create(user=new_user) 
             messages.success(request, 'Account created Successfully!')
             return redirect('login')
 
     return render(request, 'register.html')
 
-def LoginView(request):
-
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, 'Invalid login credentials')
-            return redirect('login')
-    return render(request, 'login.html')
-
 def LogoutView(request):
 
     logout(request)
-    return redirect('login')
+    response = redirect('login') 
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def ForgotPassword(request):
 
@@ -293,27 +284,13 @@ def ResetPassword(request, reset_id):
 
 
 
-
-
-
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# یہ code آپ کی موجودہ views.py میں ADD کریں
-# (imports پہلے سے ہیں تو وہ duplicate نہ کریں)
-# ─────────────────────────────────────────────────────────────────────────────
-
-from datetime import date, datetime
-from .models import PatientProfile, VaccinationCenter, Appointment
-
-
 @login_required
 def BookAppointment(request):
     profile, _ = PatientProfile.objects.get_or_create(user=request.user)
     today       = date.today().strftime("%A, %d %B %Y")
     centers     = VaccinationCenter.objects.filter(is_active=True)
 
-    # Static vaccine list (static رہیں گی جب تک Vaccine model نہیں بناتیں)
+    # Static vaccine list (jb tk static rehy gy Vaccine mode ni bnaty)
     vaccines = [
         {'name': 'Hepatitis B',       'doses': 3,  'icon': 'fa-solid fa-shield-halved'},
         {'name': 'MMR',               'doses': 2,  'icon': 'fa-solid fa-virus-slash'},
@@ -331,7 +308,7 @@ def BookAppointment(request):
         appt_time    = request.POST.get('appt_time',    '').strip()
         notes        = request.POST.get('notes',        '').strip()
 
-        # ── Validation ────────────────────────────────────────────────────────
+        # .......................... Validation ..........................................
         has_error = False
 
         if not vaccine_type:
@@ -386,7 +363,7 @@ def BookAppointment(request):
                 'pending_count': Appointment.objects.filter(patient=request.user, status='pending').count(),  # ADD THIS
             })
 
-        # ── Save Appointment ──────────────────────────────────────────────────
+        # .......................... Save Appointment ............................
         center = None
         if center_id:
             try:
@@ -408,7 +385,7 @@ def BookAppointment(request):
             request,
             f'Appointment request submitted! Vaccine {vaccine_type} Dose {dose_number} on {parsed_date.strftime("%d %B %Y")} — Status: Pending Confirmation.'
         )
-          # آپ بعد میں یہ url بنائیں گی
+          # url bd mn bnaye gy 
         return redirect('my-appointments')
     return render(request, 'book_appointment.html', {
         'profile':  profile,
@@ -419,7 +396,7 @@ def BookAppointment(request):
 
 
 
-    # ── ADD THESE TWO FUNCTIONS in your views.py ──────────────────────────────────
+    # ADD THESE TWO FUNCTIONS in your views.py ........................
 
 @login_required
 def MyAppointments(request):
@@ -464,15 +441,6 @@ def CancelAppointment(request, appt_id):
         except Appointment.DoesNotExist:
             messages.error(request, 'Appointment not found.')
     return redirect('my-appointments')
-
-
-
-# ── ADD THESE FUNCTIONS in your views.py ─────────────────────────────────────
-# Also add at top of views.py:
-# from django.http import HttpResponse
-# from reportlab.pdfgen import canvas
-# from reportlab.lib.pagesizes import A4
-# from reportlab.lib import colors
 
 
 
@@ -538,14 +506,14 @@ def DownloadVaccineCard(request):
         patient=request.user
     ).order_by('vaccine_type', 'dose_number')
 
-    # ── Setup PDF ──────────────────────────────────────────────────────────
+    # .......................... Setup PDF .........................................
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="TIG_VaccineCard_{profile.unique_pin}.pdf"'
 
     p = canvas.Canvas(response, pagesize=A4)
     width, height = A4  # 595 x 842 points
 
-    # ── Colors ────────────────────────────────────────────────────────────
+    # .............................. Colors ........................................
     navy      = colors.HexColor('#28375f')
     accent    = colors.HexColor('#6884d3')
     light_bg  = colors.HexColor('#f3f0ff')
@@ -555,7 +523,7 @@ def DownloadVaccineCard(request):
     muted     = colors.HexColor('#6b7db3')
     white     = colors.white
 
-    # ── HEADER BANNER ─────────────────────────────────────────────────────
+    #  ......................... HEADER BANNER ......................................
     p.setFillColor(navy)
     p.rect(0, height - 120, width, 120, fill=1, stroke=0)
 
@@ -574,7 +542,7 @@ def DownloadVaccineCard(request):
     issued_text = f'Issued: {date.today().strftime("%d %B %Y")}'
     p.drawRightString(width - 40, height - 50, issued_text)
 
-    # ── PATIENT INFO SECTION ───────────────────────────────────────────────
+    # .............................. PATIENT INFO SECTION ................................
     y = height - 160
 
     # Patient info box
@@ -601,7 +569,7 @@ def DownloadVaccineCard(request):
     p.setFont('Helvetica', 8)
     p.drawCentredString(width - 100, y - 52, 'Doses Completed')
 
-    # ── VACCINATION RECORDS TABLE ──────────────────────────────────────────
+    # ........................ VACCINATION RECORDS TABLE ..............................
     y = y - 100
 
     # Table title
@@ -688,7 +656,7 @@ def DownloadVaccineCard(request):
         p.drawCentredString(width / 2, y, 'No vaccination records found.')
         y -= 22
 
-    # ── FOOTER ────────────────────────────────────────────────────────────
+    # ................................ FOOTER ........................................
     y_footer = 60
     p.setStrokeColor(accent)
     p.setLineWidth(1)
@@ -704,7 +672,7 @@ def DownloadVaccineCard(request):
     p.save()
     return response
 
-    # ── ADD THIS FUNCTION at the bottom of your Core/views.py ────────────────────
+    # ADD THIS FUNCTION at the bottom of your Core/views.py ......................
 
 @login_required
 def MyRecords(request):
@@ -714,7 +682,7 @@ def MyRecords(request):
     # All appointments
     appointments = Appointment.objects.filter(patient=request.user)
 
-    # ── Stat counts ───────────────────────────────────────────────────────────
+    # Stat counts ................................................
     total_count     = appointments.count()
     pending_count   = appointments.filter(status='pending').count()
     scheduled_count = appointments.filter(status='scheduled').count()
@@ -722,7 +690,7 @@ def MyRecords(request):
     missed_count    = appointments.filter(status='missed').count()
     cancelled_count = appointments.filter(status='cancelled').count()
 
-    # ── Vaccine progress ──────────────────────────────────────────────────────
+    # Vaccine progress ............................................................
     VACCINE_TOTAL_DOSES = {
         'Hepatitis B':       3,
         'MMR':               2,
@@ -750,23 +718,23 @@ def MyRecords(request):
             'color':   CHART_COLORS[i % len(CHART_COLORS)],
         })
 
-    # ── Immunization percentage ───────────────────────────────────────────────
+    # Immunization percentage  .........................
     immunization_pct = int((completed_count / TOTAL_DOSES) * 100) if completed_count else 0
 
-    # ── Data for Donut chart (appointment status) ─────────────────────────────
+    # Data for Donut chart (appointment status) ..............................
     donut_data = {
         'labels': ['Completed', 'Pending', 'Scheduled', 'Missed', 'Cancelled'],
         'data':   [completed_count, pending_count, scheduled_count, missed_count, cancelled_count],
         'colors': ['#43a047', '#fb8c00', '#6884d3', '#f06272', '#9e9e9e'],
     }
 
-    # ── Data for horizontal bar chart (vaccine progress) ──────────────────────
+    # Data for horizontal bar chart (vaccine progress) .....................
     bar_labels  = [v['name'] for v in vaccine_progress]
     bar_done    = [v['done'] for v in vaccine_progress]
     bar_total   = [v['total'] for v in vaccine_progress]
     bar_colors  = [v['color'] for v in vaccine_progress]
 
-    # ── Recent completed appointments ─────────────────────────────────────────
+    # Recent completed appointments .....................................
     recent_completed = appointments.filter(
         status='completed'
     ).order_by('-appointment_date')[:5]
@@ -793,5 +761,27 @@ def MyRecords(request):
         'bar_colors':        bar_colors,
         'TOTAL_DOSES':       TOTAL_DOSES,
     })
+        
+class LoginView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('index')         
+        next_url = request.GET.get('next', '')
+        response = render(request, 'login.html', {'next': next_url}) 
+        add_never_cache_headers(response)  
+        return response
 
-
+    def post(self, request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        next_url = request.POST.get('next', '')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # If next_url exists go there, else go to index (home)
+            return redirect(next_url) if next_url else redirect('index')
+        else:
+            messages.error(request, 'Invalid credentials')
+            response = render(request, 'login.html', {'next': next_url})
+            add_never_cache_headers(response) 
+            return response
