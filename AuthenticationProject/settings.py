@@ -76,11 +76,10 @@ WSGI_APPLICATION = 'AuthenticationProject.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.postgresql',
-        'NAME':     'tig_database',
+        'NAME':     'auth_db',
         'USER':     'postgres',
         'PASSWORD': 'allahpak!2227',
         'HOST':     'localhost',
