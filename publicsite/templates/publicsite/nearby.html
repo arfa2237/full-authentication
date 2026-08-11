@@ -555,6 +555,11 @@
 
         </div>
     </section>
+    <section class="view-map-btn-container wow fadeInUp" data-wow-delay="0.1s">
+        <button class="view-map-btn" onclick="scrollToMap()">
+            <i class="fas fa-map-marked-alt me-2"></i> View on Map
+        </button>
+    </section>
 
 
     <!-- Footer Start -->
@@ -652,6 +657,12 @@
     <script src="{% static 'publicsite/lib/counterup/counterup.min.js' %}"></script>
     <script src="{% static 'publicsite/js/main.js' %}"></script>
     <script src="{% static 'publicsite/js/nearby.js' %}"></script>
+    <script>      
+      function scrollToMap() {
+            const mapSection = document.querySelector('.map-section');
+            if (mapSection) mapSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
 
 </body>
 </html>
