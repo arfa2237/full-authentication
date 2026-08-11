@@ -139,7 +139,7 @@ def UpdateStaffStatus(request, staff_id):
             sp.save()
             # Send approval email
             _send_email(
-                f'TIG — Staff Account Approved',
+                f'TIG - Staff Account Approved',
                 f'Dear {sp.user.get_full_name()},\n\n'
                 f'Your healthcare staff account has been APPROVED!\n\n'
                 f'You can now login at: 127.0.0.1:8000/staff/login/\n\n'

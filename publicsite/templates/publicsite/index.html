@@ -77,8 +77,7 @@
                             <button class="language-toggle" id="languageToggle" title="Switch Language"> EN </button>
                         </div>
                     </div>
-                    <button class="btn btn-primary btn-md-square d-flex flex-shrink-0 mb-3 mb-lg-0 rounded-circle me-3" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search"></i></button>
-                    {% comment %} <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">Login</a> {% endcomment %}
+                    
                     {% if user.is_authenticated %}
                         <div class="dropdown"> 
                             <button class="btn btn-primary rounded-pill d-inline-flex align-items-center flex-shrink-0 py-2 px-3 dropdown-toggle" 
@@ -227,25 +226,6 @@
             <!-- Carousel End -->
         </div>
         <!-- Navbar & Hero End -->
-
-        <!-- Modal Search Start -->
-        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content rounded-0">
-                    <div class="modal-header">
-                        <h4 class="modal-title mb-0" id="exampleModalLabel">Search by keyword</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body d-flex align-items-center">
-                        <div class="input-group w-75 mx-auto d-flex">
-                            <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                            <span id="search-icon-1" class="input-group-text btn border p-3"><i class="fa fa-search text-white"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal Search End -->
 
         <!-- Services started-->
         <div class="container-fluid feature bg-light py-5">
@@ -729,7 +709,6 @@
                             <h4 class="text-white mb-4">Contact Us</h4>
                             <a href="#"><i class="fa fa-map-marker-alt me-2"></i> Address here</a>
                             <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> trace&immunize.com</a>
-                           <!-- <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> info@example.com</a>-->
                             <a href="tel:+012 345 67890"><i class="fas fa-phone me-2"></i> +92 300 1234567</a>
                             <a href="tel:+012 345 67890" class="mb-3"><i class="fas fa-print me-2"></i> +92 300 1234567</a>
                         </div>

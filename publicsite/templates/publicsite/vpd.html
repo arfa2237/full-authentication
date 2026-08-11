@@ -1,4 +1,4 @@
- {% load static %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,29 +44,29 @@
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-        <!-- Spinner End --> 
+        <!-- Spinner End -->
 
         <!-- Navbar & Hero Start -->
         <div class="container-fluid position-relative p-0">
             <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
                 <a href="" class="navbar-brand p-0">
-                    <img src="{% static 'publicsite/img/logo.png' %}" alt="Logo">
+                    <img src="{% static "img/logo.png" %}" alt="Logo">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="fa fa-bars"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
-                        <a href="{% url 'index' %}" class="nav-item nav-link">Home</a>
-                        <a href="{% url 'scheduling' %}" class="nav-item nav-link">Schedule now</a>
+                        <a href="{% url "home" %}" class="nav-item nav-link">Home</a>
+                        <a href="{% url "scheduling" %}" class="nav-item nav-link">Schedule now</a>
                         {% if user.is_authenticated %}
                             <a href="/patient/my-appointments/" class="nav-item nav-link">Track now</a>
                         {% else %}
                             <a href="/patient/login/?next=/patient/my-appointments/" class="nav-item nav-link">Track now</a>
                         {% endif %} 
-                        <a href="{% url 'vpd' %}" class="nav-item nav-link active">VPDs</a>
-                        <a href="{% url 'nearby' %}" class="nav-item nav-link">Location nearby</a>
-                        <a href="{% url 'faq' %}" class="nav-item nav-link">FAQ</a>                          
+                        <a href="{% url "vpd" %}" class="nav-item nav-link active">VPDs</a>
+                        <a href="{% url "nearby" %}" class="nav-item nav-link">Location nearby</a>
+                        <a href="{% url "faq" %}" class="nav-item nav-link">FAQ</a>                          
                         </div>
                       <!--Code for theme Toggle -->
                     </div>
@@ -183,6 +183,11 @@
                 <div class="disease">
                     <h2><a href="{% url "tetanus" %}">Tetanus</a></h2>
                     <p>Tetanus is a serious disease caused by the bacterium Clostridium tetani, which produces a toxin affecting the nervous system and causing severe muscle stiffness and spasms, often starting with the jaw (lockjaw). It can enter the body through cuts, wounds, or burns, and can be life-threatening if it affects breathing. Pregnent women and newborn babies are highly affected by tetanus.</p>
+                </div>
+                <div class="d-flex justify-content-center my-4">
+                    <div class="chart">
+                        <canvas id="tetanus" height="10px" width="20px"></canvas> 
+                    </div>
                 </div> 
                 <!---Diseases 4 Hepatitis-->
                 <div class="disease">
@@ -193,6 +198,11 @@
                 <div class="disease">
                     <h2><a href="{% url "measles" %}">Measles</a></h2>
                     <p>Measles is a highly contagious viral disease caused by the measles virus. It is characterized by high fever, cough, runny nose, red eyes, and a distinctive red rash that usually starts on the face and spreads across the body. Measles spreads through airborne droplets from coughing and sneezing.</p>
+                </div>
+                <div class="d-flex justify-content-center my-4">
+                    <div class="chart">
+                        <canvas id="measles" height="300px" width="500px" ></canvas>
+                    </div>
                 </div> 
                 <!---Diseases 6 Mumps-->
                 <div class="disease">
@@ -203,6 +213,11 @@
                 <div class="disease">
                     <h2><a href="{% url "rubella" %}">Rubella</a></h2>
                     <p>Rubella, also known as German measles, usually causes a mild fever, rash, and swollen lymph nodes. While often mild in children and adults, rubella can be very dangerous during pregnancy, as it can lead to congenital rubella syndrome, causing birth defects in the baby.</p>
+                </div> 
+                <div class="d-flex justify-content-center my-4">
+                    <div class="chart">
+                        <canvas id="rubella" height="300px" width="500px" ></canvas>
+                    </div>
                 </div> 
 
             </div>
@@ -233,7 +248,11 @@
                             <div class="footer-item">
                                 <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>About Us</h3>
                                 <p class="mb-3">Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility.</p>
-                            </div> 
+                            </div>
+                           <!-- <div class="position-relative">
+                                <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
+                                <button type="button" class="btn btn-secondary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">SignUp</button>
+                            </div>-->
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
@@ -276,7 +295,8 @@
                         <div class="footer-item d-flex flex-column">
                             <h4 class="text-white mb-4">Contact Us</h4>
                             <a href="#"><i class="fa fa-map-marker-alt me-2"></i> Address here</a>
-                            <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> trace&immunize.com</a> 
+                            <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> trace&immunize.com</a>
+                           <!-- <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> info@example.com</a>-->
                             <a href="tel:+012 345 67890"><i class="fas fa-phone me-2"></i> +92 300 1234567</a>
                             <a href="tel:+012 345 67890" class="mb-3"><i class="fas fa-print me-2"></i> +92 300 1234567</a>
                         </div>
@@ -289,8 +309,6 @@
         <!-- Back to Top -->
         <a href="#" class="btn btn-secondary btn-lg-square rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
 
-        <!-- Chatbot link --> 
-        {% include "publicsite/chatbot.html" %}
         
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>

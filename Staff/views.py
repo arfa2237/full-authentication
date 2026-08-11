@@ -277,16 +277,21 @@ def UpdateAppointmentStatus(request, appt_id):
         appt_time     = appt.appointment_time.strftime("%I:%M %p")
         center_name   = appt.center.name if appt.center else "the center"
 
+        child_display = appt.child_name if appt.child_name else patient_name
+
         if action == 'confirm' and patient_email:
             subject = f'TIG — Appointment Confirmed: {vaccine}'
             body = (
                 f'Dear {patient_name},\n\n'
                 f'Your vaccination appointment has been CONFIRMED.\n\n'
                 f'Details:\n'
-                f'  Vaccine  : {vaccine} — Dose {appt.dose_number}\n'
+                f'  Patient (Child) : {child_display}\n'
+                f'  Vaccine  : {vaccine} - Dose {appt.dose_number}\n'
+                f'  Dose Number     : {appt.dose_number}\n'
                 f'  Date     : {appt_date}\n'
                 f'  Time     : {appt_time}\n'
-                f'  Center   : {center_name}\n\n'
+                f'  Center   : {center_name}\n'
+                f'  Status   : CONFIRMED\n\n'
                 f'Please arrive 10 minutes early and bring your vaccine card.\n\n'
                 f'Regards,\n'
                 f'Trace and Immunize Gujranwala (TIG)'
@@ -297,11 +302,14 @@ def UpdateAppointmentStatus(request, appt_id):
             subject = f'TIG — Appointment Cancelled: {vaccine}'
             body = (
                 f'Dear {patient_name},\n\n'
-                f'Your vaccination appointment has been CANCELLED by healthcare staff.\n\n'
+                f'Your vaccination appointment has been <strong>CANCELLED</strong> by healthcare staff.\n\n'
                 f'Details:\n'
-                f'  Vaccine  : {vaccine} — Dose {appt.dose_number}\n'
+                f'  Patient (Child) : {child_display}\n'
+                f'  Vaccine  : {vaccine} - Dose {appt.dose_number}\n'
+                f'  Dose Number     : {appt.dose_number}\n'
                 f'  Date     : {appt_date}\n'
-                f'  Center   : {center_name}\n\n'
+                f'  Center   : {center_name}\n'
+                f'  Status    : CANCELLED\n\n'
                 f'Please log in to book a new appointment.\n\n'
                 f'Regards,\n'
                 f'Trace and Immunize Gujranwala (TIG)'
@@ -310,19 +318,19 @@ def UpdateAppointmentStatus(request, appt_id):
 
         elif action == 'complete' and patient_email:
 
-            # ── Calculate next 2 doses ───────────────────────────────────
+            # .......... Calculate next 2 doses ..........
             next_doses = get_next_two_doses(
                 appt.vaccine_type,
                 appt.appointment_date
             )
 
-            # ── Build next dose section ──────────────────────────────────
+            # .......... Build next dose section ..........
             if next_doses:
                 next_dose_lines = (
                     f'\n'
-                    f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
-                    f'📅  UPCOMING DOSE SCHEDULE\n'
-                    f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+                    f'-------------------------------------------\n'
+                    f' NEXT RECOMMENDED DOSES \n'
+                    f'-------------------------------------------\n'
                 )
                 for i, nd in enumerate(next_doses, 1):
                     next_dose_lines += (
@@ -331,43 +339,45 @@ def UpdateAppointmentStatus(request, appt_id):
                     )
                 next_dose_lines += (
                     f'\n'
-                    f'⚠️  Please book your next appointment on time\n'
-                    f'    to ensure complete immunization of your child.\n'
+                    f'Please remember to book your next appointment on time\n'
+                    f'to ensure your child receives complete immunization.\n'
                 )
             else:
                 next_dose_lines = (
                     f'\n'
-                    f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
-                    f'🎉  ALL DOSES COMPLETED!\n'
-                    f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
-                    f'    Your child has completed all scheduled\n'
-                    f'    vaccination doses. Well done!\n'
+                    f'-------------------------------------------\n'
+                    f'\U0001F389  Congratulations!\n'
+                    f'-------------------------------------------\n'
+                    f'Your child is now fully immunized according\n'
+                    f'to the recommended vaccination schedule.\n'
                 )
 
-            child_display = appt.child_name if appt.child_name else patient_name
+            
 
-            subject = f'TIG — Vaccination Completed: {vaccine} ✅'
+            subject = f'TIG — Vaccination Update: {vaccine}'
             body = (
                 f'Dear {patient_name},\n\n'
-                f'✅  Vaccination Successfully Completed!\n\n'
-                f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+                f'Vaccination Dose Completed\n\n'
+                f'-------------------------------------------\n'
                 f'COMPLETED APPOINTMENT DETAILS\n'
-                f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+                f'-------------------------------------------\n\n'
                 f'  Patient (Child) : {child_display}\n'
                 f'  Vaccine         : {vaccine}\n'
                 f'  Dose Number     : {appt.dose_number}\n'
                 f'  Date Completed  : {appt_date}\n'
                 f'  Time            : {appt_time}\n'
                 f'  Center          : {center_name}\n'
-                f'  Status          : COMPLETED ✅\n'
+                f'  Status          : COMPLETED\n'
                 f'{next_dose_lines}\n'
-                f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+                f'-------------------------------------------\n'
                 f'You can download your updated Digital Vaccine\n'
-                f'Card from your dashboard by logging in to your TIG account.\n'
-                f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+                f'Card by logging in to your TIG account.\n'
+                f'-------------------------------------------\n\n'
                 f'Thank you for choosing TIG.\n'
-                f'Together we protect every child! 💉\n\n'
+                f'\n'
+                f'Our mission is to protect every child through complete and timely immunization \n\n'
                 f'Regards,\n'
+                f'\n'
                 f'Trace and Immunize Gujranwala (TIG)'
             )
             _send_email(subject, body, patient_email)

@@ -424,6 +424,11 @@ def BookAppointment(request):
 
 
 
+<<<<<<< HEAD
+    # ADD THESE TWO FUNCTIONS in your views.py ........................
+
+=======
+>>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
 @login_required
 def MyAppointments(request):
     profile, _ = PatientProfile.objects.get_or_create(user=request.user)
@@ -624,9 +629,16 @@ def DownloadVaccineCard(request):
     p.setFont('Helvetica-Bold', 28)
     p.drawCentredString(width - 100, y - 55, str(completed_doses))
     p.setFont('Helvetica', 8)
+<<<<<<< HEAD
+    p.drawCentredString(width - 100, y - 52, 'Doses Completed')
+
+    # ........................ VACCINATION RECORDS TABLE ..............................
+    y = y - 100
+=======
     p.drawCentredString(width - 100, y - 75, 'Doses Completed')
     # ........................ VACCINATION RECORDS TABLE ..............................
     y = y - 130
+>>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
 
     # Table title
     p.setFillColor(navy)

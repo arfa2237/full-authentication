@@ -21,6 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('patient/', include('Core.urls')),
     path('staff/', include('Staff.urls')),
-    path('admin-panel/', include('AdminPanel.urls')),
+    path('tig-secure-dashboard-2026/', include('AdminPanel.urls')),
     path('', include('publicsite.urls')),
 ]
