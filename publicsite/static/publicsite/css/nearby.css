@@ -540,6 +540,30 @@
 .info-banner .btn-primary:hover {
     background: var(--lightest) !important;
 }
+        /* ── VIEW ON MAP BUTTON (Override Fix) ── */
+.view-map-btn-container { 
+    text-align: center !important; 
+    padding: 40px 0 60px 0 !important; 
+    background: var(--gray-bg) !important; 
+}
+.view-map-btn {
+    background: #ffffff !important; 
+    border: 2px solid var(--primary) !important; 
+    color: var(--primary) !important;
+    padding: 16px 40px !important; 
+    border-radius: 50px !important; 
+    font-size: 17px !important; 
+    font-weight: 700 !important;
+    cursor: pointer !important; 
+    transition: all 0.3s ease !important; 
+    box-shadow: var(--shadow) !important;
+}
+.view-map-btn:hover {
+    background: var(--primary) !important; 
+    color: white !important; 
+    transform: translateY(-3px) !important; 
+    box-shadow: var(--shadow-hover) !important;
+}
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
