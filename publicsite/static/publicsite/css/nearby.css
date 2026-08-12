@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   track.css  —  Track Now Page
+   nearby.css — Ayesha Dispensary Location Page
    Matches existing site color theme exactly
    Primary: #6884d3  |  Dark: #4a66b0  |  Light: #8fa4e0
 ═══════════════════════════════════════════ */
@@ -16,8 +16,6 @@
     --shadow-hover: 0 8px 30px rgba(104, 132, 211, 0.28);
 }
 
-
-
 /* ── STATS BAR ── */
 .stats-bar-section {
     background: white;
@@ -27,12 +25,14 @@
 .stat-pill {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 14px;
     background: var(--gray-bg);
     border: 1px solid #dce4ff;
     border-radius: 12px;
     padding: 14px 18px;
     transition: box-shadow 0.3s, transform 0.3s;
+    text-align: center;
 }
 
 .stat-pill:hover {
@@ -79,7 +79,6 @@
     background: white;
 }
 
-/* Map top bar */
 .map-topbar {
     display: flex;
     align-items: center;
@@ -146,7 +145,7 @@
     transform: translateY(-1px);
 }
 
-/* Leaflet map div */
+/* IMPORTANT: leaflet map needs an explicit, non-zero height or it renders blank/grey */
 #tig-map {
     height: 480px;
     width: 100%;
@@ -215,12 +214,77 @@
     border: 1px solid #dce4ff;
 }
 
-/* ── CENTERS SECTION ── */
+/* ── ROUTE INFO PANEL (turn-by-turn) ── */
+.route-info-panel {
+    background: white;
+    padding: 16px 20px;
+    border-top: 2px solid var(--primary);
+    display: none;
+    max-height: 250px;
+    overflow-y: auto;
+}
+.route-info-panel.active { display: block; }
+
+.route-summary {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e8edff;
+    margin-bottom: 12px;
+}
+.route-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark);
+}
+.route-summary-item i { color: var(--primary); font-size: 18px; }
+.route-summary-item span { color: var(--text); font-weight: 400; }
+
+.route-steps {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.route-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f4ff;
+    font-size: 13px;
+    color: var(--text);
+}
+.route-step:last-child { border-bottom: none; }
+.route-step-icon {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    background: var(--lightest);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--primary);
+    font-weight: 700;
+}
+.route-step-text { flex: 1; }
+.route-step-distance {
+    font-size: 11px;
+    color: #9aa5c4;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ── CENTERS / DISPENSARY CARD SECTION ── */
 .centers-section { background: var(--gray-bg); }
 
 .section-title h2 { color: var(--dark); }
 
-/* Center Cards */
 .center-card {
     background: white;
     border-radius: 16px;
@@ -228,34 +292,23 @@
     box-shadow: var(--shadow);
     border: 2px solid transparent;
     transition: all 0.3s ease;
-    cursor: pointer;
     height: 100%;
     display: flex;
     flex-direction: column;
 }
-
 .center-card:hover {
     border-color: var(--primary);
     box-shadow: var(--shadow-hover);
     transform: translateY(-5px);
 }
 
-.center-card.active-card {
-    border-color: var(--primary);
-    background: var(--lightest);
-}
-
-/* Card header color bands */
 .center-card-header {
     padding: 20px 22px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: linear-gradient(135deg, #6884d3, #4a66b0);
 }
-
-.center-card-header.govt { background: linear-gradient(135deg, #6884d3, #4a66b0); }
-.center-card-header.mch  { background: linear-gradient(135deg, #7b9fd4, #526fc0); }
-.center-card-header.epi  { background: linear-gradient(135deg, #8fa4e0, #6884d3); }
 
 .center-icon-wrap {
     width: 48px; height: 48px;
@@ -279,7 +332,6 @@
     text-transform: uppercase;
 }
 
-/* Card body */
 .center-card-body {
     padding: 18px 22px;
     flex: 1;
@@ -297,7 +349,6 @@
     font-size: 13px;
     margin-bottom: 12px;
 }
-
 .center-area i { color: var(--primary); }
 
 .center-meta {
@@ -306,23 +357,19 @@
     flex-wrap: wrap;
     margin-bottom: 14px;
 }
-
 .center-meta span {
     font-size: 12px;
     color: #7a8ab0;
     font-weight: 600;
 }
-
 .center-meta i { color: var(--primary); }
 
-/* Vaccine tags */
 .vaccine-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     margin-bottom: 14px;
 }
-
 .vtag {
     background: var(--lightest);
     color: var(--dark);
@@ -333,7 +380,6 @@
     border: 1px solid #c9d3f5;
 }
 
-/* Distance */
 .center-distance {
     font-size: 12px;
     color: #9aa5c4;
@@ -341,112 +387,93 @@
     padding: 8px 0;
     border-top: 1px solid #f0f4ff;
 }
-
 .center-distance.has-distance {
     color: var(--primary);
     font-weight: 700;
 }
 
-/* Card footer */
 .center-card-footer {
     padding: 14px 22px;
     border-top: 1px solid #f0f4ff;
     display: flex;
+    justify-content: center;
     gap: 8px;
     flex-wrap: wrap;
 }
-
 .center-card-footer .btn {
     font-size: 12px;
     font-weight: 600;
 }
 
-/* No results */
-.no-results { color: #9aa5c4; }
-
-/* ── INFO BANNER ── */
-.info-banner {
-    background: linear-gradient(135deg, var(--primary), var(--dark));
-}
-
-.info-banner-inner {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    padding: 8px 0;
-}
-
-.info-icon {
-    font-size: 28px;
-    color: rgba(255,255,255,0.8);
-    flex-shrink: 0;
-}
-
-.info-text {
-    flex: 1;
-    color: white;
-    font-size: 15px;
-    min-width: 200px;
-}
-
-.info-text strong { color: white; }
-
-.info-banner .btn-primary {
-    background: white !important;
-    color: var(--primary) !important;
-    border-color: white !important;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.info-banner .btn-primary:hover {
-    background: var(--lightest) !important;
-}
-        /* ── VIEW ON MAP BUTTON (Override Fix) ── */
-.view-map-btn-container { 
-    text-align: center !important; 
-    padding: 40px 0 60px 0 !important; 
-    background: var(--gray-bg) !important; 
+/* ── VIEW ON MAP BUTTON ── */
+.view-map-btn-container {
+    text-align: center;
+    padding: 40px 0 60px 0;
+    background: var(--gray-bg);
 }
 .view-map-btn {
-    background: #ffffff !important; 
-    border: 2px solid var(--primary) !important; 
-    color: var(--primary) !important;
-    padding: 16px 40px !important; 
-    border-radius: 50px !important; 
-    font-size: 17px !important; 
-    font-weight: 700 !important;
-    cursor: pointer !important; 
-    transition: all 0.3s ease !important; 
-    box-shadow: var(--shadow) !important;
+    background: #ffffff;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 16px 40px;
+    border-radius: 50px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
 }
 .view-map-btn:hover {
-    background: var(--primary) !important; 
-    color: white !important; 
-    transform: translateY(-3px) !important; 
-    box-shadow: var(--shadow-hover) !important;
+    background: var(--primary);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
 }
+
+/* ── APPOINTMENT FLOATING BAR ── */
 .appointment-floating-bar {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-    width: 90%; max-width: 850px; background: #ffffff; padding: 18px 30px;
-    border-radius: 20px; display: flex; justify-content: space-between;
-    align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-    border: 1px solid #eaeaea; z-index: 999;
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 850px;
+    background: #ffffff;
+    padding: 18px 30px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    border: 1px solid #eaeaea;
+    z-index: 999;
 }
 .appointment-text h4 {
-    color: #333; font-size: 18px; margin-bottom: 4px;
- }
+    color: #333;
+    font-size: 18px;
+    margin-bottom: 4px;
+}
 .appointment-text p {
-     color: #666; font-size: 14px;
- }
-.btn-book-now { 
-    background: var(--primary); color: white; padding: 12px 30px; border-radius: 12px; font-weight: 700; font-size: 16px; border:none; cursor:pointer;
- }
- @media (max-width: 768px) {
-.appointment-floating-bar {
-flex-direction: column; text-align: center; gap: 15px; bottom: 15px; width: 95%; 
-} }
+    color: #666;
+    font-size: 14px;
+}
+.btn-book-now {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+.btn-book-now:hover {
+    background: var(--dark);
+    color: white;
+}
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
@@ -458,20 +485,27 @@ flex-direction: column; text-align: center; gap: 15px; bottom: 15px; width: 95%;
         gap: 10px;
     }
 
-    .info-banner-inner {
+    .stat-pill { padding: 10px 12px; }
+    .stat-num  { font-size: 16px; }
+
+    .route-summary { gap: 10px; }
+    .route-summary-item { font-size: 12px; }
+
+    .appointment-floating-bar {
         flex-direction: column;
         text-align: center;
+        gap: 15px;
+        bottom: 15px;
+        padding: 20px 15px;
+        width: 95%;
     }
-
-    .search-card { padding: 20px; }
-
-    .stat-pill { padding: 12px 14px; }
-    .stat-num  { font-size: 18px; }
 }
 
 @media (max-width: 480px) {
-    .filter-pills { gap: 6px; }
-    .filter-pill  { padding: 4px 12px; font-size: 11px; }
     .center-card-footer { flex-direction: column; }
     .center-card-footer .btn { width: 100%; text-align: center; }
+    .stat-pill { flex-direction: column; gap: 4px; padding: 10px 8px; }
+    .stat-pill i { font-size: 18px; }
+    .stat-num { font-size: 14px; }
+    .stat-txt { font-size: 10px; }
 }
