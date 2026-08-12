@@ -564,6 +564,26 @@
     transform: translateY(-3px) !important; 
     box-shadow: var(--shadow-hover) !important;
 }
+.appointment-floating-bar {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    width: 90%; max-width: 850px; background: #ffffff; padding: 18px 30px;
+    border-radius: 20px; display: flex; justify-content: space-between;
+    align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    border: 1px solid #eaeaea; z-index: 999;
+}
+.appointment-text h4 {
+    color: #333; font-size: 18px; margin-bottom: 4px;
+ }
+.appointment-text p {
+     color: #666; font-size: 14px;
+ }
+.btn-book-now { 
+    background: var(--primary); color: white; padding: 12px 30px; border-radius: 12px; font-weight: 700; font-size: 16px; border:none; cursor:pointer;
+ }
+ @media (max-width: 768px) {
+.appointment-floating-bar {
+flex-direction: column; text-align: center; gap: 15px; bottom: 15px; width: 95%; 
+} }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
