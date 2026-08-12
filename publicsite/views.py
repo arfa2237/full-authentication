@@ -2,8 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.cache import add_never_cache_headers 
-<<<<<<< HEAD
-=======
 import json
 from groq import Groq
 from django.http import JsonResponse
@@ -11,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods 
 from django.http import JsonResponse, StreamingHttpResponse
 
->>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
+
 
 def index(request):
     response = render(request, 'publicsite/index.html')

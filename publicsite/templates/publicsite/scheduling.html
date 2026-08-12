@@ -32,15 +32,9 @@
         <link href="{% static 'publicsite/css/bootstrap.min.css' %}" rel="stylesheet">
 
         <!-- CSS Stylesheet -->
-<<<<<<< HEAD
-        <link rel="stylesheet" href="{% static "publicsite/css/style.css" %}">
-        <link rel="stylesheet" href="{% static "publicsite/css/vpd.css" %}">
-        <link rel="stylesheet" href="{% static "publicsite/css/scheduling.css" %}"> 
-=======
         <link rel="stylesheet" href="{% static 'publicsite/css/style.css' %}">
         <link rel="stylesheet" href="{% static 'publicsite/css/vpd.css' %}">
         <link rel="stylesheet" href="{% static 'publicsite/css/scheduling.css' %}"> 
->>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
     </head>
 
     <body>
@@ -144,40 +138,24 @@
             <div class="container-fluid bg-breadcrumb">
                 <div class="container text-center py-5" style="max-width: 900px;">
                     <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Schedule your Vaccines</h4>
-<<<<<<< HEAD
-                    <div class="carousel-caption-2-content-btn fadeInLeft animated" data-animation="fadeInLeft" data-delay="1s" style="animation-delay: 0.5s;">
-                        {% comment %} <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2" href="{% url "appointment" %}">
-                            <i class="fas fa-calendar-check me-3"></i>Schedule Appointment</a> {% endcomment %}
-                        <!-- Login authentication -->
-                       {% if user.is_authenticated %}
-                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
-=======
                     <p class="text-white mb-4 wow fadeInDown" data-wow-delay="0.2s" style="font-size: 17px; opacity: 0.9;"> Book your vaccination appointment quickly and easily, choose your preferred date and time.</p>
                     <!--Botton Centered-->
                     <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap wow fadeInUp" data-wow-delay="0.3s">
                        {% if user.is_authenticated %}
                             <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-4 me-2"
->>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
                                 href="/patient/book-appointment/">
                                     <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
                             </a>
                         {% else %}
-<<<<<<< HEAD
-                            <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-5 me-2"
-=======
                             <a class="btn btn-primary rounded-pill flex-shrink-0 py-3 px-4 me-2"
->>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
                                 href="/patient/login/?next=/patient/book-appointment/"> 
                                     <i class="fas fa-calendar-check me-3"></i>Schedule Appointment
                             </a>
                         {% endif %} 
-<<<<<<< HEAD
-=======
 
                         <!-- Learn More Button -->
                         <a href="{% url 'vpd' %}" class="btn btn-outline-light rounded-pill py-3 px-5 schedule-hero-btn-outline"> 
                         <i class="fas fa-info-circle me-2"></i>Learn About Vaccines</a>
->>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
                     </div>
                 </div>
             </div>
@@ -314,15 +292,7 @@
                             <div class="footer-item">
                                 <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>About Us</h3>
                                 <p class="mb-3">Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility.</p>
-<<<<<<< HEAD
-                            </div>
-                           <!-- <div class="position-relative">
-                                <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
-                                <button type="button" class="btn btn-secondary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">SignUp</button>
-                            </div>-->
-=======
                             </div> 
->>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
@@ -366,10 +336,6 @@
                             <h4 class="text-white mb-4">Contact Us</h4>
                             <a href="#"><i class="fa fa-map-marker-alt me-2"></i> Address here</a>
                             <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> trace&immunize.com</a>
-<<<<<<< HEAD
-                           <!-- <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> info@example.com</a>-->
-=======
->>>>>>> 7fb92164e03036c101585e4d2ec4c6c4abcebf94
                             <a href="tel:+012 345 67890"><i class="fas fa-phone me-2"></i> +92 300 1234567</a>
                             <a href="tel:+012 345 67890" class="mb-3"><i class="fas fa-print me-2"></i> +92 300 1234567</a>
                         </div>
