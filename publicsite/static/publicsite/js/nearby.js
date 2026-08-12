@@ -5,12 +5,7 @@
 
 // ── All vaccination centers data ──
 const CENTERS = [
-    { name: "DHQ Teaching Hospital",        lat: 32.1617, lng: 74.1883, hours: "8am–4pm", distId: "dist1", type: "govt",  area: "Gujranwala City" },
-    { name: "Civil Hospital Vaccination",   lat: 32.1877, lng: 74.1945, hours: "9am–3pm", distId: "dist2", type: "govt",  area: "Satellite Town"  },
-    { name: "MCH Center Gujranwala",        lat: 32.1712, lng: 74.2021, hours: "8am–2pm", distId: "dist3", type: "mch",   area: "Model Town"      },
-    { name: "EPI Centre — Kamoke Road",     lat: 32.1750, lng: 74.1760, hours: "8am–3pm", distId: "dist4", type: "epi",   area: "Kamoke Road"     },
-    { name: "District Health Office",       lat: 32.1550, lng: 74.1920, hours: "9am–4pm", distId: "dist5", type: "govt",  area: "Wazirabad Road"  },
-    { name: "THQ Hospital Nowshera Virkan", lat: 32.1980, lng: 74.1700, hours: "8am–2pm", distId: "dist6", type: "govt",  area: "Nowshera Virkan" }
+     { name: "Ayesha Dispensary", lat: 32.1617, lng: 74.1883, hours: "8am–4pm", distId: "distAyesha", type: "govt", area: "Gujranwala City" }
 ];
 
 // ── Global state ──
@@ -193,20 +188,11 @@ function drawLineTo(uLat, uLng, cLat, cLng, centerName) {
 /* ════════════════════════════════════
    flyTo — called from card click
 ════════════════════════════════════ */
-function flyTo(lat, lng, distId) {
-    if (!map) { loadDefaultMap(); return; }
+function flyToAyesha() {
+     if (map) { map.flyTo([32.1617, 74.1883], 16); if (ayeshaMarker) ayeshaMarker.openPopup(); 
 
-    var center = CENTERS.find(function(c) { return c.distId === distId; });
-    if (!center) return;
-
-    highlightCard(distId);
-
-    if (userLat !== null && userLng !== null) {
-        drawLineTo(userLat, userLng, lat, lng, center.name);
-    } else {
-        map.flyTo([lat, lng], 16, { animate: true, duration: 1.0 });
-    }
-}
+     }
+ }
 
 
 /* ════════════════════════════════════
