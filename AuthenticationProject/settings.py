@@ -82,9 +82,9 @@ WSGI_APPLICATION = 'AuthenticationProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.postgresql',
-        'NAME':     'auth_db',
+        'NAME':     'tig_database',
         'USER':     'postgres',
-        'PASSWORD': 'ukb@',
+        'PASSWORD': 'allahpak!2227',
         'HOST':     'localhost',
         'PORT':     '5432',
     }
