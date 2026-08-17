@@ -624,6 +624,8 @@ def DownloadVaccineCard(request):
     p.setFont('Helvetica-Bold', 28)
     p.drawCentredString(width - 100, y - 55, str(completed_doses))
     p.setFont('Helvetica', 8)
+
+    p.setFont('Helvetica', 8)
     p.drawCentredString(width - 100, y - 75, 'Doses Completed')
     # ........................ VACCINATION RECORDS TABLE ..............................
     y = y - 130

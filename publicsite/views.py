@@ -10,6 +10,7 @@ from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse, StreamingHttpResponse
 
 
+
 def index(request):
     response = render(request, 'publicsite/index.html')
     add_never_cache_headers(response)  # always refresh 

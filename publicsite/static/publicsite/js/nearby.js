@@ -1,432 +1,263 @@
 /* ═══════════════════════════════════════════
-   track.js  —  Track Now Page
-   Map + Search + Filter + Distance
+   nearby.js — Ayesha Dispensary Location Page
+   Free map (Leaflet) + free road routing (OSRM
+   via Leaflet Routing Machine). No API key needed.
 ═══════════════════════════════════════════ */
 
-// ── All vaccination centers data ──
-const CENTERS = [
-    { name: "DHQ Teaching Hospital",        lat: 32.1617, lng: 74.1883, hours: "8am–4pm", distId: "dist1", type: "govt",  area: "Gujranwala City" },
-    { name: "Civil Hospital Vaccination",   lat: 32.1877, lng: 74.1945, hours: "9am–3pm", distId: "dist2", type: "govt",  area: "Satellite Town"  },
-    { name: "MCH Center Gujranwala",        lat: 32.1712, lng: 74.2021, hours: "8am–2pm", distId: "dist3", type: "mch",   area: "Model Town"      },
-    { name: "EPI Centre — Kamoke Road",     lat: 32.1750, lng: 74.1760, hours: "8am–3pm", distId: "dist4", type: "epi",   area: "Kamoke Road"     },
-    { name: "District Health Office",       lat: 32.1550, lng: 74.1920, hours: "9am–4pm", distId: "dist5", type: "govt",  area: "Wazirabad Road"  },
-    { name: "THQ Hospital Nowshera Virkan", lat: 32.1980, lng: 74.1700, hours: "8am–2pm", distId: "dist6", type: "govt",  area: "Nowshera Virkan" }
-];
+// Ayesha Dispensary — Main Road, Peoples Colony, Gujranwala (verified real location)
+var ayeshaLat = 32.1381538;
+var ayeshaLng = 74.2081076;
 
-// ── Global state ──
-let map        = null;
-let userLat    = null;
-let userLng    = null;
-let routeLine  = null;
-let activeCard = null;
+var map = null;
+var ayeshaMarker = null;
+var userMarker = null;
+var userCircle = null;
+var userLocation = null;
+var routingControl = null;
 
-// ── Custom map icons ──
-const centerIcon = L.divIcon({
-    className: '',
-    html: `<div style="background:#6884d3;color:white;width:38px;height:38px;
-                border-radius:50% 50% 50% 0;transform:rotate(-45deg);
-                display:flex;align-items:center;justify-content:center;
-                box-shadow:0 3px 12px rgba(104,132,211,.5);border:3px solid white;">
-             <span style="transform:rotate(45deg);font-size:17px;">🏥</span>
-           </div>`,
-    iconSize: [38, 38], iconAnchor: [19, 38], popupAnchor: [0, -42]
-});
+function initMap() {
+    if (map) return;
 
-const userIcon = L.divIcon({
-    className: '',
-    html: `<div style="background:#f06272;color:white;width:40px;height:40px;
-                border-radius:50%;display:flex;align-items:center;justify-content:center;
-                box-shadow:0 3px 14px rgba(240,98,114,.5);border:3px solid white;font-size:18px;">
-             📍
-           </div>`,
-    iconSize: [40, 40], iconAnchor: [20, 20]
-});
-
-
-/* ════════════════════════════════════
-   buildMap(lat, lng, isUser)
-════════════════════════════════════ */
-function buildMap(lat, lng, isUser) {
-    // Hide overlay
-    var prompt = document.getElementById('locPrompt');
-    if (prompt) prompt.style.display = 'none';
-
-    // Destroy old map
-    if (map) { map.remove(); map = null; }
-
-    // Create map
-    map = L.map('tig-map', { zoomControl: true, scrollWheelZoom: false })
-            .setView([lat, lng], 13);
-
-    // OpenStreetMap tiles (free, no API key)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        //attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        attribution: '&copy; OpenStreetMap &copy; CARTO',
-        maxZoom: 18
-    }).addTo(map);
-
-    // Add hospital markers
-    CENTERS.forEach(function(c) {
-        var marker = L.marker([c.lat, c.lng], { icon: centerIcon }).addTo(map);
-
-        marker.bindPopup(
-            `<div style="font-family:'Open Sans',sans-serif;min-width:170px;padding:4px 0">
-               <strong style="color:#526fc0;font-size:13px;">${c.name}</strong><br>
-               <span style="font-size:11px;color:#6b7db3;">
-                 🕐 ${c.hours}&nbsp;&nbsp;📍 ${c.area}
-               </span>
-               ${isUser ? `<br><span style="font-size:12px;font-weight:700;color:#526fc0;
-                 margin-top:6px;display:block;">
-                 📏 ${getDistance(lat, lng, c.lat, c.lng)} km away</span>` : ''}
-             </div>`
-        );
-
-        // Click on marker → draw line from user
-        marker.on('click', function() {
-            if (isUser) {
-                drawLineTo(lat, lng, c.lat, c.lng, c.name);
-                highlightCard(c.distId);
-            }
-        });
-    });
-
-    // User marker + circle
-    if (isUser) {
-        userLat = lat;
-        userLng = lng;
-
-        L.marker([lat, lng], { icon: userIcon })
-         .addTo(map)
-         .bindPopup('<div style="font-family:\'Open Sans\',sans-serif"><strong style="color:#f06272">📍 You are here</strong></div>')
-         .openPopup();
-
-        L.circle([lat, lng], {
-            color: '#6884d3',
-            fillColor: '#e8ecff',
-            fillOpacity: 0.3,
-            radius: 700,
-            weight: 2
-        }).addTo(map);
-
-        document.getElementById('locStatusText').textContent = '✓ Live location active';
-
-        // Show all distances
-        showAllDistances(lat, lng);
-
-    } else {
-        document.getElementById('locStatusText').textContent = 'Showing Gujranwala — enable location for distances';
-        CENTERS.forEach(function(c) {
-            var el = document.getElementById(c.distId);
-            if (el) el.innerHTML = '<i class="fas fa-route me-1"></i><span style="color:#f06272">Enable location for distance</span>';
-        });
-    }
-}
-
-
-/* ════════════════════════════════════
-   showAllDistances
-════════════════════════════════════ */
-function showAllDistances(uLat, uLng) {
-    CENTERS.forEach(function(c) {
-        var dist = getDistance(uLat, uLng, c.lat, c.lng);
-        var el   = document.getElementById(c.distId);
-        if (el) {
-            el.innerHTML = '<i class="fas fa-route me-1"></i>' +
-                '<span style="color:#526fc0;font-weight:700;">' + dist + ' km away</span>';
-            el.classList.add('has-distance');
-        }
-    });
-}
-
-
-/* ════════════════════════════════════
-   getDistance — Haversine formula
-════════════════════════════════════ */
-function getDistance(lat1, lng1, lat2, lng2) {
-    var R    = 6371;
-    var dLat = toRad(lat2 - lat1);
-    var dLng = toRad(lng2 - lng1);
-    var a    = Math.sin(dLat/2) * Math.sin(dLat/2) +
-               Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-               Math.sin(dLng/2) * Math.sin(dLng/2);
-    return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
-}
-
-function toRad(deg) { return deg * (Math.PI / 180); }
-
-
-/* ════════════════════════════════════
-   drawLineTo — dashed line on map
-════════════════════════════════════ */
-function drawLineTo(uLat, uLng, cLat, cLng, centerName) {
-    if (!map) return;
-
-    // Remove previous line
-    if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
-
-    // Draw dashed line
-    routeLine = L.polyline(
-        [[uLat, uLng], [cLat, cLng]],
-        { color: '#6884d3', weight: 3, opacity: 0.85, dashArray: '8, 6' }
-    ).addTo(map);
-
-    // Fit view
-    map.fitBounds(L.latLngBounds([uLat, uLng], [cLat, cLng]), { padding: [50, 50] });
-
-    // Distance popup at midpoint
-    var midLat = (uLat + cLat) / 2;
-    var midLng = (uLng + cLng) / 2;
-    var dist   = getDistance(uLat, uLng, cLat, cLng);
-
-    L.popup({ closeButton: true, className: 'dist-popup' })
-     .setLatLng([midLat, midLng])
-     .setContent(
-         `<div style="font-family:'Open Sans',sans-serif;text-align:center;padding:4px 8px">
-            <strong style="color:#526fc0;font-size:13px;">📏 ${dist} km</strong><br>
-            <span style="font-size:11px;color:#6b7db3;">to ${centerName}</span>
-          </div>`
-     )
-     .openOn(map);
-}
-
-
-/* ════════════════════════════════════
-   flyTo — called from card click
-════════════════════════════════════ */
-function flyTo(lat, lng, distId) {
-    if (!map) { loadDefaultMap(); return; }
-
-    var center = CENTERS.find(function(c) { return c.distId === distId; });
-    if (!center) return;
-
-    highlightCard(distId);
-
-    if (userLat !== null && userLng !== null) {
-        drawLineTo(userLat, userLng, lat, lng, center.name);
-    } else {
-        map.flyTo([lat, lng], 16, { animate: true, duration: 1.0 });
-    }
-}
-
-
-/* ════════════════════════════════════
-   highlightCard
-════════════════════════════════════ */
-function highlightCard(distId) {
-    // Remove previous highlight
-    if (activeCard) {
-        activeCard.classList.remove('active-card');
-    }
-
-    // Find and highlight new card
-    var cardEl = document.getElementById('card-' + distId);
-    if (cardEl) {
-        cardEl.classList.add('active-card');
-        activeCard = cardEl;
-
-        // Smooth scroll to card
-        cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-}
-
-
-/* ════════════════════════════════════
-   requestLocation
-════════════════════════════════════ */
-function requestLocation() {
-    var prompt = document.getElementById('locPrompt');
-    if (prompt) prompt.style.display = 'none';
-
-    document.getElementById('locStatusText').textContent = 'Detecting location…';
-
-    if (!navigator.geolocation) {
-        loadDefaultMap();
+    var mapEl = document.getElementById('tig-map');
+    if (!mapEl) {
+        console.error('nearby.js: #tig-map element not found on this page.');
         return;
     }
 
+    map = L.map('tig-map').setView([ayeshaLat, ayeshaLng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    ayeshaMarker = L.marker([ayeshaLat, ayeshaLng], {
+        icon: L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        })
+    }).addTo(map);
+    ayeshaMarker.bindPopup('<b>Ayesha Dispensary</b><br>Peoples Colony, Gujranwala<br>Free EPI Vaccines');
+
+    // Fix leaflet rendering issue when map container was hidden/resized on load
+    setTimeout(function () { if (map) map.invalidateSize(); }, 300);
+}
+
+/* Skip location — just show the dispensary on the map */
+function loadDefaultMap() {
+    var overlay = document.getElementById('locPrompt');
+    if (overlay) overlay.style.display = 'none';
+
+    if (!map) initMap();
+    map.setView([ayeshaLat, ayeshaLng], 15);
+
+    var statusEl = document.getElementById('locStatusText');
+    if (statusEl) statusEl.textContent = 'Showing Ayesha Dispensary';
+
+    var distEl = document.getElementById('distAyesha');
+    if (distEl) {
+        distEl.innerHTML = '<i class="fas fa-route me-1"></i>Ayesha Dispensary, Gujranwala';
+        distEl.classList.remove('has-distance');
+    }
+
+    var panel = document.getElementById('routePanel');
+    if (panel) panel.classList.remove('active');
+}
+
+/* Ask for the user's location, then draw the route + distance to the dispensary */
+function requestLocation() {
+    var overlay = document.getElementById('locPrompt');
+    if (overlay) overlay.style.display = 'none';
+
+    var statusEl = document.getElementById('locStatusText');
+
+    if (!navigator.geolocation) {
+        if (statusEl) statusEl.textContent = 'Location not supported on this device';
+        return;
+    }
+
+    if (statusEl) statusEl.textContent = 'Detecting location…';
+
     navigator.geolocation.getCurrentPosition(
-        function(pos) {
-            buildMap(pos.coords.latitude, pos.coords.longitude, true);
+        function (position) {
+            userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            if (statusEl) statusEl.textContent = 'Location found — calculating route...';
+            showRoute();
         },
-        function(err) {
-            console.warn('Location error:', err.message);
-            document.getElementById('locStatusText').textContent = 'Location unavailable — showing Gujranwala';
+        function (error) {
+            if (statusEl) statusEl.textContent = 'Location unavailable — showing Ayesha Dispensary';
+            console.warn('Geolocation error:', error.message);
             loadDefaultMap();
         },
-        { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 10000 }
     );
 }
 
+function showRoute() {
+    if (!userLocation) return;
+    if (!map) initMap();
 
-/* ════════════════════════════════════
-   loadDefaultMap — fallback to Gujranwala center
-════════════════════════════════════ */
-function loadDefaultMap() {
-    buildMap(32.1617, 74.1883, false);
-}
+    // Remove old route/markers
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
+    }
+    if (userMarker) map.removeLayer(userMarker);
+    if (userCircle) map.removeLayer(userCircle);
 
+    // User marker
+    userMarker = L.marker([userLocation.lat, userLocation.lng], {
+        icon: L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        })
+    }).addTo(map);
+    userMarker.bindPopup('Your Location');
 
-/* ════════════════════════════════════
-   SEARCH FUNCTIONALITY
-════════════════════════════════════ */
-var searchInput    = document.getElementById('hospitalSearch');
-var suggestionsBox = document.getElementById('suggestionsBox');
+    userCircle = L.circle([userLocation.lat, userLocation.lng], {
+        radius: 100,
+        color: '#4a66b0',
+        fillColor: '#8fa4e0',
+        fillOpacity: 0.2
+    }).addTo(map);
 
-// Show suggestions while typing
-if (searchInput) {
-    searchInput.addEventListener('input', function() {
-        var query = this.value.trim().toLowerCase();
+    // Calculate road route using Leaflet Routing Machine (free OSRM)
+    routingControl = L.Routing.control({
+        waypoints: [
+            L.latLng(userLocation.lat, userLocation.lng),
+            L.latLng(ayeshaLat, ayeshaLng)
+        ],
+        routeWhileDragging: false,
+        show: false,
+        addWaypoints: false,
+        draggableWaypoints: false,
+        fitSelectedRoutes: true,
+        showAlternatives: false,
+        createMarker: function () { return null; }
+    }).addTo(map);
 
-        if (query.length < 2) {
-            suggestionsBox.classList.remove('open');
-            suggestionsBox.innerHTML = '';
-            return;
-        }
+    routingControl.on('routesfound', function (e) {
+        var route = e.routes[0];
+        var summary = route.summary;
+        var totalDistance = summary.totalDistance; // meters
+        var totalTime = summary.totalTime; // seconds
 
-        // Build suggestions from CENTERS data
-        var matches = CENTERS.filter(function(c) {
-            return c.name.toLowerCase().includes(query) ||
-                   c.area.toLowerCase().includes(query) ||
-                   c.type.toLowerCase().includes(query);
+        var distanceKm = (totalDistance / 1000).toFixed(1);
+        var distanceM  = totalDistance.toFixed(0);
+        var distDisplay = totalDistance > 1000 ? distanceKm + ' km' : distanceM + ' m';
+
+        var distanceEl = document.getElementById('routeDistance');
+        var timeEl = document.getElementById('routeTime');
+        var stepsCountEl = document.getElementById('routeStepsCount');
+        if (distanceEl) distanceEl.textContent = distDisplay;
+        if (timeEl) timeEl.textContent = formatTime(totalTime);
+        if (stepsCountEl) stepsCountEl.textContent = route.instructions.length;
+
+        var stepsHtml = '';
+        route.instructions.forEach(function (instruction, index) {
+            var stepDist = instruction.distance > 1000 ?
+                (instruction.distance / 1000).toFixed(1) + ' km' :
+                instruction.distance.toFixed(0) + ' m';
+            stepsHtml += '' +
+                '<li class="route-step">' +
+                    '<div class="route-step-icon">' + (index + 1) + '</div>' +
+                    '<div class="route-step-text">' + instruction.text + '</div>' +
+                    '<div class="route-step-distance">' + stepDist + '</div>' +
+                '</li>';
         });
+        var stepsListEl = document.getElementById('routeSteps');
+        if (stepsListEl) stepsListEl.innerHTML = stepsHtml;
 
-        if (matches.length === 0) {
-            suggestionsBox.classList.remove('open');
-            return;
+        var panel = document.getElementById('routePanel');
+        if (panel) panel.classList.add('active');
+
+        var distEl = document.getElementById('distAyesha');
+        if (distEl) {
+            distEl.innerHTML = '<i class="fas fa-route me-1"></i>' + distDisplay + ' from your location';
+            distEl.classList.add('has-distance');
         }
 
-        suggestionsBox.innerHTML = matches.map(function(c) {
-            return `<div class="suggestion-item" onclick="selectSuggestion('${c.distId}', '${c.name}')">
-                      <i class="fas fa-hospital"></i>
-                      <div>
-                        <div style="font-weight:600;font-size:13px;">${c.name}</div>
-                        <div style="font-size:11px;color:#9aa5c4;">${c.area} · ${c.hours}</div>
-                      </div>
-                    </div>`;
-        }).join('');
-
-        suggestionsBox.classList.add('open');
+        var statusEl = document.getElementById('locStatusText');
+        if (statusEl) statusEl.textContent = 'Route found — ' + distDisplay;
     });
 
-    // Close suggestions when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-            suggestionsBox.classList.remove('open');
+    // Fallback to straight-line distance if routing fails/times out
+    setTimeout(function () {
+        var panel = document.getElementById('routePanel');
+        if (panel && !panel.classList.contains('active')) {
+            var distance = calculateDistance(userLocation.lat, userLocation.lng, ayeshaLat, ayeshaLng);
+            var distText = distance < 1 ?
+                Math.round(distance * 1000) + ' m' :
+                distance.toFixed(1) + ' km';
+
+            var distEl = document.getElementById('distAyesha');
+            if (distEl) {
+                distEl.innerHTML = '<i class="fas fa-route me-1"></i>' + distText + ' (straight line) from your location';
+                distEl.classList.add('has-distance');
+            }
+
+            var statusEl = document.getElementById('locStatusText');
+            if (statusEl) statusEl.textContent = 'Location found — ' + distText;
         }
-    });
-
-    // Enter key triggers search
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') doSearch();
-    });
+    }, 4000);
 }
 
+function formatTime(seconds) {
+    if (seconds < 60) return Math.round(seconds) + ' sec';
+    var mins = Math.floor(seconds / 60);
+    var hrs = Math.floor(mins / 60);
+    if (hrs > 0) return hrs + ' hr ' + (mins % 60) + ' min';
+    return mins + ' min';
+}
 
-/* ════════════════════════════════════
-   selectSuggestion — click from dropdown
-════════════════════════════════════ */
-function selectSuggestion(distId, name) {
-    searchInput.value = name;
-    suggestionsBox.classList.remove('open');
-
-    var center = CENTERS.find(function(c) { return c.distId === distId; });
-    if (center) {
-        // Filter cards to show only this one
-        filterBySearch(name);
-        // Fly map to it
-        flyTo(center.lat, center.lng, distId);
+function flyToAyesha() {
+    if (!map) initMap();
+    if (map) {
+        map.flyTo([ayeshaLat, ayeshaLng], 16);
+        if (ayeshaMarker) ayeshaMarker.openPopup();
     }
 }
 
-
-/* ════════════════════════════════════
-   doSearch — Search button click
-════════════════════════════════════ */
-function doSearch() {
-    var query = searchInput.value.trim().toLowerCase();
-    suggestionsBox.classList.remove('open');
-
-    if (!query) { showAllCards(); return; }
-
-    filterBySearch(query);
-
-    // If exact match found, fly to it
-    var match = CENTERS.find(function(c) {
-        return c.name.toLowerCase().includes(query) ||
-               c.area.toLowerCase().includes(query);
-    });
-    if (match && map) {
-        flyTo(match.lat, match.lng, match.distId);
-    }
+/* Haversine distance (fallback if OSRM route fails) */
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    var R = 6371;
+    var dLat = (lat2 - lat1) * Math.PI / 180;
+    var dLon = (lon2 - lon1) * Math.PI / 180;
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
 }
 
-
-/* ════════════════════════════════════
-   filterBySearch
-════════════════════════════════════ */
-function filterBySearch(query) {
-    var cards   = document.querySelectorAll('.center-card-wrap');
-    var noRes   = document.getElementById('noResults');
-    var visible = 0;
-
-    cards.forEach(function(card) {
-        var name = card.getAttribute('data-name') || '';
-        if (name.includes(query.toLowerCase())) {
-            card.style.display = '';
-            visible++;
-        } else {
-            card.style.display = 'none';
-        }
-    });
-
-    noRes.classList.toggle('d-none', visible > 0);
+function scrollToMap() {
+    var mapSection = document.querySelector('.map-section');
+    if (mapSection) mapSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+/* ── DEFENSIVE FIX ──────────────────────────────────────────────
+   Explicitly attach every function used by inline onclick="..."
+   handlers to the global window object. This guarantees they are
+   always callable from HTML onclick attributes no matter how this
+   script gets loaded/bundled/minified in the future — eliminates
+   the "X is not defined" class of errors permanently.
+   ──────────────────────────────────────────────────────────────── */
+window.initMap = initMap;
+window.loadDefaultMap = loadDefaultMap;
+window.requestLocation = requestLocation;
+window.flyToAyesha = flyToAyesha;
+window.scrollToMap = scrollToMap;
 
-/* ════════════════════════════════════
-   clearSearch
-════════════════════════════════════ */
-function clearSearch() {
-    if (searchInput) searchInput.value = '';
-    suggestionsBox.classList.remove('open');
-    showAllCards();
-}
-
-function showAllCards() {
-    document.querySelectorAll('.center-card-wrap').forEach(function(c) {
-        c.style.display = '';
-    });
-    document.getElementById('noResults').classList.add('d-none');
-}
-
-
-/* ════════════════════════════════════
-   filterCenters — pill buttons
-════════════════════════════════════ */
-function filterCenters(type, btn) {
-    // Update active pill
-    document.querySelectorAll('.filter-pill').forEach(function(p) {
-        p.classList.remove('active');
-    });
-    btn.classList.add('active');
-
-    // Clear search box
-    if (searchInput) searchInput.value = '';
-
-    // Filter cards
-    var cards  = document.querySelectorAll('.center-card-wrap');
-    var noRes  = document.getElementById('noResults');
-    var visible = 0;
-
-    cards.forEach(function(card) {
-        var cardType = card.getAttribute('data-type') || '';
-        if (type === 'all' || cardType === type) {
-            card.style.display = '';
-            visible++;
-        } else {
-            card.style.display = 'none';
-        }
-    });
-
-    noRes.classList.toggle('d-none', visible > 0);
-}
+document.addEventListener('DOMContentLoaded', function () {
+    initMap();
+});
