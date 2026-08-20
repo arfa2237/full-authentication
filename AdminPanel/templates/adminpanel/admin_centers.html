@@ -1,150 +1,633 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
     {% load static %}
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Centers — TIG Admin</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-        :root{--accent:#6884d3;--dark:#28375f;--light:#f3f0ff;--muted:#6b7db3;--success:#43a047;--warning:#fb8c00;--danger:#f06272;--shadow:0 4px 24px rgba(104,132,211,0.13);--radius:16px;}
-        *{box-sizing:border-box;margin:0;padding:0;}
-        body{font-family:'Poppins',sans-serif;background:linear-gradient(to right,#e2e2e2,#c9d6ff);min-height:100vh;display:flex;}
-        .sidebar{width:255px;min-height:100vh;background:#0d1b3e;display:flex;flex-direction:column;padding-bottom:24px;position:fixed;top:0;left:0;bottom:0;z-index:100;}
-        .sidebar-logo{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px;}
-        .logo-icon{width:44px;height:44px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:white;}
-        .logo-text{color:white;font-size:16px;font-weight:700;line-height:1.2;}
-        .logo-text span{display:block;font-size:10px;color:#c9d6ff;font-weight:400;}
-        .sidebar-user{margin:16px 14px;background:rgba(255,255,255,0.07);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
-        .s-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#fbbf24);display:flex;align-items:center;justify-content:center;font-size:16px;color:white;font-weight:800;flex-shrink:0;}
-        .s-name{color:white;font-weight:600;font-size:13px;}.s-role{color:#c9d6ff;font-size:10px;margin-top:2px;}
-        .sidebar-nav{flex:1;padding:8px 12px;display:flex;flex-direction:column;gap:3px;}
-        .nav-label{color:rgba(201,214,255,0.45);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:12px 12px 6px;}
-        .nav-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;color:#c9d6ff;text-decoration:none;font-size:13px;font-weight:500;transition:all 0.2s;}
-        .nav-item:hover{background:rgba(255,255,255,0.09);color:white;}
-        .nav-item.active{background:var(--accent);color:white;}
-        .nav-item i{width:20px;text-align:center;font-size:14px;}
-        .sidebar-footer{padding:0 12px;}
-        .logout-btn{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;color:#ffaab5;background:rgba(240,98,114,0.12);border:none;width:100%;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;text-decoration:none;}
-        .logout-btn:hover{background:rgba(240,98,114,0.25);color:#ff5252;}
-        .main{margin-left:255px;flex:1;display:flex;flex-direction:column;}
-        .topbar{background:white;padding:15px 32px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 16px rgba(104,132,211,0.10);position:sticky;top:0;z-index:50;}
-        .topbar h2{font-size:18px;font-weight:700;color:var(--dark);text-transform:uppercase;}
-        .topbar p{color:var(--muted);font-size:12px;margin-top:1px;}
-        .content{padding:28px 32px;flex:1;}
-        .page-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:24px;align-items:start;}
-        .form-card{background:white;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
-        .card-header{padding:16px 22px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--light);}
-        .card-header h3{font-size:14px;font-weight:700;color:var(--dark);text-transform:uppercase;}
-        .card-header i{color:var(--accent);}
-        .form-body{padding:20px 22px;}
-        .field{margin-bottom:14px;}
-        .field label{display:block;font-size:10px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
-        .field input{width:100%;padding:11px 14px;border:2px solid var(--light);border-radius:10px;font-family:'Poppins',sans-serif;font-size:12px;color:var(--dark);background:var(--light);outline:none;transition:all 0.2s;}
-        .field input:focus{border-color:var(--accent);background:white;}
-        .btn-add{width:100%;padding:13px;background:linear-gradient(135deg,var(--dark),var(--accent));color:white;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;margin-top:6px;}
-        .btn-add:hover{transform:translateY(-1px);}
-        .centers-list{display:flex;flex-direction:column;gap:12px;}
-        .center-card{background:white;border-radius:12px;box-shadow:var(--shadow);padding:16px 20px;display:flex;align-items:center;gap:14px;}
-        .c-icon{width:44px;height:44px;border-radius:12px;background:var(--light);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--accent);flex-shrink:0;}
-        .c-info{flex:1;}
-        .c-name{font-size:13px;font-weight:700;color:var(--dark);}
-        .c-addr{font-size:11px;color:var(--muted);margin-top:2px;}
-        .c-avail{font-size:10px;color:var(--accent);margin-top:3px;}
-        .c-status{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;}
-        .c-status.active{background:#e8f5e9;color:var(--success);}
-        .c-status.inactive{background:#fff0f1;color:var(--danger);}
-        .c-actions{display:flex;gap:6px;}
-        .act-btn{padding:6px 10px;border:none;border-radius:7px;font-family:'Poppins',sans-serif;font-size:10px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:4px;}
-        .act-btn.toggle{background:var(--light);color:var(--accent);}
-        .act-btn.toggle:hover{background:var(--accent);color:white;}
-        .act-btn.del{background:#fff0f1;color:var(--danger);}
-        .act-btn.del:hover{background:var(--danger);color:white;}
-        .msg-success{background:#e8f5e9;border:1px solid var(--success);color:#2e7d32;padding:12px 16px;border-radius:10px;font-size:12px;display:flex;align-items:center;gap:8px;margin-bottom:20px;}
-        .msg-error{background:#fff0f1;border:1px solid var(--danger);color:#c62828;padding:12px 16px;border-radius:10px;font-size:12px;display:flex;align-items:center;gap:8px;margin-bottom:20px;}
-        @media(max-width:900px){.page-grid{grid-template-columns:1fr;}}
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
+      :root {
+        --accent: #6884d3;
+        --dark: #28375f;
+        --light: #f3f0ff;
+        --muted: #6b7db3;
+        --success: #43a047;
+        --warning: #fb8c00;
+        --danger: #f06272;
+        --shadow: 0 4px 24px rgba(104, 132, 211, 0.13);
+        --radius: 16px;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+        min-height: 100vh;
+        display: flex;
+      }
+      .sidebar {
+        width: 255px;
+        min-height: 100vh;
+        background: #0d1b3e;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 24px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 100;
+      }
+      .sidebar-logo {
+        padding: 28px 24px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo-icon {
+        width: 44px;
+        height: 44px;
+        background: var(--accent);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: white;
+      }
+      .logo-text {
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .logo-text span {
+        display: block;
+        font-size: 10px;
+        color: #c9d6ff;
+        font-weight: 400;
+      }
+      .sidebar-user {
+        margin: 16px 14px;
+        background: rgba(255, 255, 255, 0.07);
+        border-radius: 12px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .s-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: white;
+        font-weight: 800;
+        flex-shrink: 0;
+      }
+      .s-name {
+        color: white;
+        font-weight: 600;
+        font-size: 13px;
+      }
+      .s-role {
+        color: #c9d6ff;
+        font-size: 10px;
+        margin-top: 2px;
+      }
+      .sidebar-nav {
+        flex: 1;
+        padding: 8px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .nav-label {
+        color: rgba(201, 214, 255, 0.45);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 12px 12px 6px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 14px;
+        border-radius: 10px;
+        color: #c9d6ff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.09);
+        color: white;
+      }
+      .nav-item.active {
+        background: var(--accent);
+        color: white;
+      }
+      .nav-item i {
+        width: 20px;
+        text-align: center;
+        font-size: 14px;
+      }
+      .sidebar-footer {
+        padding: 0 12px;
+      }
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 14px;
+        border-radius: 10px;
+        color: #ffaab5;
+        background: rgba(240, 98, 114, 0.12);
+        border: none;
+        width: 100%;
+        font-family: "Poppins", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+      }
+      .logout-btn:hover {
+        background: rgba(240, 98, 114, 0.25);
+        color: #ff5252;
+      }
+      .main {
+        margin-left: 255px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .topbar {
+        background: white;
+        padding: 15px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 16px rgba(104, 132, 211, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .topbar h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--dark);
+        text-transform: uppercase;
+      }
+      .topbar p {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 1px;
+      }
+      .content {
+        padding: 28px 32px;
+        flex: 1;
+      }
+      .page-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 24px;
+        align-items: start;
+      }
+      .form-card {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .card-header {
+        padding: 16px 22px 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid var(--light);
+      }
+      .card-header h3 {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--dark);
+        text-transform: uppercase;
+      }
+      .card-header i {
+        color: var(--accent);
+      }
+      .form-body {
+        padding: 20px 22px;
+      }
+      .field {
+        margin-bottom: 14px;
+      }
+      .field label {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--dark);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+      }
+      .field input {
+        width: 100%;
+        padding: 11px 14px;
+        border: 2px solid var(--light);
+        border-radius: 10px;
+        font-family: "Poppins", sans-serif;
+        font-size: 12px;
+        color: var(--dark);
+        background: var(--light);
+        outline: none;
+        transition: all 0.2s;
+      }
+      .field input:focus {
+        border-color: var(--accent);
+        background: white;
+      }
+      .btn-add {
+        width: 100%;
+        padding: 13px;
+        background: linear-gradient(135deg, var(--dark), var(--accent));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-family: "Poppins", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+        margin-top: 6px;
+      }
+      .btn-add:hover {
+        transform: translateY(-1px);
+      }
+      .centers-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .center-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .c-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: var(--light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+      .c-info {
+        flex: 1;
+      }
+      .c-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--dark);
+      }
+      .c-addr {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .c-avail {
+        font-size: 10px;
+        color: var(--accent);
+        margin-top: 3px;
+      }
+      .c-status {
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 700;
+      }
+      .c-status.active {
+        background: #e8f5e9;
+        color: var(--success);
+      }
+      .c-status.inactive {
+        background: #fff0f1;
+        color: var(--danger);
+      }
+      .c-actions {
+        display: flex;
+        gap: 6px;
+      }
+      .act-btn {
+        padding: 6px 10px;
+        border: none;
+        border-radius: 7px;
+        font-family: "Poppins", sans-serif;
+        font-size: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .act-btn.toggle {
+        background: var(--light);
+        color: var(--accent);
+      }
+      .act-btn.toggle:hover {
+        background: var(--accent);
+        color: white;
+      }
+      .act-btn.del {
+        background: #fff0f1;
+        color: var(--danger);
+      }
+      .act-btn.del:hover {
+        background: var(--danger);
+        color: white;
+      }
+      .msg-success {
+        background: #e8f5e9;
+        border: 1px solid var(--success);
+        color: #2e7d32;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+      .msg-error {
+        background: #fff0f1;
+        border: 1px solid var(--danger);
+        color: #c62828;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+      @media (max-width: 900px) {
+        .page-grid {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
-</head>
-<body>
-<aside class="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon"><i class="fa-solid fa-crown"></i></div><div class="logo-text">TIG Admin <span>Administration Portal</span></div></div>
-    <div class="sidebar-user"><div class="s-avatar">{{ request.user.first_name|first|upper }}</div><div><div class="s-name">{{ request.user.first_name }} {{ request.user.last_name }}</div><div class="s-role">System Administrator</div></div></div>
-    <nav class="sidebar-nav">
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon"><i class="fa-solid fa-crown"></i></div>
+        <div class="logo-text">
+          TIG Admin <span>Administration Portal</span>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="s-avatar">{{ request.user.first_name|first|upper }}</div>
+        <div>
+          <div class="s-name">
+            {{ request.user.first_name }} {{ request.user.last_name }}
+          </div>
+          <div class="s-role">System Administrator</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
         <div class="nav-label">Main Menu</div>
-        <a class="nav-item" href="{% url 'admin-dashboard' %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
-        <a class="nav-item" href="{% url 'admin-staff' %}"><i class="fa-solid fa-user-nurse"></i> Staff Management</a>
-        <a class="nav-item" href="{% url 'admin-users' %}"><i class="fa-solid fa-users"></i> Patients</a>
-        <a class="nav-item" href="{% url 'admin-appointments' %}"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
-        <div class="nav-label" style="margin-top:8px">Management</div>
-        <a class="nav-item active" href="{% url 'admin-centers' %}"><i class="fa-solid fa-hospital"></i> Centers</a>
-        <a class="nav-item" href="{% url 'admin-blogs' %}"><i class="fa-solid fa-newspaper"></i> Blogs</a>
-    </nav>
-    <div class="sidebar-footer"><a class="logout-btn" href="{% url 'admin-logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></div>
-</aside>
-<div class="main">
-    <header class="topbar">
-        <div><h2>Vaccination Centers</h2><p>{{ today }} &nbsp;&middot;&nbsp; Manage vaccination centers</p></div>
-        <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#fbbf24);display:flex;align-items:center;justify-content:center;font-size:15px;color:white;font-weight:700;">{{ request.user.first_name|first|upper }}</div>
-    </header>
-    <div class="content">
-        {% if messages %}{% for message in messages %}
-        {% if message.tags == 'error' %}<div class="msg-error"><i class="fa-solid fa-circle-xmark"></i> {{ message }}</div>
-        {% else %}<div class="msg-success"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>{% endif %}
-        {% endfor %}{% endif %}
+        <a class="nav-item" href="{% url 'admin-dashboard' %}"
+          ><i class="fa-solid fa-gauge-high"></i> Dashboard</a
+        >
+        <a class="nav-item" href="{% url 'admin-staff' %}"
+          ><i class="fa-solid fa-user-nurse"></i> Staff Management</a
+        >
+        <a class="nav-item" href="{% url 'admin-users' %}"
+          ><i class="fa-solid fa-users"></i> Patients</a
+        >
+        <a class="nav-item" href="{% url 'admin-appointments' %}"
+          ><i class="fa-solid fa-calendar-check"></i> Appointments</a
+        >
+        <div class="nav-label" style="margin-top: 8px">Management</div>
+        <a class="nav-item active" href="{% url 'admin-centers' %}"
+          ><i class="fa-solid fa-hospital"></i> Centers</a
+        >
+        <a class="nav-item" href="{% url 'admin-blogs' %}"
+          ><i class="fa-solid fa-newspaper"></i> Blogs</a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <a class="logout-btn" href="{% url 'admin-logout' %}"
+          ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
+        >
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <div>
+          <h2>Vaccination Centers</h2>
+          <p>{{ today }} &nbsp;&middot;&nbsp; Manage vaccination centers</p>
+        </div>
+        <div
+          style="
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            color: white;
+            font-weight: 700;
+          "
+        >
+          {{ request.user.first_name|first|upper }}
+        </div>
+      </header>
+      <div class="content">
+        {% if messages %}{% for message in messages %} {% if message.tags ==
+        'error' %}
+        <div class="msg-error">
+          <i class="fa-solid fa-circle-xmark"></i> {{ message }}
+        </div>
+        {% else %}
+        <div class="msg-success">
+          <i class="fa-solid fa-circle-check"></i> {{ message }}
+        </div>
+        {% endif %} {% endfor %}{% endif %}
 
         <div class="page-grid">
-            <!-- Add Center Form -->
-            <div class="form-card">
-                <div class="card-header"><i class="fa-solid fa-plus"></i><h3>Add New Center</h3></div>
-                <div class="form-body">
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="add">
-                        <div class="field"><label>Center Name *</label><input type="text" name="name" placeholder="e.g. DHQ Teaching Hospital" required></div>
-                        <div class="field"><label>Address *</label><input type="text" name="address" placeholder="e.g. GT Road, Gujranwala" required></div>
-                        <div class="field"><label>Availability</label><input type="text" name="availability" placeholder="e.g. Open 8am–4pm"></div>
-                        <div class="field"><label>Latitude (optional)</label><input type="text" name="latitude" placeholder="e.g. 32.1617"></div>
-                        <div class="field"><label>Longitude (optional)</label><input type="text" name="longitude" placeholder="e.g. 74.1883"></div>
-                        <button type="submit" class="btn-add"><i class="fa-solid fa-plus"></i> Add Center</button>
-                    </form>
-                </div>
+          <!-- Add Center Form -->
+          <div class="form-card">
+            <div class="card-header">
+              <i class="fa-solid fa-plus"></i>
+              <h3>Add New Center</h3>
             </div>
+            <div class="form-body">
+              <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add" />
+                <div class="field">
+                  <label>Center Name *</label
+                  ><input
+                    type="text"
+                    name="name"
+                    placeholder="e.g. DHQ Teaching Hospital"
+                    required
+                  />
+                </div>
+                <div class="field">
+                  <label>Address *</label
+                  ><input
+                    type="text"
+                    name="address"
+                    placeholder="e.g. GT Road, Gujranwala"
+                    required
+                  />
+                </div>
+                <div class="field">
+                  <label>Availability</label
+                  ><input
+                    type="text"
+                    name="availability"
+                    placeholder="e.g. Open 8am–4pm"
+                  />
+                </div>
+                <div class="field">
+                  <label>Latitude (optional)</label
+                  ><input
+                    type="text"
+                    name="latitude"
+                    placeholder="e.g. 32.1617"
+                  />
+                </div>
+                <div class="field">
+                  <label>Longitude (optional)</label
+                  ><input
+                    type="text"
+                    name="longitude"
+                    placeholder="e.g. 74.1883"
+                  />
+                </div>
+                <button type="submit" class="btn-add">
+                  <i class="fa-solid fa-plus"></i> Add Center
+                </button>
+              </form>
+            </div>
+          </div>
 
-            <!-- Centers List -->
-            <div>
-                <div class="centers-list">
-                    {% for center in centers %}
-                    <div class="center-card">
-                        <div class="c-icon"><i class="fa-solid fa-hospital"></i></div>
-                        <div class="c-info">
-                            <div class="c-name">{{ center.name }}</div>
-                            <div class="c-addr"><i class="fa-solid fa-location-dot"></i> {{ center.address }}</div>
-                            <div class="c-avail"><i class="fa-regular fa-clock"></i> {{ center.availability }}</div>
-                        </div>
-                        <span class="c-status {% if center.is_active %}active{% else %}inactive{% endif %}">
-                            {% if center.is_active %}Active{% else %}Inactive{% endif %}
-                        </span>
-                        <div class="c-actions">
-                            <form method="POST">
-                                {% csrf_token %}<input type="hidden" name="action" value="toggle"><input type="hidden" name="center_id" value="{{ center.id }}">
-                                <button type="submit" class="act-btn toggle"><i class="fa-solid fa-toggle-on"></i> Toggle</button>
-                            </form>
-                            <form method="POST" onsubmit="return confirm('Delete {{ center.name }}?')">
-                                {% csrf_token %}<input type="hidden" name="action" value="delete"><input type="hidden" name="center_id" value="{{ center.id }}">
-                                <button type="submit" class="act-btn del"><i class="fa-solid fa-trash"></i></button>
-                            </form>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <div style="text-align:center;padding:40px;color:var(--muted);background:white;border-radius:var(--radius);">
-                        <i class="fa-solid fa-hospital" style="font-size:30px;opacity:0.3;display:block;margin-bottom:10px;"></i>
-                        No centers added yet. Add one using the form!
-                    </div>
-                    {% endfor %}
+          <!-- Centers List -->
+          <div>
+            <div class="centers-list">
+              {% for center in centers %}
+              <div class="center-card">
+                <div class="c-icon"><i class="fa-solid fa-hospital"></i></div>
+                <div class="c-info">
+                  <div class="c-name">{{ center.name }}</div>
+                  <div class="c-addr">
+                    <i class="fa-solid fa-location-dot"></i> {{ center.address
+                    }}
+                  </div>
+                  <div class="c-avail">
+                    <i class="fa-regular fa-clock"></i> {{ center.availability
+                    }}
+                  </div>
                 </div>
+                <span
+                  class="c-status {% if center.is_active %}active{% else %}inactive{% endif %}"
+                >
+                  {% if center.is_active %}Active{% else %}Inactive{% endif %}
+                </span>
+                <div class="c-actions">
+                  <form method="POST">
+                    {% csrf_token %}<input
+                      type="hidden"
+                      name="action"
+                      value="toggle"
+                    /><input
+                      type="hidden"
+                      name="center_id"
+                      value="{{ center.id }}"
+                    />
+                    <button type="submit" class="act-btn toggle">
+                      <i class="fa-solid fa-toggle-on"></i> Toggle
+                    </button>
+                  </form>
+                  <form
+                    method="POST"
+                    onsubmit="return confirm('Delete {{ center.name }}?')"
+                  >
+                    {% csrf_token %}<input
+                      type="hidden"
+                      name="action"
+                      value="delete"
+                    /><input
+                      type="hidden"
+                      name="center_id"
+                      value="{{ center.id }}"
+                    />
+                    <button type="submit" class="act-btn del">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+              {% empty %}
+              <div
+                style="
+                  text-align: center;
+                  padding: 40px;
+                  color: var(--muted);
+                  background: white;
+                  border-radius: var(--radius);
+                "
+              >
+                <i
+                  class="fa-solid fa-hospital"
+                  style="
+                    font-size: 30px;
+                    opacity: 0.3;
+                    display: block;
+                    margin-bottom: 10px;
+                  "
+                ></i>
+                No centers added yet. Add one using the form!
+              </div>
+              {% endfor %}
             </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-</body>
+  </body>
 </html>
