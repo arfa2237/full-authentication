@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link rel="stylesheet" href="{% static 'dashboard.css' %}"/>
     <style>
-        /* ── VACCINE CARD PAGE ── */
+        /*  VACCINE CARD PAGE  */
         .card-page-grid {
             display: grid;
             grid-template-columns: 1fr 1.2fr;
@@ -16,7 +16,7 @@
             align-items: start;
         }
 
-        /* ── DIGITAL CARD ── */
+        /*  DIGITAL CARD  */
         .digital-card {
             background: linear-gradient(135deg, #1a2a5e 0%, #28375f 40%, #6884d3 100%);
             border-radius: 20px;
@@ -103,7 +103,7 @@
 
         .card-issued strong { display: block; font-size: 13px; opacity: 1; }
 
-        /* ── DOWNLOAD BUTTON ── */
+        /*  DOWNLOAD BUTTON  */
         .download-section {
             margin-top: 20px;
             display: flex;
@@ -136,7 +136,7 @@
             box-shadow: 0 8px 24px rgba(104,132,211,0.55);
         }
 
-        /* ── STATUS BANNER ── */
+        /*  STATUS BANNER  */
         .status-banner {
             margin-top: 16px;
             padding: 12px 16px;
@@ -160,7 +160,7 @@
             border: 1px solid #ffcc80;
         }
 
-        /* ── VACCINATION RECORDS TABLE ── */
+        /*  VACCINATION RECORDS TABLE  */
         .records-card {
             background: white;
             border-radius: var(--radius);
@@ -253,7 +253,7 @@
             background: currentColor;
         }
 
-        /* ── EMPTY TABLE STATE ── */
+        /*  EMPTY TABLE STATE  */
         .empty-records {
             padding: 40px 20px;
             text-align: center;
@@ -273,7 +273,7 @@
             margin-bottom: 16px;
         }
 
-        /* ── PROGRESS SECTION ── */
+        /*  PROGRESS SECTION  */
         .progress-section {
             background: white;
             border-radius: var(--radius);
@@ -340,7 +340,7 @@
 </head>
 <body>
 
-<!-- ════════ SIDEBAR ════════ -->
+<!-- SIDEBAR  -->
 <aside class="sidebar">
     <div class="sidebar-logo">
         <div class="logo-icon">
@@ -374,7 +374,7 @@
     </div>
 </aside>
 
-<!-- ════════ MAIN ════════ -->
+<!--  MAIN  -->
 <div class="main">
 
     <header class="topbar">
@@ -419,9 +419,9 @@
                                     padding:3px 10px;border-radius:20px;
                                     font-size:11px;font-weight:600;letter-spacing:1px;">
                             {% if child_gender == 'male' %}
-                                ♂ Boy (Male)
+                                Boy (Male)
                             {% else %}
-                                ♀ Girl (Female)
+                                Girl (Female)
                             {% endif %}
                         </span>
                     </div>
