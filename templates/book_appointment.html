@@ -18,7 +18,6 @@
         gap: 24px;
         align-items: start;
       }
-
       /* ── STEPPER ── */
       .stepper {
         display: flex;
@@ -397,7 +396,7 @@
         pointer-events: none;
       }
 
-      /* ── NAV BUTTONS - the next button ── */
+      /* NAV BUTTONS - the next button  */
       .form-nav {
         display: flex;
         justify-content: space-between;
@@ -760,6 +759,18 @@
         align-items: center;
         gap: 8px;
       }
+      .date-error-msg {
+       color: #d32f2f;
+       font-size: 12px;
+       font-weight: 500;
+       margin-top: 6px;
+       display: none;
+       align-items: center;
+       gap: 6px;
+      }
+      .date-error-msg.show {
+       display: flex;
+      }
 
       @media (max-width: 1000px) {
         .booking-grid {
@@ -844,7 +855,7 @@
     <div class="main">
       <!-- TOPBAR -->
       <header class="topbar">
-        <div class="topbar-left">
+                <div class="topbar-left">
           <h2>Book Appointment</h2>
           <p>
             {{ today }} &nbsp;&middot;&nbsp; Schedule your vaccination in 3 easy
@@ -947,91 +958,20 @@
                   </div>
                   {% empty %}
                   <!-- Static fallback if no vaccines from DB yet -->
+
                   <div
                     class="vaccine-option"
-                    onclick="selectVaccine(this, 'Hepatitis B')"
+                    onclick="selectVaccine(this, 'Child Vaccine - At Birth')"
                   >
                     <input
                       type="radio"
                       name="vaccine_radio"
-                      value="Hepatitis B"
-                    />
-                    <div class="vac-icon">
-                      <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <div>
-                      <div class="vac-name">Hepatitis B</div>
-                      <div class="vac-doses">3 doses</div>
-                    </div>
-                    <div class="check-mark">
-                      <i class="fa-solid fa-check"></i>
-                    </div>
-                  </div>
-                  <div
-                    class="vaccine-option"
-                    onclick="selectVaccine(this, 'MMR')"
-                  >
-                    <input type="radio" name="vaccine_radio" value="MMR" />
-                    <div class="vac-icon">
-                      <i class="fa-solid fa-virus-slash"></i>
-                    </div>
-                    <div>
-                      <div class="vac-name">MMR</div>
-                      <div class="vac-doses">2 doses</div>
-                    </div>
-                    <div class="check-mark">
-                      <i class="fa-solid fa-check"></i>
-                    </div>
-                  </div>
-                  <div
-                    class="vaccine-option"
-                    onclick="selectVaccine(this, 'Tetanus')"
-                  >
-                    <input type="radio" name="vaccine_radio" value="Tetanus" />
-                    <div class="vac-icon">
-                      <i class="fa-solid fa-syringe"></i>
-                    </div>
-                    <div>
-                      <div class="vac-name">Tetanus</div>
-                      <div class="vac-doses">3 doses</div>
-                    </div>
-                    <div class="check-mark">
-                      <i class="fa-solid fa-check"></i>
-                    </div>
-                  </div>
-                  <div
-                    class="vaccine-option"
-                    onclick="selectVaccine(this, 'Pneumococcal')"
-                  >
-                    <input
-                      type="radio"
-                      name="vaccine_radio"
-                      value="Pneumococcal"
-                    />
-                    <div class="vac-icon">
-                      <i class="fa-solid fa-lungs"></i>
-                    </div>
-                    <div>
-                      <div class="vac-name">Pneumococcal</div>
-                      <div class="vac-doses">2 doses</div>
-                    </div>
-                    <div class="check-mark">
-                      <i class="fa-solid fa-check"></i>
-                    </div>
-                  </div>
-                  <div
-                    class="vaccine-option"
-                    onclick="selectVaccine(this, 'Child Vaccination')"
-                  >
-                    <input
-                      type="radio"
-                      name="vaccine_radio"
-                      value="Child Vaccination"
+                      value="Child Vaccine - At Birth"
                     />
                     <div class="vac-icon"><i class="fa-solid fa-baby"></i></div>
                     <div>
-                      <div class="vac-name">Child Vaccination</div>
-                      <div class="vac-doses">EPI Schedule</div>
+                      <div class="vac-name">Child Vaccine - At Birth</div>
+                      <div class="vac-doses">1 dose</div>
                     </div>
                     <div class="check-mark">
                       <i class="fa-solid fa-check"></i>
@@ -1039,15 +979,89 @@
                   </div>
                   <div
                     class="vaccine-option"
-                    onclick="selectVaccine(this, 'COVID-19')"
+                    onclick="selectVaccine(this, 'Child Vaccine - 6 week')"
                   >
-                    <input type="radio" name="vaccine_radio" value="COVID-19" />
-                    <div class="vac-icon">
-                      <i class="fa-solid fa-biohazard"></i>
-                    </div>
+                    <input
+                      type="radio"
+                      name="vaccine_radio"
+                      value="Child Vaccine - 6 week"
+                    />
+                    <div class="vac-icon"><i class="fa-solid fa-baby"></i></div>
                     <div>
-                      <div class="vac-name">COVID-19</div>
-                      <div class="vac-doses">2 doses</div>
+                      <div class="vac-name">Child Vaccine - 6 week</div>
+                      <div class="vac-doses">2 dose</div>
+                    </div>
+                    <div class="check-mark">
+                      <i class="fa-solid fa-check"></i>
+                    </div>
+                  </div>
+                  <div
+                    class="vaccine-option"
+                    onclick="selectVaccine(this, 'Child Vaccine - 10 week')"
+                  >
+                    <input
+                      type="radio"
+                      name="vaccine_radio"
+                      value="Child Vaccine - 10 week"
+                    />
+                    <div class="vac-icon"><i class="fa-solid fa-baby"></i></div>
+                    <div>
+                      <div class="vac-name">Child Vaccine - 10 week</div>
+                      <div class="vac-doses">3 dose</div>
+                    </div>
+                    <div class="check-mark">
+                      <i class="fa-solid fa-check"></i>
+                    </div>
+                  </div>
+                  <div
+                    class="vaccine-option"
+                    onclick="selectVaccine(this, 'Child Vaccine - 14 week')"
+                  >
+                    <input
+                      type="radio"
+                      name="vaccine_radio"
+                      value="Child Vaccine - 14 week"
+                    />
+                    <div class="vac-icon"><i class="fa-solid fa-baby"></i></div>
+                    <div>
+                      <div class="vac-name">Child Vaccine - 14 week</div>
+                      <div class="vac-doses">4 dose</div>
+                    </div>
+                    <div class="check-mark">
+                      <i class="fa-solid fa-check"></i>
+                    </div>
+                  </div>
+                  <div
+                    class="vaccine-option"
+                    onclick="selectVaccine(this, 'Child Vaccine - 9 months')"
+                  >
+                    <input
+                      type="radio"
+                      name="vaccine_radio"
+                      value="Child Vaccine - 9 months"
+                    />
+                    <div class="vac-icon"><i class="fa-solid fa-baby"></i></div>
+                    <div>
+                      <div class="vac-name">Child Vaccine - 9 months</div>
+                      <div class="vac-doses">5 dose</div>
+                    </div>
+                    <div class="check-mark">
+                      <i class="fa-solid fa-check"></i>
+                    </div>
+                  </div>
+                  <div
+                    class="vaccine-option"
+                    onclick="selectVaccine(this, 'Child Vaccine - 15 months')"
+                  >
+                    <input
+                      type="radio"
+                      name="vaccine_radio"
+                      value="Child Vaccine - 15 months"
+                    />
+                    <div class="vac-icon"><i class="fa-solid fa-baby"></i></div>
+                    <div>
+                      <div class="vac-name">Child Vaccine - 15 months</div>
+                      <div class="vac-doses">6 dose</div>
                     </div>
                     <div class="check-mark">
                       <i class="fa-solid fa-check"></i>
@@ -1072,16 +1086,16 @@
                       Dose 2
                     </div>
                     <div class="dose-pill" onclick="selectDose(this, 3)">
-                        Dose 3
+                      Dose 3
                     </div>
                     <div class="dose-pill" onclick="selectDose(this, 4)">
-                        Dose 4
+                      Dose 4
                     </div>
                     <div class="dose-pill" onclick="selectDose(this, 5)">
-                        Dose 5
+                      Dose 5
                     </div>
                     <div class="dose-pill" onclick="selectDose(this, 6)">
-                        Dose 6
+                      Dose 6
                     </div>
                   </div>
                 </div>
@@ -1150,7 +1164,8 @@
                     <div class="c-info" style="flex: 1">
                       <div class="c-title">Ayesha Dispensary</div>
                       <div class="c-meta">
-                        <i class="fa-solid fa-location-dot"></i> Peoples Colony, Gujranwala &middot; Open 9am–2pm
+                        <i class="fa-solid fa-location-dot"></i> Peoples Colony,
+                        Gujranwala &middot; Open 9am–2pm
                       </div>
                     </div>
                     <div
@@ -1173,7 +1188,6 @@
                     </div>
                   </div>
                   {% endfor %}
-
                 </div>
                 <!-- Child Information Section -->
                 <div class="form-section mt-4">
@@ -1337,8 +1351,6 @@
               </div>
               <!-- end formStep2 -->
 
-              
-
               <!-- STEP 3: DATE & TIME -->
               <div class="form-step" id="formStep3">
                 <div class="step-title">
@@ -1362,6 +1374,10 @@
                       required
                       min=""
                     />
+                    <div class="date-error-msg" id="dateErrorMsg">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="dateErrorText">Sundays are not available. Please select another date.</span>
+                    </div>
                   </div>
                   <div class="field-group">
                     <label
@@ -1369,38 +1385,19 @@
                       Slots</label
                     >
                     <div class="time-slots" id="timeSlots">
-                      <div
-                        class="time-slot"
-                        onclick="selectTime(this, '09:00')"
-                      >
-                        9:00 AM
-                      </div>
-                      <div
-                        class="time-slot"
-                        onclick="selectTime(this, '10:00')"
-                      >
-                        10:00 AM
-                      </div>
-                      <div
-                        class="time-slot"
-                        onclick="selectTime(this, '11:00')"
-                      >
-                        11:00 AM
-                      </div>
-                      <div
-                        class="time-slot"
-                        onclick="selectTime(this, '12:00')"
-                      >
-                        12:00 PM
-                      </div>
-                      <div
-                        class="time-slot"
-                        onclick="selectTime(this, '13:00')"
-                      >
-                        1:00 PM
-                      </div>
-                      <div class="time-slot" onclick="selectTime(this, '14:00')">2:00 PM
-                      </div>
+                      
+                      <div class="time-slot" onclick="selectTime(this, '09:00')" data-time="09:00">9:00 AM</div>
+
+                      <div class="time-slot" onclick="selectTime(this, '10:00')" data-time="10:00">10:00 AM</div>
+
+                      <div class="time-slot" onclick="selectTime(this, '11:00')" data-time="11:00">11:00 AM</div>
+
+                      <div class="time-slot" onclick="selectTime(this, '12:00')" data-time="12:00">12:00 PM</div>
+
+                      <div class="time-slot" onclick="selectTime(this, '13:00')" data-time="13:00">1:00 PM</div>
+
+                      <div class="time-slot" onclick="selectTime(this, '14:00')" data-time="14:00">2:00 PM</div>
+                      
                     </div>
                   </div>
                 </div>
@@ -1537,13 +1534,23 @@
       <i class="fa-solid fa-robot"></i>
     </button>
 
+    
     <script>
-      //  STEP NAVIGATION 
+      //  VACCINE ----> DOSE MAPPING (auto select)
+      const VACCINE_DOSES = {
+        "Child Vaccine - At Birth": 1,
+        "Child Vaccine - 6 week": 2,
+        "Child Vaccine - 10 week": 3,
+        "Child Vaccine - 14 week": 4,
+        "Child Vaccine - 9 months": 5,
+        "Child Vaccine - 15 months": 6,
+      };
+
+      // STEP NAVIGATION
       let currentStep = 1;
       const totalSteps = 3;
 
       function goToStep(step) {
-        // Hide all steps
         document
           .querySelectorAll(".form-step")
           .forEach((s) => s.classList.remove("active"));
@@ -1552,22 +1559,17 @@
           if (i + 1 < step) s.classList.add("done");
           if (i + 1 === step) s.classList.add("active");
         });
-        // Show current step
         document.getElementById("formStep" + step).classList.add("active");
-
-        // Update buttons
         document.getElementById("prevBtn").style.visibility =
           step === 1 ? "hidden" : "visible";
         document.getElementById("nextBtn").style.display =
           step < totalSteps ? "flex" : "none";
         document.getElementById("submitBtn").style.display =
           step === totalSteps ? "flex" : "none";
-
         currentStep = step;
       }
 
       function nextStep() {
-        // Validation
         if (currentStep === 1) {
           if (!document.getElementById("hid_vaccine").value) {
             alert("Please select a vaccine type.");
@@ -1578,27 +1580,77 @@
             return;
           }
         }
+
         if (currentStep === 2) {
           if (!document.getElementById("hid_center").value) {
             alert("Please select a vaccination center.");
             return;
           }
-          const childFields = [
-            document.querySelector('input[name="child_name"]'),
-            document.querySelector('input[name="guardian_cnic"]'),
-            document.querySelector('input[name="guardian_name"]'),
-          ];
-          const missingChildField = childFields.find((field) => !field.value.trim());
-          if (missingChildField) {
-            alert("Please complete the child and guardian information.");
-            missingChildField.focus();
+
+          //  Child name validation
+          const childName = document
+            .querySelector('input[name="child_name"]')
+            .value.trim();
+          if (!childName) {
+            alert("Please enter the child's full name.");
             return;
           }
+          if (!/^[a-zA-Z\s]+$/.test(childName)) {
+            alert(
+              "Child name must contain letters only. No numbers or special characters.",
+            );
+            document.querySelector('input[name="child_name"]').focus();
+            return;
+          }
+          if (childName.length < 3) {
+            alert("Child name must be at least 3 characters.");
+            return;
+          }
+
+          //  Gender validation
           if (!document.querySelector('input[name="child_gender"]:checked')) {
             alert("Please select the child's gender.");
             return;
           }
+
+          //  CNIC validation
+          const cnic = document
+            .querySelector('input[name="guardian_cnic"]')
+            .value.trim();
+          if (!cnic) {
+            alert("Please enter Guardian CNIC.");
+            return;
+          }
+          const cnicPattern = /^\d{5}-\d{7}-\d{1}$/;
+          if (!cnicPattern.test(cnic)) {
+            alert(
+              "CNIC format is wrong!\nCorrect format: 35202-1234567-1\n(5 digits - 7 digits - 1 digit)",
+            );
+            document.querySelector('input[name="guardian_cnic"]').focus();
+            return;
+          }
+
+          //  Guardian name validation
+          const guardianName = document
+            .querySelector('input[name="guardian_name"]')
+            .value.trim();
+          if (!guardianName) {
+            alert("Please enter the guardian's name.");
+            return;
+          }
+          if (!/^[a-zA-Z\s]+$/.test(guardianName)) {
+            alert(
+              "Guardian name must contain letters only. No numbers or special characters.",
+            );
+            document.querySelector('input[name="guardian_name"]').focus();
+            return;
+          }
+          if (guardianName.length < 3) {
+            alert("Guardian name must be at least 3 characters.");
+            return;
+          }
         }
+
         if (currentStep < totalSteps) goToStep(currentStep + 1);
       }
 
@@ -1606,7 +1658,7 @@
         if (currentStep > 1) goToStep(currentStep - 1);
       }
 
-      //  VACCINE SELECTION
+      //  VACCINE SELECTION (with auto dose)
       function selectVaccine(el, name) {
         document
           .querySelectorAll(".vaccine-option")
@@ -1615,17 +1667,43 @@
         el.querySelector("input[type=radio]").checked = true;
         document.getElementById("hid_vaccine").value = name;
         updateSummary("sum-vaccine", name);
+
+        // AUTO-SELECT DOSE
+        const dose = VACCINE_DOSES[name] || 1;
+        document
+          .querySelectorAll(".dose-pill")
+          .forEach((p) => p.classList.remove("active"));
+
+        // Find and click the correct dose pill
+        const dosePills = document.querySelectorAll(".dose-pill");
+        dosePills.forEach((pill) => {
+          if (pill.textContent.trim() === "Dose " + dose) {
+            pill.classList.add("active");
+          }
+        });
+
+        document.getElementById("hid_dose").value = dose;
+        updateSummary("sum-dose", "Dose " + dose + " (Auto-selected)");
+
+        // Hide all dose pills — only show correct one
+        dosePills.forEach((pill) => {
+          pill.style.display = "none";
+        });
+        dosePills.forEach((pill) => {
+          if (pill.textContent.trim() === "Dose " + dose) {
+            pill.style.display = "block";
+          }
+        });
       }
 
-      // ── DOSE SELECTION ──
+      //  DOSE SELECTION (manual)
       function selectDose(el, num) {
         document
           .querySelectorAll(".dose-pill")
           .forEach((p) => p.classList.remove("active"));
         el.classList.add("active");
-        const label = num === 0 ? "Booster" : "Dose " + num;
         document.getElementById("hid_dose").value = num;
-        updateSummary("sum-dose", label);
+        updateSummary("sum-dose", "Dose " + num);
       }
 
       //  CENTER SELECTION
@@ -1653,7 +1731,7 @@
         updateSummary("sum-time", el.textContent);
       }
 
-      //  DATE CHANGE 
+      //  DATE CHANGE
       document
         .getElementById("apptDate")
         .addEventListener("change", function () {
@@ -1667,6 +1745,24 @@
           updateSummary("sum-date", d.toLocaleDateString("en-PK", options));
         });
 
+      //  CNIC AUTO-FORMAT
+      document
+        .querySelector('input[name="guardian_cnic"]')
+        .addEventListener("input", function () {
+          let val = this.value.replace(/[^0-9]/g, "");
+          if (val.length > 5 && val.length <= 12) {
+            val = val.substring(0, 5) + "-" + val.substring(5);
+          } else if (val.length > 12) {
+            val =
+              val.substring(0, 5) +
+              "-" +
+              val.substring(5, 12) +
+              "-" +
+              val.substring(12, 13);
+          }
+          this.value = val;
+        });
+
       // SUMMARY UPDATE
       function updateSummary(id, value) {
         const el = document.getElementById(id);
@@ -1674,11 +1770,11 @@
         el.classList.remove("empty");
       }
 
-      //  SET MIN DATE (today) 
+      //  SET MIN DATE (today)
       const today = new Date().toISOString().split("T")[0];
       document.getElementById("apptDate").min = today;
 
-      //  FORM VALIDATION ON SUBMIT 
+      // FORM VALIDATION ON SUBMIT
       document
         .getElementById("bookingForm")
         .addEventListener("submit", function (e) {
