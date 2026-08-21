@@ -16,7 +16,9 @@ from django.utils import timezone
 from django.urls import reverse
 from django.views import View
 from django.utils.cache import add_never_cache_headers
+from django.db import DatabaseError, transaction
 from datetime import date, datetime
+import re
 from .models import PatientProfile, VaccinationCenter, Appointment
 from .models import *
 
@@ -302,7 +304,7 @@ def BookAppointment(request):
 
     if request.method == 'POST':
         vaccine_type = request.POST.get('vaccine_type', '').strip()
-        dose_number  = request.POST.get('dose_number',  '1').strip()
+        dose_number  = request.POST.get('dose_number',  '').strip()
         center_id    = request.POST.get('center_id',    '').strip()
         appt_date    = request.POST.get('appt_date',    '').strip()
         appt_time    = request.POST.get('appt_time',    '').strip()
@@ -316,14 +318,34 @@ def BookAppointment(request):
         # .......................... Validation ..........................................
         has_error = False
 
-        if not vaccine_type:
+        if vaccine_type not in dict(Appointment.VACCINE_CHOICES):
             messages.error(request, 'Please select a vaccine type.')
             has_error = True
+
+        try:
+            dose_number_value = int(dose_number)
+            if not 1 <= dose_number_value <= 6:
+                raise ValueError
+        except (TypeError, ValueError):
+            messages.error(request, 'Please select a valid dose number.')
+            has_error = True
+
+        center = None
+        if not center_id:
+            messages.error(request, 'Please select a vaccination center.')
+            has_error = True
+        else:
+            try:
+                center = VaccinationCenter.objects.get(id=int(center_id), is_active=True)
+            except (VaccinationCenter.DoesNotExist, ValueError):
+                messages.error(request, 'Please select a valid vaccination center.')
+                has_error = True
+
         if not child_name:
             messages.error(request, 'Please enter the child\'s name.')
             has_error = True
 
-        if not child_gender:
+        if child_gender not in dict(Appointment.GENDER_CHOICES):
             messages.error(request, 'Please select the child\'s gender.')
             has_error = True
 
@@ -331,8 +353,8 @@ def BookAppointment(request):
             messages.error(request, 'Please enter guardian CNIC.')
             has_error = True
         
-        elif len(guardian_cnic.replace('-', '')) != 13:
-            messages.error(request, 'CNIC must be 13 digits.')
+        elif not re.fullmatch(r'\d{5}-\d{7}-\d', guardian_cnic):
+            messages.error(request, 'CNIC must use the format 35202-1234567-1.')
             has_error = True
 
         if not guardian_name:
@@ -367,8 +389,8 @@ def BookAppointment(request):
             duplicate = Appointment.objects.filter(
                 patient=request.user,
                 vaccine_type=vaccine_type,
-                dose_number=int(dose_number),
-                status='scheduled'
+                dose_number=dose_number_value,
+                status__in=['pending', 'scheduled']
             ).exists()
 
             if duplicate:
@@ -388,32 +410,38 @@ def BookAppointment(request):
             })
 
         # .......................... Save Appointment ............................
-        center = None
-        if center_id:
-            try:
-                center = VaccinationCenter.objects.get(id=int(center_id))
-            except (VaccinationCenter.DoesNotExist, ValueError):
-                pass
-
-        Appointment.objects.create(
-            patient          = request.user,
-            center           = center,
-            vaccine_type     = vaccine_type,
-            dose_number      = int(dose_number) if dose_number.isdigit() else 1,
-            appointment_date = parsed_date,
-            appointment_time = parsed_time,
-            notes            = notes,
-            status           = 'pending', #default status when booking an appointment
-            child_name       = child_name,
-            child_gender     = child_gender,
-            guardian_name    = guardian_name,
-            guardian_cnic    = guardian_cnic,
-        )
+        try:
+            with transaction.atomic():
+                Appointment.objects.create(
+                    patient          = request.user,
+                    center           = center,
+                    vaccine_type     = vaccine_type,
+                    dose_number      = dose_number_value,
+                    appointment_date = parsed_date,
+                    appointment_time = parsed_time,
+                    notes            = notes,
+                    status            = 'pending',
+                    child_name       = child_name,
+                    child_gender     = child_gender,
+                    guardian_name    = guardian_name,
+                    guardian_cnic    = guardian_cnic,
+                )
+        except DatabaseError:
+            messages.error(
+                request,
+                'The appointment could not be saved. Please try again or contact support.'
+            )
+            return render(request, 'book_appointment.html', {
+                'profile': profile,
+                'today': today,
+                'centers': centers,
+                'vaccines': vaccines,
+                'pending_count': 0,
+            })
         messages.success(
             request,
             f'Appointment request submitted! Vaccine {vaccine_type} Dose {dose_number} on {parsed_date.strftime("%d %B %Y")} — Status: Pending Confirmation.'
         )
-          # url bd mn bnaye gy 
         return redirect('my-appointments')
     return render(request, 'book_appointment.html', {
         'profile':  profile,
