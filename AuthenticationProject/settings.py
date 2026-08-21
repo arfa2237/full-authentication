@@ -27,7 +27,10 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG       = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['web-production-fc932.up.railway.app']
+ALLOWED_HOSTS = ['web-production-fc932.up.railway.app',
+                 '127.0.0.1',
+                 'localhost',
+                ]
 
 CSRF_TRUSTED_ORIGINS = ['https://web-production-fc932.up.railway.app']
 
