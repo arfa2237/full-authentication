@@ -92,6 +92,8 @@ def chatbot(request):
 
 
 
+
+
 # chatbot .....................................
 
 GROQ_API_KEY = "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" 
