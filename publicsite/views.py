@@ -97,7 +97,7 @@ def chatbot(request):
 # chatbot .....................................
 
 GROQ_API_KEY = "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" 
-GROQ_MODEL = "llama-3.3-70b-versatile" 
+GROQ_MODEL = "openai/gpt-oss-20b" 
 
 SYSTEM_PROMPT = """You are TIG Assistant — an intelligent vaccine advisor for Trace and Immunize Gujranwala (TIG), a government digital health platform under the District Health Authority of Gujranwala, Pakistan.
  
