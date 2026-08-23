@@ -57,36 +57,39 @@
 
 
 // Dark/Light Theme Toggle Functionality - Line 1
+// Dark/Light Theme Toggle Functionality - Line 1
 document.addEventListener('DOMContentLoaded', function() {
     const themeToggle = document.getElementById('themeToggle');
+    if (!themeToggle) return; // page has no toggle button — skip safely
+
     const body = document.body;
     const themeIcon = themeToggle.querySelector('i');
-    
+
+    function setIcon(isDark) {
+        if (themeIcon) {
+            themeIcon.classList.toggle('fa-moon', !isDark);
+            themeIcon.classList.toggle('fa-sun', isDark);
+        } else {
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+        }
+    }
+
     // Check for saved theme preference or default to light
     const currentTheme = localStorage.getItem('theme') || 'light';
-    
+
     // Apply saved theme
     if (currentTheme === 'dark') {
         body.classList.add('dark-theme');
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-        console.log('Applied dark theme on load');
+        setIcon(true);
+    } else {
+        setIcon(false);
     }
-    
+
     // Toggle theme on button click
     themeToggle.addEventListener('click', function() {
         body.classList.toggle('dark-theme');
-        
-        if (body.classList.contains('dark-theme')) {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-            localStorage.setItem('theme', 'dark');
-            console.log('Switched to dark theme');
-        } else {
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
-            localStorage.setItem('theme', 'light');
-            console.log('Switched to light theme');
-        }
+        const isDark = body.classList.contains('dark-theme');
+        setIcon(isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 });
