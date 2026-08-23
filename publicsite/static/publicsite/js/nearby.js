@@ -24,10 +24,24 @@ function initMap() {
         return;
     }
 
-    map = L.map('tig-map').setView([ayeshaLat, ayeshaLng], 15);
+    // FIX: maxZoom raised to 20. maxNativeZoom on each tile layer tells
+    // Leaflet the highest zoom level actual tile images exist for; if the
+    // user zooms past that, Leaflet automatically upscales the last real
+    // tile (slightly blurry) instead of showing nothing. That combination
+    // is what stops the map from ever going blank/grey no matter how far
+    // someone zooms in.
+    map = L.map('tig-map', {
+        maxZoom: 19,
+        minZoom: 3
+    }).setView([ayeshaLat, ayeshaLng], 15);
 
+    // Original map exactly as it was at the start — standard OpenStreetMap
+    // tile server, no third-party style/attribution added.
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19,
+        maxNativeZoom: 19,
+        crossOrigin: true
     }).addTo(map);
 
     ayeshaMarker = L.marker([ayeshaLat, ayeshaLng], {
@@ -42,8 +56,27 @@ function initMap() {
     }).addTo(map);
     ayeshaMarker.bindPopup('<b>Ayesha Dispensary</b><br>Peoples Colony, Gujranwala<br>Free EPI Vaccines');
 
+    // FIX: invalidateSize() on every zoom/move end too — not just once on
+    // load. Leaflet caches the container's pixel size internally; if that
+    // cached size is even slightly wrong (common when the map sits inside
+    // a flex/grid layout, or the page is still doing layout/animations
+    // when the map first initializes), tiles beyond the "known" area will
+    // not render as you zoom or pan, leaving blank grey patches.
+    map.on('zoomend moveend', function () {
+        map.invalidateSize();
+    });
+
+    // Re-check size whenever the window is resized (orientation change,
+    // devtools opening, sidebar collapsing, etc.)
+    window.addEventListener('resize', function () {
+        if (map) map.invalidateSize();
+    });
+
     // Fix leaflet rendering issue when map container was hidden/resized on load
     setTimeout(function () { if (map) map.invalidateSize(); }, 300);
+    // A second, later check catches slow web-font/layout shifts that can
+    // still throw off the container size after the first check.
+    setTimeout(function () { if (map) map.invalidateSize(); }, 1000);
 }
 
 /* Skip location — just show the dispensary on the map */
@@ -189,6 +222,11 @@ function showRoute() {
 
         var statusEl = document.getElementById('locStatusText');
         if (statusEl) statusEl.textContent = 'Route found — ' + distDisplay;
+
+        // FIX: fitSelectedRoutes already re-fits the view/zoom for the
+        // route bounds, which can leave Leaflet's cached container size
+        // stale for a moment — re-check right after.
+        setTimeout(function () { if (map) map.invalidateSize(); }, 200);
     });
 
     // Fallback to straight-line distance if routing fails/times out
