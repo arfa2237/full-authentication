@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hepatitis Information Portal</title>
     <link rel="stylesheet" href="{% static 'publicsite/css/Hepatitis.css' %}">
+    <link rel="stylesheet" href="{% static 'publicsite/css/info-theme.css' %}">
    
 </head>
 <body>
@@ -24,6 +25,7 @@
         <a href="#symptoms" class="nav-link">Symptoms</a>
         <a href="#prevention" class="nav-link">Prevention</a>
         <a href="#fact-sheets" class="nav-link">Fact Sheets</a>
+        <button id="themeToggle" title="Toggle Dark Mode">🌙</button>
     </nav>
 
     <!-- MAIN CONTENT -->
@@ -270,4 +272,6 @@
             <p>© 2025 Hepatitis Information Portal | Based on WHO Guidelines</p>
         </div>
     </footer>
+    <script src="{% static 'publicsite/js/info-theme.js' %}"></script>
 </body>
+</html>
