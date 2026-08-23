@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mumps Information - Vaccine Preventable Disease</title>
     <link rel="stylesheet" href="{% static "publicsite/css/mumps.css" %}"> 
+    <link rel="stylesheet" href="{% static 'publicsite/css/info-theme.css' %}">
 </head>
 <body>
     <!-- HEADER SECTION -->
@@ -25,6 +26,7 @@
         <a href="#symptoms" class="nav-link">Symptoms</a>
         <a href="#prevention" class="nav-link">Prevention</a>
         <a href="#complications" class="nav-link">Complications</a>
+        <button id="themeToggle" title="Toggle Dark Mode">🌙</button>
     </nav>
 
     <!-- MAIN CONTENT -->
@@ -184,4 +186,9 @@
     <!-- FOOTER -->
     <footer class="footer">
         <div class="main-container">
-            <p>© 
+            <p>© 2025 Mumps Information Portal | Based on WHO Guidelines</p>
+            </div>
+    </footer>
+    <script src="{% static 'publicsite/js/info-theme.js' %}"></script>
+</body>
+</html>
