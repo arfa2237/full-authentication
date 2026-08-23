@@ -1,0 +1,107 @@
+/* info-theme.css — dark theme for standalone disease-info pages
+   (Hepatitis, Child, measles, MMR, mumps, rubella, Pneumococcal, Tetanus) */
+
+body.dark-theme {
+    background-color: #0b0d12 !important;
+    color: #e8e8e8 !important;
+}
+
+/* ── HEADER — distinct dark shade of its own ── */
+body.dark-theme .header {
+    background-color: #070911 !important;
+}
+body.dark-theme .header .logo,
+body.dark-theme .header .header-subtitle,
+body.dark-theme .header-content .logo,
+body.dark-theme .header-content .header-subtitle {
+    color: #e8e8e8 !important;
+}
+
+/* ── NAV BAR — distinct shade from header AND body, with a real hover state ── */
+body.dark-theme .nav-bar {
+    background-color: #151a28 !important;
+    border-bottom: 1px solid #2a3348 !important;
+}
+body.dark-theme .nav-bar .nav-link {
+    color: #c3cbe0 !important;
+    background: transparent !important;
+}
+body.dark-theme .nav-bar .nav-link:hover {
+    color: #ffffff !important;
+    background: #6884d3 !important;
+}
+
+/* ── Headings & body text ── */
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme p,
+body.dark-theme li,
+body.dark-theme span,
+body.dark-theme strong,
+body.dark-theme small {
+    color: #e8e8e8 !important;
+}
+
+body.dark-theme .main-heading,
+body.dark-theme .section-heading,
+body.dark-theme .info-heading,
+body.dark-theme .fact-title,
+body.dark-theme .symptom-title,
+body.dark-theme .complication-title,
+body.dark-theme .consequence-title {
+    color: #8fa4e0 !important;
+}
+
+/* ── Card-style content blocks ── */
+body.dark-theme .content-section,
+body.dark-theme .stat-box,
+body.dark-theme .symptom-box,
+body.dark-theme .prevention-box,
+body.dark-theme .complication-box,
+body.dark-theme .consequence-box,
+body.dark-theme .fact-box,
+body.dark-theme .source-info,
+body.dark-theme .highlight-box {
+    background-color: #151a28 !important;
+    color: #e8e8e8 !important;
+    border-color: #2a3348 !important;
+}
+
+/* ── "How it Spreads" transmission boxes — these were solid light-blue/white,
+   completely unreadable in dark mode ── */
+body.dark-theme .transmission-item {
+    background-color: #1c2338 !important;
+    color: #e8e8e8 !important;
+    border-left: 3px solid #6884d3 !important;
+}
+
+/* ── Vaccine availability pill (e.g. "Available (MMR)") ── */
+body.dark-theme .vaccine-status {
+    background-color: #26314f !important;
+    color: #b9c6f5 !important;
+}
+
+body.dark-theme a {
+    color: #8fa4e0 !important;
+}
+body.dark-theme a:hover {
+    color: #6884d3 !important;
+}
+
+/* ── FOOTER — clearly separated with a top border and its own darker shade ── */
+body.dark-theme .footer {
+    background-color: #070911 !important;
+    color: #e8e8e8 !important;
+    border-top: 1px solid #22283a !important;
+}
+
+/* Toggle button itself, plain emoji, no icon dependency */
+#themeToggle {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 12px;
+    color: inherit;
+}
