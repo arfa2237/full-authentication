@@ -537,6 +537,61 @@ body.dark-theme .map-toggle-btn.active {
     color: #ffffff;
 }
 
+/* ── ROUTE INFO PANEL (distance / time / turn-by-turn steps) —
+   dark theme fix. This block was accidentally dropped when nearby.css
+   was rewritten for the custom Map/Satellite toggle — restored here. ── */
+body.dark-theme .route-info-panel {
+    background-color: #151a28 !important;
+    border-top: 2px solid #6884d3 !important;
+}
+
+body.dark-theme .route-summary {
+    border-bottom: 1px solid #2a3348 !important;
+}
+
+body.dark-theme .route-summary-item {
+    color: #8fa4e0 !important;
+}
+
+body.dark-theme .route-summary-item i {
+    color: #8fa4e0 !important;
+}
+
+body.dark-theme .route-summary-item span {
+    color: #e8e8e8 !important;
+}
+
+body.dark-theme .route-step {
+    color: #e8e8e8 !important;
+    border-bottom: 1px solid #2a3348 !important;
+}
+
+body.dark-theme .route-step-text {
+    color: #e8e8e8 !important;
+}
+
+body.dark-theme .route-step-icon {
+    background: rgba(104, 132, 211, 0.18) !important;
+    color: #8fa4e0 !important;
+}
+
+body.dark-theme .route-step-distance {
+    color: #a9b3cc !important;
+}
+
+body.dark-theme .map-status-badge {
+    color: #c3cbe0 !important;
+}
+
+body.dark-theme .stat-pill {
+    background-color: #151a28 !important;
+    border-color: #2a3348 !important;
+}
+
+body.dark-theme .stat-txt {
+    color: #a9b3cc !important;
+}
+
 /* ── ZOOM CONTROL (+/-) — dark theme fix ──
    Targets every element Leaflet actually generates for this control
    (the wrapping bar, both buttons individually, and the inner span
