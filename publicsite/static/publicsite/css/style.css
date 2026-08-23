@@ -999,24 +999,11 @@
     --card-border: #2a3348;
 }
 
-/* Dark Theme Base
-   FIX: uses the "background" SHORTHAND (not just background-color).
-   Some page-specific CSS files (e.g. FAQ.css) set their own
-   `background: linear-gradient(...)` on <body>, which is a separate
-   layer from background-color. Overriding only background-color left
-   that light gradient visible above/below the dark cards. The
-   shorthand here zeroes out any background-image/gradient too. */
+/* Dark Theme Base */
 body.dark-theme,
 html body.dark-theme {
-    background: var(--dark-bg) !important;
-    color: var(--dark-text) !important;
-    min-height: 100vh;
-}
-
-/* Stop the <html> tag's own white background from peeking out
-   above/below the body content on short pages */
-html:has(body.dark-theme) {
     background-color: var(--dark-bg) !important;
+    color: var(--dark-text) !important;
 }
 
 /* Theme Toggle Button */
@@ -1085,12 +1072,12 @@ body.dark-theme a:hover {
 }
 
 /* ── NAVBAR — transparent over the header image before scrolling
-   (matches the home page's cinematic look), solid once scrolled.
-   Kept a visible (subtle) border so the navbar/header boundary is
-   distinguishable in dark mode too ── */
+   (matches the home page's cinematic look), solid once scrolled ──
+   A subtle bottom border keeps it visually separated from the header
+   below even while transparent. */
 body.dark-theme .navbar-light {
     background: transparent !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
 
 body.dark-theme .sticky-top.navbar-light {
@@ -1124,13 +1111,9 @@ body.dark-theme .dropdown-item:hover {
     color: #fff !important;
 }
 
-/* ── HEADER / BREADCRUMB — keep the background image visible with a
-   lighter overlay. background-size / background-repeat carry
-   !important too, otherwise the "background" shorthand above
-   (which is !important) silently resets them to their default
-   values (auto / repeat) and the image renders zoomed-in/cropped ── */
+/* ── HEADER / BREADCRUMB — keep the background image visible with a lighter overlay ── */
 body.dark-theme .bg-breadcrumb {
-    background: linear-gradient(rgba(0, 20, 66, 0.7), rgba(0, 20, 66, 0.7)), url(../img/singleheader.jpg) !important;
+    background-image: linear-gradient(rgba(0, 20, 66, 0.7), rgba(0, 20, 66, 0.7)), url(../img/singleheader.jpg) !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
     background-size: cover !important;
@@ -1266,15 +1249,12 @@ body.dark-theme .about-item p {
 
 body.dark-theme .counter {
     background: linear-gradient(rgba(0, 0, 0, .75), rgba(0, 0, 0, .85)), url(../img/fact-bg.jpg) !important;
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
-    background-size: cover !important;
 }
 
 /* ── FULL-PAGE SECTION BACKGROUNDS — these wrapper sections had their own
-   light background color/gradient set in nearby.css / FAQ.css / vpd pages,
-   which was never covered before, leaving the page white even though the
-   small boxes inside had turned dark ── */
+   light background color set in nearby.css / FAQ.css / vpd pages, which was
+   never covered before, leaving the page white even though the small boxes
+   inside had turned dark ── */
 body.dark-theme .stats-bar-section,
 body.dark-theme .map-section,
 body.dark-theme .centers-section,
@@ -1315,56 +1295,29 @@ body.dark-theme .map-status-badge {
     color: #e8e8e8 !important;
     border-color: var(--card-border) !important;
 }
-/* ── ROUTE INFO PANEL (distance / time / turn-by-turn steps) ── */
-body.dark-theme .route-info-panel {
-    background-color: var(--card-bg) !important;
-    border-top: 2px solid #6884d3 !important;
+
+/* Extra safety net for stray white gaps (e.g. FAQ page top/bottom) that
+   come from wrapper elements not covered by the specific selectors above */
+html body.dark-theme,
+body.dark-theme .faq-container,
+body.dark-theme .faq-items-container {
+    background-color: var(--dark-bg) !important;
 }
 
-body.dark-theme .route-summary {
-    border-bottom: 1px solid var(--card-border) !important;
+/* Map/Satellite toggle buttons on the nearby page map */
+body.dark-theme .map-layer-toggle {
+    background: var(--card-bg) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
 }
-
-body.dark-theme .route-summary-item {
-    color: #8fa4e0 !important;
-}
-
-body.dark-theme .route-summary-item i {
-    color: #8fa4e0 !important;
-}
-
-body.dark-theme .route-summary-item span {
-    color: #e8e8e8 !important;
-}
-
-body.dark-theme .route-step {
-    color: #e8e8e8 !important;
-    border-bottom: 1px solid var(--card-border) !important;
-}
-
-body.dark-theme .route-step-icon {
-    background: rgba(104, 132, 211, 0.18) !important;
-    color: #8fa4e0 !important;
-}
-
-body.dark-theme .route-step-distance {
-    color: #a9b3cc !important;
-}
-
-/* Map topbar / stat pills / status badge already covered above, but
-   the "Click Allow Location..." status text + locate button border
-   needs contrast too */
-body.dark-theme .map-status-badge {
+body.dark-theme .map-toggle-btn {
     color: #c3cbe0 !important;
 }
-
-body.dark-theme .stat-pill {
-    background-color: var(--card-bg) !important;
-    border-color: var(--card-border) !important;
+body.dark-theme .map-toggle-btn:hover {
+    background: rgba(104, 132, 211, 0.15) !important;
 }
-
-body.dark-theme .stat-txt {
-    color: #a9b3cc !important;
+body.dark-theme .map-toggle-btn.active {
+    background: #6884d3 !important;
+    color: #ffffff !important;
 }
 /*END DARK THEME STYLES */
 
