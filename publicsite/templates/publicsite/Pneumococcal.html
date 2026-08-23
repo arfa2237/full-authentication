@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pneumococcal Information Portal </title>
     <link rel="stylesheet" href="{% static 'publicsite/css/Pneumococcal.css' %}">
+    <link rel="stylesheet" href="{% static 'publicsite/css/info-theme.css' %}">
 </head>
 <body>
     <!-- HEADER SECTION -->
@@ -24,6 +25,7 @@
         <a href="#symptoms" class="nav-link">Symptoms</a>
         <a href="#prevention" class="nav-link">Prevention</a>
         <a href="#consequences" class="nav-link">Consequences</a>
+        <button id="themeToggle" title="Toggle Dark Mode">🌙</button>
     </nav>
 
     <!-- MAIN CONTENT -->
@@ -186,5 +188,6 @@
             <p>© 2025 Pneumococcal Information Portal | Based on WHO Guidelines</p>
         </div>
     </footer>
+    <script src="{% static 'publicsite/js/info-theme.js' %}"></script>
 </body>
 </html>
