@@ -1002,7 +1002,7 @@
 /* Dark Theme Base */
 body.dark-theme,
 html body.dark-theme {
-    background-color: var(--dark-bg) !important;
+    background: var(--dark-bg) !important;
     color: var(--dark-text) !important;
 }
 
