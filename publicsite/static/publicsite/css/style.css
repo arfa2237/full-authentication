@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
 
 *{
@@ -994,15 +993,30 @@
 :root {
     --light-bg: #ffffff;
     --light-text: #333333;
-    --dark-bg: #2d2d2d;
-    --dark-text: #f8f8f8;
-    --card-bg: #1a1a1a;
+    --dark-bg: #0b0d12;
+    --dark-text: #e8e8e8;
+    --card-bg: #151a28;
+    --card-border: #2a3348;
 }
 
-/* Dark Theme Base */
-body.dark-theme {
-    background-color: var(--dark-bg);
-    color: var(--dark-text);
+/* Dark Theme Base
+   FIX: uses the "background" SHORTHAND (not just background-color).
+   Some page-specific CSS files (e.g. FAQ.css) set their own
+   `background: linear-gradient(...)` on <body>, which is a separate
+   layer from background-color. Overriding only background-color left
+   that light gradient visible above/below the dark cards. The
+   shorthand here zeroes out any background-image/gradient too. */
+body.dark-theme,
+html body.dark-theme {
+    background: var(--dark-bg) !important;
+    color: var(--dark-text) !important;
+    min-height: 100vh;
+}
+
+/* Stop the <html> tag's own white background from peeking out
+   above/below the body content on short pages */
+html:has(body.dark-theme) {
+    background-color: var(--dark-bg) !important;
 }
 
 /* Theme Toggle Button */
@@ -1024,64 +1038,197 @@ body.dark-theme {
     transform: scale(1.1);
 }
 
-/* Dark Theme Specific Styles */
+/* Force all common text elements to a readable light color in dark mode
+   (this also overrides inline style="color:#28375f" etc. since an
+   !important rule in the stylesheet beats a plain inline style) */
+body.dark-theme p,
+body.dark-theme li,
+body.dark-theme label,
+body.dark-theme td,
+body.dark-theme th,
+body.dark-theme strong,
+body.dark-theme b,
+body.dark-theme small,
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme h5,
+body.dark-theme h6 {
+    color: #e8e8e8 !important;
+}
+
+body.dark-theme span:not(.vtag):not(.center-badge):not(.stat-num):not(.stat-txt) {
+    color: #e8e8e8 !important;
+}
+
+/* Accent / heading colors that were hardcoded dark-navy — now a visible light blue */
+body.dark-theme .hero-heading,
+body.dark-theme .service-heading,
+body.dark-theme .custom-h1-color,
+body.dark-theme .custom-h6-color,
+body.dark-theme .custom-hover,
+body.dark-theme .blog-txt.breadcrumb-item.active,
+body.dark-theme .disease h2 a {
+    color: #8fa4e0 !important;
+}
+
+body.dark-theme .custom-h4-color {
+    color: #8fa4e0 !important;
+}
+
+body.dark-theme a {
+    color: #8fa4e0;
+}
+body.dark-theme a:hover {
+    color: #6884d3;
+}
+
+/* ── NAVBAR — transparent over the header image before scrolling
+   (matches the home page's cinematic look), solid once scrolled.
+   Kept a visible (subtle) border so the navbar/header boundary is
+   distinguishable in dark mode too ── */
+body.dark-theme .navbar-light {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+body.dark-theme .sticky-top.navbar-light {
+    background: #12172a !important;
+    border-bottom: 1px solid #2a3348 !important;
+}
+
 body.dark-theme .navbar-light .navbar-nav .nav-link {
-    color: #b0b0b0;
+    color: #c3cbe0;
 }
 
 body.dark-theme .navbar-light .navbar-nav .nav-link:hover,
 body.dark-theme .navbar-light .navbar-nav .nav-link.active {
-    color: #6884d3;
+    color: #8fa4e0;
 }
 
-/* Dark Theme Sticky Navbar */
-body.dark-theme .sticky-top.navbar-light {
-    background: #1a1a1a !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+body.dark-theme .navbar-brand h1.custom-logo-text {
+    color: #8fa4e0 !important;
 }
 
-body.dark-theme .sticky-top.navbar-light .navbar-nav .nav-link {
-    color: #b0b0b0;
+/* Dropdown menus (user menu, nav dropdowns) */
+body.dark-theme .dropdown-menu {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+}
+body.dark-theme .dropdown-item {
+    color: #e8e8e8 !important;
+}
+body.dark-theme .dropdown-item:hover {
+    background: #6884d3 !important;
+    color: #fff !important;
 }
 
-body.dark-theme .sticky-top.navbar-light .navbar-nav .nav-link:hover,
-body.dark-theme .sticky-top.navbar-light .navbar-nav .nav-link.active {
-    color: #6884d3;
+/* ── HEADER / BREADCRUMB — keep the background image visible with a
+   lighter overlay. background-size / background-repeat carry
+   !important too, otherwise the "background" shorthand above
+   (which is !important) silently resets them to their default
+   values (auto / repeat) and the image renders zoomed-in/cropped ── */
+body.dark-theme .bg-breadcrumb {
+    background: linear-gradient(rgba(0, 20, 66, 0.7), rgba(0, 20, 66, 0.7)), url(../img/singleheader.jpg) !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
 }
 
-body.dark-theme .feature-item {
-    background-color: var(--card-bg);
-    color: #f8f8f8;
+body.dark-theme .carousel-caption-1,
+body.dark-theme .carousel-caption-2 {
+    background: linear-gradient(rgba(0, 0, 0, .55), rgba(0, 0, 0, 0.55)) !important;
 }
 
-body.dark-theme .feature-item p.text-muted {
-    color: #cccccc !important;
+/* ── CARDS / SECTIONS used across the site ── */
+body.dark-theme .feature-item,
+body.dark-theme .service-item,
+body.dark-theme .product-content,
+body.dark-theme .blog-item,
+body.dark-theme .blog-content,
+body.dark-theme .center-card,
+body.dark-theme .dispensary-card,
+body.dark-theme .dispensary-card-header,
+body.dark-theme .dispensary-card-body,
+body.dark-theme .stat-box,
+body.dark-theme .stat-pill,
+body.dark-theme .faq-item,
+body.dark-theme .faq-question,
+body.dark-theme .faq-answer,
+body.dark-theme .disease,
+body.dark-theme .service-detail-card,
+body.dark-theme .why-card,
+body.dark-theme .journey-card .jc-body,
+body.dark-theme .map-outer,
+body.dark-theme .search-card,
+body.dark-theme .appointment-floating-bar,
+body.dark-theme .category-label {
+    background-color: var(--card-bg) !important;
+    color: #e8e8e8 !important;
+    border-color: var(--card-border) !important;
 }
 
-body.dark-theme .service-item {
-    background-color: var(--card-bg);
-    color: #f8f8f8;
+body.dark-theme .appointment-text h4,
+body.dark-theme .appointment-text p {
+    color: #e8e8e8 !important;
+}
+
+body.dark-theme .view-map-btn-container {
+    background: var(--dark-bg) !important;
+}
+
+/* Chart / schedule table — give it a visible card outline + shadow so the
+   "designed" look isn't lost in dark mode */
+body.dark-theme table.chart {
+    background-color: var(--card-bg) !important;
+    color: #e8e8e8 !important;
+    border: 1px solid var(--card-border) !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55) !important;
+}
+body.dark-theme table.chart th,
+body.dark-theme table.chart td {
+    background-color: var(--card-bg) !important;
+    color: #e8e8e8 !important;
+    border-color: var(--card-border) !important;
+}
+body.dark-theme table.chart .data span {
+    background-color: rgba(104, 132, 211, 0.18) !important;
+    color: #b9c6f5 !important;
+    border: 1px solid var(--card-border) !important;
+}
+
+body.dark-theme .who-reference {
+    background: rgba(104, 132, 211, 0.15) !important;
+    color: #e8e8e8 !important;
+}
+
+/* Form fields (newsletter box, search inputs, etc.) */
+body.dark-theme .form-control {
+    background-color: var(--card-bg) !important;
+    color: #e8e8e8 !important;
+    border-color: var(--card-border) !important;
+}
+body.dark-theme .form-control::placeholder {
+    color: #8a93ab !important;
 }
 
 body.dark-theme .text-muted {
-    color: #cccccc !important;
+    color: #a9b3cc !important;
 }
 
-body.dark-theme .product-content {
-    background-color: var(--card-bg) !important;
-    color: #f8f8f8;
-}
-
+/* ── FOOTER — visually separated from body with its own darker shade + top border ── */
 body.dark-theme .footer {
-    background: var(--card-bg) !important;
+    background: #070911 !important;
+    border-top: 1px solid #22283a !important;
 }
 
 body.dark-theme .text-dark {
-    color: #f8f8f8 !important;
+    color: #e8e8e8 !important;
 }
 
 body.dark-theme .text-secondary {
-    color: #cccccc !important;
+    color: #a9b3cc !important;
 }
 
 body.dark-theme .btn-primary {
@@ -1093,34 +1240,133 @@ body.dark-theme .border-primary {
     border-color: #5268a8 !important;
 }
 
-body.dark-theme .bg-light {
-    background-color: var(--card-bg) !important;
-    color: #f8f8f8;
+body.dark-theme .bg-light,
+body.dark-theme .container-fluid.bg-light,
+body.dark-theme .container-fluid.feature,
+body.dark-theme .container-fluid.service,
+body.dark-theme .container-fluid.product,
+body.dark-theme .container-fluid.about,
+body.dark-theme .container-fluid.blog {
+    background-color: var(--dark-bg) !important;
+    color: #e8e8e8;
 }
 
 body.dark-theme .bg-white {
     background-color: var(--dark-bg) !important;
-    color: #f8f8f8;
-}
-
-body.dark-theme .carousel-caption-1,
-body.dark-theme .carousel-caption-2 {
-    background: linear-gradient(rgba(0, 0, 0, .7), rgba(0, 0, 0, 0.7)) !important;
+    color: #e8e8e8;
 }
 
 body.dark-theme .about-item {
-    color: #f8f8f8;
+    color: #e8e8e8;
 }
 
 body.dark-theme .about-item p {
-    color: #cccccc;
+    color: #a9b3cc;
 }
 
 body.dark-theme .counter {
-    background: linear-gradient(rgba(255, 255, 255, .6), rgba(255, 255, 255, .6)) !important;
+    background: linear-gradient(rgba(0, 0, 0, .75), rgba(0, 0, 0, .85)), url(../img/fact-bg.jpg) !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+}
+
+/* ── FULL-PAGE SECTION BACKGROUNDS — these wrapper sections had their own
+   light background color/gradient set in nearby.css / FAQ.css / vpd pages,
+   which was never covered before, leaving the page white even though the
+   small boxes inside had turned dark ── */
+body.dark-theme .stats-bar-section,
+body.dark-theme .map-section,
+body.dark-theme .centers-section,
+body.dark-theme .view-map-btn-container,
+body.dark-theme .faq-container,
+body.dark-theme .faq-stats,
+body.dark-theme .service-detail-section,
+body.dark-theme .who-stats-banner,
+body.dark-theme .how-section,
+body.dark-theme .why-tig-section,
+body.dark-theme section {
+    background-color: var(--dark-bg) !important;
+}
+
+/* Location page — the "allow location" permission popup over the map
+   was still solid white/light */
+body.dark-theme .loc-overlay {
+    background: rgba(11, 13, 18, 0.94) !important;
+}
+body.dark-theme .loc-prompt-card,
+body.dark-theme .loc-prompt-card h4,
+body.dark-theme .loc-prompt-card p {
+    color: #e8e8e8 !important;
+}
+body.dark-theme .loc-icon {
+    background: #1c2338 !important;
+    color: #8fa4e0 !important;
+}
+body.dark-theme .skip-link {
+    color: #a9b3cc !important;
+}
+
+/* Map top bar (title + "My Location" button strip) was still white */
+body.dark-theme .map-topbar,
+body.dark-theme .map-title,
+body.dark-theme .map-status-badge {
+    background-color: var(--card-bg) !important;
+    color: #e8e8e8 !important;
+    border-color: var(--card-border) !important;
+}
+/* ── ROUTE INFO PANEL (distance / time / turn-by-turn steps) ── */
+body.dark-theme .route-info-panel {
+    background-color: var(--card-bg) !important;
+    border-top: 2px solid #6884d3 !important;
+}
+
+body.dark-theme .route-summary {
+    border-bottom: 1px solid var(--card-border) !important;
+}
+
+body.dark-theme .route-summary-item {
+    color: #8fa4e0 !important;
+}
+
+body.dark-theme .route-summary-item i {
+    color: #8fa4e0 !important;
+}
+
+body.dark-theme .route-summary-item span {
+    color: #e8e8e8 !important;
+}
+
+body.dark-theme .route-step {
+    color: #e8e8e8 !important;
+    border-bottom: 1px solid var(--card-border) !important;
+}
+
+body.dark-theme .route-step-icon {
+    background: rgba(104, 132, 211, 0.18) !important;
+    color: #8fa4e0 !important;
+}
+
+body.dark-theme .route-step-distance {
+    color: #a9b3cc !important;
+}
+
+/* Map topbar / stat pills / status badge already covered above, but
+   the "Click Allow Location..." status text + locate button border
+   needs contrast too */
+body.dark-theme .map-status-badge {
+    color: #c3cbe0 !important;
+}
+
+body.dark-theme .stat-pill {
+    background-color: var(--card-bg) !important;
+    border-color: var(--card-border) !important;
+}
+
+body.dark-theme .stat-txt {
+    color: #a9b3cc !important;
 }
 /*END DARK THEME STYLES */
-
 
 
 /*** copyright Start ***/
