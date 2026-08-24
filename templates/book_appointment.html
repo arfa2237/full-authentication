@@ -14,7 +14,7 @@
       /* ── BOOKING PAGE EXTRAS ── */
       .booking-grid {
         display: grid;
-        grid-template-columns: 1.4fr 1fr;
+        grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
         gap: 24px;
         align-items: start;
       }
@@ -1164,8 +1164,7 @@
                     <div class="c-info" style="flex: 1">
                       <div class="c-title">Ayesha Dispensary</div>
                       <div class="c-meta">
-                        <i class="fa-solid fa-location-dot"></i> Peoples Colony,
-                        Gujranwala &middot; Open 9am–2pm
+                        <i class="fa-solid fa-location-dot"></i> Peoples Colony, Gujranwala &middot; Open 9am–2pm
                       </div>
                     </div>
                     <div
@@ -1189,165 +1188,242 @@
                   </div>
                   {% endfor %}
                 </div>
-                <!-- Child Information Section -->
-                <div class="form-section mt-4">
-                  <h5
-                    style="
-                      color: var(--accent-deeper);
-                      font-weight: 700;
-                      margin-bottom: 16px;
-                    "
-                  >
-                    <i
-                      class="fa-solid fa-baby me-2"
-                      style="color: var(--accent-color)"
-                    ></i>
-                    Child / Patient Information
-                  </h5>
+<!-- Child Information Section -->
+<div class="form-section mt-4">
+<div style="
+    background: linear-gradient(135deg, #f8f9ff, #f0f2ff);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 20px;
+    border: 1.5px solid #dde3f5;
+">
+    <!-- Section Header -->
+    <div style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+        padding-bottom: 14px;
+        border-bottom: 1.5px solid #dde3f5;
+    ">
+        <div style="
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            background: var(--accent-color);
+            display: flex; align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        ">
+            <i class="fa-solid fa-baby" style="color:white; font-size:18px;"></i>
+        </div>
+        <div>
+            <div style="font-size:15px; font-weight:700; color:var(--accent-deeper);">
+                Child / Patient Information
+            </div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
+                Fill in the child's details for the vaccine card
+            </div>
+        </div>
+    </div>
 
-                  <!-- Child Name -->
-                  <div class="form-group mb-3">
-                    <label
-                      style="
-                        font-size: 13px;
-                        font-weight: 600;
-                        color: var(--accent-deeper);
-                      "
-                    >
-                      Child's Full Name <span style="color: red">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="child_name"
-                      class="form-control"
-                      placeholder="Enter child's full name"
-                      required
-                      style="
-                        border-radius: 10px;
-                        border: 1.5px solid #dde3f5;
-                        padding: 10px 14px;
-                        font-size: 13px;
-                      "
-                    />
-                  </div>
+    <!-- Child Name -->
+    <div style="margin-bottom: 18px;">
+        <label style="
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent-deeper);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        ">
+            <i class="fa-solid fa-user" style="color:var(--accent-color);"></i>
+            Child's Full Name <span style="color:red;">*</span>
+        </label>
+        <input
+            type="text"
+            name="child_name"
+            placeholder="Enter child's full name"
+            required
+            style="
+                width: 100%;
+                padding: 12px 16px;
+                border: 2px solid #dde3f5;
+                border-radius: 12px;
+                font-family: 'Poppins', sans-serif;
+                font-size: 13px;
+                color: var(--accent-deeper);
+                background: white;
+                outline: none;
+                transition: all 0.2s;
+                box-sizing: border-box;
+            "
+            onfocus="this.style.borderColor='var(--accent-color)';this.style.boxShadow='0 0 0 3px rgba(104,132,211,0.12)'"
+            onblur="this.style.borderColor='#dde3f5';this.style.boxShadow='none'"
+        />
+    </div>
 
-                  <!-- Child Gender -->
-                  <div class="form-group mb-3">
-                    <label
-                      style="
-                        font-size: 13px;
-                        font-weight: 600;
-                        color: var(--accent-deeper);
-                      "
-                    >
-                      Child's Gender <span style="color: red">*</span>
-                    </label>
-                    <div style="display: flex; gap: 16px; margin-top: 8px">
-                      <label
-                        style="
-                          display: flex;
-                          align-items: center;
-                          gap: 8px;
-                          cursor: pointer;
-                          font-size: 13px;
-                          color: #444;
-                        "
-                      >
-                        <input
-                          type="radio"
-                          name="child_gender"
-                          value="male"
-                          style="
-                            accent-color: var(--accent-color);
-                            width: 16px;
-                            height: 16px;
-                          "
-                        />
-                        Boy (Male)
-                      </label>
-                      <label
-                        style="
-                          display: flex;
-                          align-items: center;
-                          gap: 8px;
-                          cursor: pointer;
-                          font-size: 13px;
-                          color: #444;
-                        "
-                      >
-                        <input
-                          type="radio"
-                          name="child_gender"
-                          value="female"
-                          style="
-                            accent-color: var(--accent-color);
-                            width: 16px;
-                            height: 16px;
-                          "
-                        />
-                        Girl (Female)
-                      </label>
-                    </div>
-                  </div>
+    <!-- Child Gender -->
+    <div style="margin-bottom: 18px;">
+        <label style="
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent-deeper);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+        ">
+            <i class="fa-solid fa-venus-mars" style="color:var(--accent-color);"></i>
+            Child's Gender <span style="color:red;">*</span>
+        </label>
+        <div style="display: flex; gap: 12px;">
+            <label style="
+                flex: 1;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 16px;
+                border: 2px solid #dde3f5;
+                border-radius: 12px;
+                cursor: pointer;
+                background: white;
+                transition: all 0.2s;
+                font-size: 13px;
+                color: #444;
+            " onclick="this.style.borderColor='var(--accent-color)';
+                       this.style.background='#f0f2ff';
+                       document.querySelectorAll('.gender-label').forEach(l=>{
+                           l.style.borderColor='#dde3f5';
+                           l.style.background='white';
+                       });
+                       this.style.borderColor='var(--accent-color)';
+                       this.style.background='#f0f2ff';"
+               class="gender-label">
+                <input type="radio" name="child_gender" value="male"
+                       style="accent-color:var(--accent-color);width:16px;height:16px;"/>
+                Boy (Male)
+            </label>
+            <label style="
+                flex: 1;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 16px;
+                border: 2px solid #dde3f5;
+                border-radius: 12px;
+                cursor: pointer;
+                background: white;
+                transition: all 0.2s;
+                font-size: 13px;
+                color: #444;
+            " onclick="document.querySelectorAll('.gender-label').forEach(l=>{
+                           l.style.borderColor='#dde3f5';
+                           l.style.background='white';
+                       });
+                       this.style.borderColor='var(--accent-color)';
+                       this.style.background='#f0f2ff';"
+               class="gender-label">
+                <input type="radio" name="child_gender" value="female"
+                       style="accent-color:var(--accent-color);width:16px;height:16px;"/>
+                Girl (Female)
+            </label>
+        </div>
+    </div>
 
-                  <!-- Guardian CNIC -->
-                  <div class="form-group mb-3">
-                    <label
-                      style="
-                        font-size: 13px;
-                        font-weight: 600;
-                        color: var(--accent-deeper);
-                      "
-                    >
-                      Guardian / Parent CNIC <span style="color: red">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="guardian_cnic"
-                      class="form-control"
-                      placeholder="e.g. 35202-1234567-1"
-                      maxlength="15"
-                      required
-                      style="
-                        border-radius: 10px;
-                        border: 1.5px solid #dde3f5;
-                        padding: 10px 14px;
-                        font-size: 13px;
-                        font-family: monospace;
-                      "
-                    />
-                    <small style="color: var(--text-muted); font-size: 11px">
-                      Format: 35202-1234567-1
-                    </small>
-                  </div>
+    <!-- Two column row for CNIC and Guardian Name -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 4px;">
 
-                  <!-- Guardian Name -->
-                  <div class="form-group mb-3">
-                    <label
-                      style="
-                        font-size: 13px;
-                        font-weight: 600;
-                        color: var(--accent-deeper);
-                      "
-                    >
-                      Guardian / Parent Name <span style="color: red">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="guardian_name"
-                      class="form-control"
-                      placeholder="Enter father/mother/guardian name"
-                      required
-                      style="
-                        border-radius: 10px;
-                        border: 1.5px solid #dde3f5;
-                        padding: 10px 14px;
-                        font-size: 13px;
-                      "
-                    />
-                  </div>
-                </div>
-                <!-- End of child information -->
+        <!-- Guardian CNIC -->
+        <div>
+            <label style="
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--accent-deeper);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                margin-bottom: 8px;
+            ">
+                <i class="fa-solid fa-id-card" style="color:var(--accent-color);"></i>
+                Guardian CNIC <span style="color:red;">*</span>
+            </label>
+            <input
+                type="text"
+                name="guardian_cnic"
+                placeholder="35202-1234567-1"
+                maxlength="15"
+                required
+                style="
+                    width: 100%;
+                    padding: 12px 16px;
+                    border: 2px solid #dde3f5;
+                    border-radius: 12px;
+                    font-family: monospace;
+                    font-size: 13px;
+                    color: var(--accent-deeper);
+                    background: white;
+                    outline: none;
+                    transition: all 0.2s;
+                    box-sizing: border-box;
+                "
+                onfocus="this.style.borderColor='var(--accent-color)';this.style.boxShadow='0 0 0 3px rgba(104,132,211,0.12)'"
+                onblur="this.style.borderColor='#dde3f5';this.style.boxShadow='none'"
+            />
+            <div style="font-size:10px; color:var(--text-muted); margin-top:5px;">
+                Format: 35202-1234567-1
+            </div>
+        </div>
+
+        <!-- Guardian Name -->
+        <div>
+            <label style="
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--accent-deeper);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                margin-bottom: 8px;
+            ">
+                <i class="fa-solid fa-user-shield" style="color:var(--accent-color);"></i>
+                Guardian Name <span style="color:red;">*</span>
+            </label>
+            <input
+                type="text"
+                name="guardian_name"
+                placeholder="Father/Mother name"
+                required
+                style="
+                    width: 100%;
+                    padding: 12px 16px;
+                    border: 2px solid #dde3f5;
+                    border-radius: 12px;
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 13px;
+                    color: var(--accent-deeper);
+                    background: white;
+                    outline: none;
+                    transition: all 0.2s;
+                    box-sizing: border-box;
+                "
+                onfocus="this.style.borderColor='var(--accent-color)';this.style.boxShadow='0 0 0 3px rgba(104,132,211,0.12)'"
+                onblur="this.style.borderColor='#dde3f5';this.style.boxShadow='none'"
+            />
+        </div>
+    </div>
+
+</div>
+<!-- End of child information -->
+              </div>
               </div>
               <!-- end formStep2 -->
 
@@ -1767,27 +1843,75 @@
         el.classList.remove("empty");
       }
 
-      //  SET MIN DATE (today)
-      const today = new Date().toISOString().split("T")[0];
-      document.getElementById("apptDate").min = today;
+    //  SET MIN DATE + BLOCK SUNDAYS 
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("apptDate").min = today;
 
-      // FORM VALIDATION ON SUBMIT
-      document
-        .getElementById("bookingForm")
-        .addEventListener("submit", function (e) {
-          const date = document.querySelector("input[name=appt_date]").value;
-          const time = document.getElementById("hid_time").value;
-          if (!date) {
-            e.preventDefault();
-            alert("Please select an appointment date.");
-            return;
-          }
-          if (!time) {
-            e.preventDefault();
-            alert("Please select a time slot.");
-            return;
-          }
+    document.getElementById("apptDate").addEventListener("input", function () {
+    const selectedDate = new Date(this.value);
+    const dayOfWeek    = selectedDate.getUTCDay(); // 0 = Sunday
+
+    if (dayOfWeek === 0) {
+        // Show error message
+        document.getElementById("dateErrorMsg").classList.add("show");
+        document.getElementById("dateErrorText").textContent =
+            "Sundays are not available, Center is closed. Please select another date.";
+        this.value = "";
+        document.getElementById("hid_time").value = "";
+        updateSummary("sum-date", "Not selected");
+        updateSummary("sum-time", "Not selected");
+        document.getElementById("sum-date").classList.add("empty");
+        document.getElementById("sum-time").classList.add("empty");
+        // Reset all time slots
+        document.querySelectorAll(".time-slot").forEach(s => {
+            s.classList.remove("unavailable", "selected");
+            s.style.opacity = "1";
+            s.style.cursor  = "pointer";
+            s.style.pointerEvents = "auto";
         });
+    } else {
+        document.getElementById("dateErrorMsg").classList.remove("show");
+    }
+});
+
+      //  FORM VALIDATION ON SUBMIT 
+document.getElementById("bookingForm").addEventListener("submit", function (e) {
+    const date = document.querySelector("input[name=appt_date]").value;
+    const time = document.getElementById("hid_time").value;
+
+    if (!date) {
+        e.preventDefault();
+        alert("Please select an appointment date.");
+        return;
+    }
+
+    // Check Sunday
+    const selectedDate = new Date(date);
+    if (selectedDate.getUTCDay() === 0) {
+        e.preventDefault();
+        alert("Sundays are not available. Please select another date.");
+        return;
+    }
+
+    if (!time) {
+        e.preventDefault();
+        alert("Please select an available time slot.");
+        return;
+    }
+
+    // Final check — time must be at least 1 hour from now if today
+    const todayStr = new Date().toISOString().split("T")[0];
+    if (date === todayStr) {
+        const now             = new Date();
+        const slotHour        = parseInt(time.split(":")[0]);
+        const currentDecimal  = now.getHours() + (now.getMinutes() / 60);
+        if (slotHour <= currentDecimal + 1) {
+            e.preventDefault();
+            alert("Please select a time at least 1 hour from now.");
+            return;
+        }
+    }
+});
     </script>
   </body>
 </html>
