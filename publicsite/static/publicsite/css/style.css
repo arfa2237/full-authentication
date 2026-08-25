@@ -988,7 +988,6 @@
 /*** Footer End ***/
 
 
-
 /* BASE DARK THEME STYLE */
 :root {
     --light-bg: #ffffff;
@@ -1002,7 +1001,7 @@
 /* Dark Theme Base */
 body.dark-theme,
 html body.dark-theme {
-    background: var(--dark-bg) !important;
+    background-color: var(--dark-bg) !important;
     color: var(--dark-text) !important;
 }
 
@@ -1161,24 +1160,52 @@ body.dark-theme .view-map-btn-container {
     background: var(--dark-bg) !important;
 }
 
-/* Chart / schedule table — give it a visible card outline + shadow so the
-   "designed" look isn't lost in dark mode */
+/* ── VACCINATION SCHEDULE CHART (scheduling page) ──
+   Same rounded alternating-box design as light theme —
+   only the colors change for dark mode, matching the
+   site's own dark palette (--card-bg / --card-border).
+   Selector specificity here (table.chart + nth-child)
+   is higher than the generic "body.dark-theme td/th"
+   text-color rule above, and scheduling.css loads after
+   this file, so !important is used to guarantee these
+   win regardless of load order. ── */
+
 body.dark-theme table.chart {
-    background-color: var(--card-bg) !important;
-    color: #e8e8e8 !important;
-    border: 1px solid var(--card-border) !important;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55) !important;
+    border: 1px solid #2a3348 !important;
+    border-radius: 15px !important;
 }
-body.dark-theme table.chart th,
-body.dark-theme table.chart td {
-    background-color: var(--card-bg) !important;
-    color: #e8e8e8 !important;
-    border-color: var(--card-border) !important;
+
+/* Odd rows — lighter card tone so it still reads as a
+   distinct "box" against the page background */
+body.dark-theme table.chart tr:nth-child(odd) th,
+body.dark-theme table.chart tr:nth-child(odd) td {
+    background-color: #2a3763 !important;
+    color: #f5f7fc !important;
 }
+
+/* Even rows — lightened so the box still stands out against the
+   page background (--dark-bg: #0b0d12) instead of blending into
+   it like #151a28 did */
+body.dark-theme table.chart tr:nth-child(even) th,
+body.dark-theme table.chart tr:nth-child(even) td {
+    background-color: #1f2a4d !important;
+    color: #f5f7fc !important;
+}
+
+body.dark-theme table.chart th {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* Vaccine name text inside each "data" cell — bright and
+   bold so it stays clearly prominent on both row shades */
 body.dark-theme table.chart .data span {
-    background-color: rgba(104, 132, 211, 0.18) !important;
-    color: #b9c6f5 !important;
-    border: 1px solid var(--card-border) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+body.dark-theme #cap {
+    color: #8fa4e0 !important;
 }
 
 body.dark-theme .who-reference {
@@ -1319,7 +1346,9 @@ body.dark-theme .map-toggle-btn.active {
     background: #6884d3 !important;
     color: #ffffff !important;
 }
+
 /*END DARK THEME STYLES */
+
 
 
 /*** copyright Start ***/
