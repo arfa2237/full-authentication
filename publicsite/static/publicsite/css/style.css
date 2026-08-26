@@ -1347,6 +1347,96 @@ body.dark-theme .map-toggle-btn.active {
     color: #ffffff !important;
 }
 
+/* ── CHATBOT WIDGET (chatbot.html, included on every page) ──
+   Same layout/design as light theme — only colors change,
+   matched to the site's dark palette (--card-bg, --card-border,
+   accent #6884d3 / #8fa4e0). Kept here with the rest of the
+   dark-theme rules (not in chatbot.css) since chatbot.html is
+   included inside the same <body>, so body.dark-theme already
+   covers it once style.css is loaded — no need for a second file. ── */
+
+body.dark-theme #chatbot-box {
+    background: #151a28 !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid #2a3348 !important;
+}
+
+body.dark-theme .chat-header {
+    background: linear-gradient(135deg, #3d4f8f, #28375f) !important;
+    color: #fff !important;
+}
+
+body.dark-theme .chat-body {
+    background: #0f1420 !important;
+}
+
+body.dark-theme .bot-msg {
+    background: #1e2740 !important;
+    color: #e8e8e8 !important;
+}
+
+body.dark-theme .bot-msg strong {
+    color: #ffffff !important;
+}
+
+body.dark-theme .chat-text {
+    color: #e8e8e8 !important;
+}
+
+body.dark-theme .chat-num {
+    color: #8fa4e0 !important;
+}
+
+body.dark-theme .user-msg {
+    background: linear-gradient(135deg, #4f6bc4, #6884d3) !important;
+    color: #fff !important;
+}
+
+body.dark-theme .chat-footer {
+    background: #151a28 !important;
+    border-top: 1px solid #2a3348 !important;
+}
+
+body.dark-theme #chat-input {
+    background: #151a28 !important;
+    color: #e8e8e8 !important;
+}
+
+body.dark-theme #chat-input::placeholder {
+    color: #8a93ab !important;
+}
+
+body.dark-theme #chat-input:disabled {
+    background: #10141f !important;
+    color: #6b7280 !important;
+}
+
+body.dark-theme .chat-footer button {
+    background: #6884d3 !important;
+}
+
+body.dark-theme .chat-body::-webkit-scrollbar-track {
+    background: #10141f !important;
+}
+
+body.dark-theme .chat-body::-webkit-scrollbar-thumb {
+    background: #3a4670 !important;
+}
+
+body.dark-theme #chatbot-btn {
+    background: linear-gradient(135deg, #4f6bc4, #6884d3) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-theme #chatbot-btn:hover {
+    background: #1e2740 !important;
+    border-color: #2a3348 !important;
+}
+
+body.dark-theme .fab-tooltip {
+    background: #1e2740 !important;
+    color: #e8e8e8 !important;
+}
 /*END DARK THEME STYLES */
 
 
