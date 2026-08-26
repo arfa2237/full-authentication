@@ -1437,6 +1437,30 @@ body.dark-theme .fab-tooltip {
     background: #1e2740 !important;
     color: #e8e8e8 !important;
 }
+
+/* ── HOME PAGE "Our Services" FEATURE CARDS ──
+   (Schedule Appointments / Track Your Records / Location
+   nearby / Vaccine Information). These headings and "Read
+   More" links use hardcoded !important navy colors in the
+   light-theme rules above, which otherwise beat the generic
+   "body.dark-theme a" rule and stay invisible-dark on the
+   dark card background. Override them specifically here. ── */
+
+body.dark-theme .feature-item a.h4 {
+    color: #8fa4e0 !important;
+}
+
+body.dark-theme .feature-item a.h4:hover {
+    color: #6884d3 !important;
+}
+
+body.dark-theme .feature-item .btn.text-secondary {
+    color: #8fa4e0 !important;
+}
+
+body.dark-theme .feature-item .btn.text-secondary:hover {
+    color: #6884d3 !important;
+}
 /*END DARK THEME STYLES */
 
 
