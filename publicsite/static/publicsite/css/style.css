@@ -1070,6 +1070,19 @@ body.dark-theme a:hover {
     color: #6884d3;
 }
 
+/* Buttons that happen to be <a> tags (Read More, Login, product
+   card CTAs, etc.) should keep white text like real buttons —
+   not the generic link color above, which becomes invisible on
+   the light-blue hover background (both landing near #6884d3). */
+body.dark-theme a.btn.btn-secondary,
+body.dark-theme a.btn.btn-primary {
+    color: #ffffff !important;
+}
+body.dark-theme a.btn.btn-secondary:hover,
+body.dark-theme a.btn.btn-primary:hover {
+    color: #ffffff !important;
+}
+
 /* ── NAVBAR — transparent over the header image before scrolling
    (matches the home page's cinematic look), solid once scrolled ──
    A subtle bottom border keeps it visually separated from the header
