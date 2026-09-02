@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+{% load i18n %}
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hepatitis Information Portal</title>
+    <title>{% trans "Hepatitis Information Portal" %}</title>
     <link rel="stylesheet" href="{% static 'publicsite/css/Hepatitis.css' %}">
     <link rel="stylesheet" href="{% static 'publicsite/css/info-theme.css' %}">
    
@@ -14,262 +15,276 @@
     <!-- HEADER WITH BACKGROUND IMAGE -->
     <header class="header">
         <div class="header-content">
-            <div class="logo">Hepatitis Information Portal</div>
-            <p class="header-subtitle">Hepatitis - Vaccine Preventable Diseases</p>
+            <div class="logo">{% trans "Hepatitis Information Portal" %}</div>
+            <p class="header-subtitle">{% trans "Hepatitis - Vaccine Preventable Diseases" %}</p>
         </div>
     </header>
 
     <!-- NAVIGATION BAR - WITHOUT BACKGROUND IMAGE -->
     <nav class="nav-bar">
-        <a href="#overview" class="nav-link">Overview</a>
-        <a href="#symptoms" class="nav-link">Symptoms</a>
-        <a href="#prevention" class="nav-link">Prevention</a>
-        <a href="#fact-sheets" class="nav-link">Fact Sheets</a>
-        <button id="themeToggle" title="Toggle Dark Mode">🌙</button>
+        <a href="#overview" class="nav-link">{% trans "Overview" %}</a>
+        <a href="#symptoms" class="nav-link">{% trans "Symptoms" %}</a>
+        <a href="#prevention" class="nav-link">{% trans "Prevention" %}</a>
+        <a href="#fact-sheets" class="nav-link">{% trans "Fact Sheets" %}</a>
+       <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+    <i class="fas fa-moon"></i>
+</button>
+<form action="{% url 'set_language' %}" method="post" class="d-inline m-0">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}">
+    {% if LANGUAGE_CODE == 'ur' %}
+        <input name="language" type="hidden" value="en">
+        <button type="submit" class="language-toggle" title="Switch to English">EN</button>
+    {% else %}
+        <input name="language" type="hidden" value="ur">
+        <button type="submit" class="language-toggle" title="Switch to Urdu">UR</button>
+    {% endif %}
+</form>
+
     </nav>
 
     <!-- MAIN CONTENT -->
     <div class="main-container">
         <!-- ======== OVERVIEW SECTION ========== -->
         <section id="overview" class="content-section">
-            <h1 class="main-heading">Hepatitis</h1>
+            <h1 class="main-heading">{% trans "Hepatitis" %}</h1>
             
-            <h2 class="section-heading">Overview</h2>
-            <p>Hepatitis is an inflammation of the liver that is caused by a variety of infectious viruses and non-infectious agents leading to a range of health problems, including severe liver damage and cancer, some of which can be fatal.</p>
+            <h2 class="section-heading">{% trans "Overview" %}</h2>
+            <p>{% trans "Hepatitis is an inflammation of the liver that is caused by a variety of infectious viruses and non-infectious agents leading to a range of health problems, including severe liver damage and cancer, some of which can be fatal." %}</p>
             
             <div class="highlight-box">
-                <p>There are 5 main strains of the hepatitis virus, referred to as types A, B, C, D and E. While they can all cause liver disease, they differ in important ways including modes of transmission, severity of the illness, geographical distribution and prevention methods.</p>
+                <p>{% trans "There are 5 main strains of the hepatitis virus, referred to as types A, B, C, D and E. While they can all cause liver disease, they differ in important ways including modes of transmission, severity of the illness, geographical distribution and prevention methods." %}</p>
             </div>
             
-            <p>In particular, types B and C lead to chronic diseases in hundreds of millions of people and together are the most common cause of liver cirrhosis, liver cancer and viral hepatitis-related deaths.</p>
+            <p>{% trans "In particular, types B and C lead to chronic diseases in hundreds of millions of people and together are the most common cause of liver cirrhosis, liver cancer and viral hepatitis-related deaths." %}</p>
             
             <!-- STATISTICS -->
             <div class="stats-container">
                 <div class="stat-box">
                     <div class="stat-number">1.3 Million</div>
-                    <p>Deaths annually</p>
+                    <p>{% trans "Deaths annually" %}</p>
                 </div>
                 <div class="stat-box">
                     <div class="stat-number">304 Million</div>
-                    <p>People living with Hepatitis B or C</p>
+                    <p>{% trans "People living with Hepatitis B or C" %}</p>
                 </div>
                 <div class="stat-box">
                     <div class="stat-number">90%</div>
-                    <p>Reduction target in new infections by 2030</p>
+                    <p>{% trans "Reduction target in new infections by 2030" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- ========== SYMPTOMS SECTION ========== -->
         <section id="symptoms" class="content-section">
-            <h2 class="section-heading">Symptoms</h2>
+            <h2 class="section-heading">{% trans "Symptoms" %}</h2>
             
             <div class="highlight-box">
-                <p><strong>Many people with hepatitis exhibit only mild symptoms or no symptoms at all.</strong> Each form of the virus, however, can cause more severe symptoms.</p>
+                <p><strong>{% trans "Many people with hepatitis exhibit only mild symptoms or no symptoms at all." %}</strong> {% trans "Each form of the virus, however, can cause more severe symptoms." %}</p>
             </div>
             
             <!-- SYMPTOMS GRID -->
             <div class="symptoms-container">
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Fatigue</h3>
-                    <p>Extreme tiredness that doesn't improve with rest</p>
+                    <h3 class="symptom-title">{% trans "Fatigue" %}</h3>
+                    <p>{% trans "Extreme tiredness that doesn't improve with rest" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Jaundice</h3>
-                    <p>Yellowing of skin and eyes</p>
+                    <h3 class="symptom-title">{% trans "Jaundice" %}</h3>
+                    <p>{% trans "Yellowing of skin and eyes" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Abdominal Pain</h3>
-                    <p>Discomfort in upper right abdomen</p>
+                    <h3 class="symptom-title">{% trans "Abdominal Pain" %}</h3>
+                    <p>{% trans "Discomfort in upper right abdomen" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Loss of Appetite</h3>
-                    <p>Reduced desire to eat</p>
+                    <h3 class="symptom-title">{% trans "Loss of Appetite" %}</h3>
+                    <p>{% trans "Reduced desire to eat" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Nausea</h3>
-                    <p>Feeling sick to stomach</p>
+                    <h3 class="symptom-title">{% trans "Nausea" %}</h3>
+                    <p>{% trans "Feeling sick to stomach" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Dark Urine</h3>
-                    <p>Tea-colored urine</p>
+                    <h3 class="symptom-title">{% trans "Dark Urine" %}</h3>
+                    <p>{% trans "Tea-colored urine" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- ========== PREVENTION SECTION ========== -->
         <section id="prevention" class="content-section">
-            <h2 class="section-heading">Prevention & Vaccination</h2>
+            <h2 class="section-heading">{% trans "Prevention & Vaccination" %}</h2>
             
             <!-- PREVENTION GRID -->
             <div class="prevention-container">
                 <div class="prevention-box">
-                    <h3>Hepatitis A</h3>
-                    <p class="vaccine-status">Vaccine Available</p>
-                    <p>2 doses, 6-12 months apart</p>
+                    <h3>{% trans "Hepatitis A" %}</h3>
+                    <p class="vaccine-status">{% trans "Vaccine Available" %}</p>
+                    <p>{% trans "2 doses, 6-12 months apart" %}</p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Hepatitis B</h3>
-                    <p class="vaccine-status">Vaccine Available</p>
-                    <p>3 doses, highly effective</p>
+                    <h3>{% trans "Hepatitis B" %}</h3>
+                    <p class="vaccine-status">{% trans "Vaccine Available" %}</p>
+                    <p>{% trans "3 doses, highly effective" %}</p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Hepatitis C</h3>
-                    <p class="vaccine-status">No Vaccine</p>
-                    <p>Prevention through safe practices</p>
+                    <h3>{% trans "Hepatitis C" %}</h3>
+                    <p class="vaccine-status">{% trans "No Vaccine" %}</p>
+                    <p>{% trans "Prevention through safe practices" %}</p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Hepatitis D</h3>
-                    <p class="vaccine-status">Indirect Protection</p>
-                    <p>Hepatitis B vaccine provides protection</p>
+                    <h3>{% trans "Hepatitis D" %}</h3>
+                    <p class="vaccine-status">{% trans "Indirect Protection" %}</p>
+                    <p>{% trans "Hepatitis B vaccine provides protection" %}</p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Hepatitis E</h3>
-                    <p class="vaccine-status">Limited Availability</p>
-                    <p>Vaccine available in China</p>
+                    <h3>{% trans "Hepatitis E" %}</h3>
+                    <p class="vaccine-status">{% trans "Limited Availability" %}</p>
+                    <p>{% trans "Vaccine available in China" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- ========== FACT SHEETS SECTION ========== -->
         <section id="fact-sheets" class="content-section">
-            <h2 class="section-heading">Hepatitis Fact Sheets</h2>
-            <p>Complete information based on WHO guidelines for each hepatitis type.</p>
+            <h2 class="section-heading">{% trans "Hepatitis Fact Sheets" %}</h2>
+            <p>{% trans "Complete information based on WHO guidelines for each hepatitis type." %}</p>
 
             <!-- HEPATITIS A FACT SHEET -->
             <div class="fact-box">
-                <h2 class="fact-title">Hepatitis A</h2>
+                <h2 class="fact-title">{% trans "Hepatitis A" %}</h2>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">How it Spreads:</h3>
-                    <div class="transmission-item">Contaminated food and water</div>
-                    <div class="transmission-item">Poor hygiene and sanitation</div>
+                    <h3 class="info-heading">{% trans "How it Spreads:" %}</h3>
+                    <div class="transmission-item">{% trans "Contaminated food and water" %}</div>
+                    <div class="transmission-item">{% trans "Poor hygiene and sanitation" %}</div>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Vaccine:</h3>
-                    <span class="vaccine-status">Available</span>
-                    <p>2 doses, 6-12 months apart | Effectiveness: ~100%</p>
+                    <h3 class="info-heading">{% trans "Vaccine:" %}</h3>
+                    <span class="vaccine-status">{% trans "Available" %}</span>
+                    <p>{% trans "2 doses, 6-12 months apart" %} | {% trans "Effectiveness: ~100%" %}</p>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Key Facts (WHO):</h3>
-                    <p> No chronic infection - usually self-limiting</p>
-                    <p> Good hygiene prevents spread</p>
-                    <p> Rarely fatal</p>
+                    <h3 class="info-heading">{% trans "Key Facts (WHO):" %}</h3>
+                    <p>{% trans "No chronic infection - usually self-limiting" %}</p>
+                    <p>{% trans "Good hygiene prevents spread" %}</p>
+                    <p>{% trans "Rarely fatal" %}</p>
                 </div>
             </div>
 
             <!-- HEPATITIS B FACT SHEET -->
             <div class="fact-box">
-                <h2 class="fact-title">Hepatitis B</h2>
+                <h2 class="fact-title">{% trans "Hepatitis B" %}</h2>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">How it Spreads:</h3>
-                    <div class="transmission-item">Blood contact</div>
-                    <div class="transmission-item">Unprotected sex</div>
-                    <div class="transmission-item">Mother to baby during birth</div>
+                    <h3 class="info-heading">{% trans "How it Spreads:" %}</h3>
+                    <div class="transmission-item">{% trans "Blood contact" %}</div>
+                    <div class="transmission-item">{% trans "Unprotected sex" %}</div>
+                    <div class="transmission-item">{% trans "Mother to baby during birth" %}</div>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Vaccine:</h3>
-                    <span class="vaccine-status">Available</span>
-                    <p>3 doses (0, 1, 6 months) | Effectiveness: 95%</p>
+                    <h3 class="info-heading">{% trans "Vaccine:" %}</h3>
+                    <span class="vaccine-status">{% trans "Available" %}</span>
+                    <p>{% trans "3 doses (0, 1, 6 months)" %} | {% trans "Effectiveness: 95%" %}</p>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Key Facts (WHO):</h3>
-                    <p>296 million people chronically infected worldwide</p>
-                    <p> Leading cause of liver cancer</p>
-                    <p> 820,000 deaths annually</p>
+                    <h3 class="info-heading">{% trans "Key Facts (WHO):" %}</h3>
+                    <p>{% trans "296 million people chronically infected worldwide" %}</p>
+                    <p>{% trans "Leading cause of liver cancer" %}</p>
+                    <p>{% trans "820,000 deaths annually" %}</p>
                 </div>
             </div>
 
             <!-- HEPATITIS C FACT SHEET -->
             <div class="fact-box">
-                <h2 class="fact-title">Hepatitis C</h2>
+                <h2 class="fact-title">{% trans "Hepatitis C" %}</h2>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">How it Spreads:</h3>
-                    <div class="transmission-item">Blood contact</div>
-                    <div class="transmission-item">Sharing needles</div>
-                    <div class="transmission-item">Unsafe medical procedures</div>
+                    <h3 class="info-heading">{% trans "How it Spreads:" %}</h3>
+                    <div class="transmission-item">{% trans "Blood contact" %}</div>
+                    <div class="transmission-item">{% trans "Sharing needles" %}</div>
+                    <div class="transmission-item">{% trans "Unsafe medical procedures" %}</div>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Vaccine:</h3>
-                    <span class="vaccine-status">Not Available</span>
-                    <p>Prevention through safe practices only</p>
+                    <h3 class="info-heading">{% trans "Vaccine:" %}</h3>
+                    <span class="vaccine-status">{% trans "Not Available" %}</span>
+                    <p>{% trans "Prevention through safe practices only" %}</p>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Key Facts (WHO):</h3>
-                    <p> 58 million people chronically infected</p>
-                    <p>Antiviral cure available (>95% effective)</p>
-                    <p> 290,000 deaths annually</p>
+                    <h3 class="info-heading">{% trans "Key Facts (WHO):" %}</h3>
+                    <p>{% trans "58 million people chronically infected" %}</p>
+                    <p>{% trans "Antiviral cure available (>95% effective)" %}</p>
+                    <p>{% trans "290,000 deaths annually" %}</p>
                 </div>
             </div>
 
             <!-- HEPATITIS D FACT SHEET -->
             <div class="fact-box">
-                <h2 class="fact-title">Hepatitis D</h2>
+                <h2 class="fact-title">{% trans "Hepatitis D" %}</h2>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">How it Spreads:</h3>
-                    <div class="transmission-item">Same as Hepatitis B</div>
-                    <p><em>Only affects people who already have Hepatitis B</em></p>
+                    <h3 class="info-heading">{% trans "How it Spreads:" %}</h3>
+                    <div class="transmission-item">{% trans "Same as Hepatitis B" %}</div>
+                    <p><em>{% trans "Only affects people who already have Hepatitis B" %}</em></p>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Vaccine:</h3>
-                    <span class="vaccine-status">Indirect Protection</span>
-                    <p>Hepatitis B vaccine provides protection</p>
+                    <h3 class="info-heading">{% trans "Vaccine:" %}</h3>
+                    <span class="vaccine-status">{% trans "Indirect Protection" %}</span>
+                    <p>{% trans "Hepatitis B vaccine provides protection" %}</p>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Key Facts (WHO):</h3>
-                    <p> 15-20 million people infected worldwide</p>
-                    <p> Accelerates liver damage</p>
-                    <p> Increases cirrhosis and cancer risk</p>
+                    <h3 class="info-heading">{% trans "Key Facts (WHO):" %}</h3>
+                    <p>{% trans "15-20 million people infected worldwide" %}</p>
+                    <p>{% trans "Accelerates liver damage" %}</p>
+                    <p>{% trans "Increases cirrhosis and cancer risk" %}</p>
                 </div>
             </div>
 
             <!-- HEPATITIS E FACT SHEET -->
             <div class="fact-box">
-                <h2 class="fact-title">Hepatitis E</h2>
+                <h2 class="fact-title">{% trans "Hepatitis E" %}</h2>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">How it Spreads:</h3>
-                    <div class="transmission-item">Contaminated water</div>
-                    <div class="transmission-item">Undercooked meat</div>
+                    <h3 class="info-heading">{% trans "How it Spreads:" %}</h3>
+                    <div class="transmission-item">{% trans "Contaminated water" %}</div>
+                    <div class="transmission-item">{% trans "Undercooked meat" %}</div>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Vaccine:</h3>
-                    <span class="vaccine-status">Limited Availability</span>
-                    <p>Available in China only | 3 doses required</p>
+                    <h3 class="info-heading">{% trans "Vaccine:" %}</h3>
+                    <span class="vaccine-status">{% trans "Limited Availability" %}</span>
+                    <p>{% trans "Available in China only" %} | {% trans "3 doses required" %}</p>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Key Facts (WHO):</h3>
-                    <p>20 million infections annually</p>
-                    <p>Dangerous for pregnant women</p>
-                    <p>44,000 deaths annually</p>
+                    <h3 class="info-heading">{% trans "Key Facts (WHO):" %}</h3>
+                    <p>{% trans "20 million infections annually" %}</p>
+                    <p>{% trans "Dangerous for pregnant women" %}</p>
+                    <p>{% trans "44,000 deaths annually" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- SOURCE INFORMATION -->
         <div class="source-info">
-            <h3 class="info-heading">Information Source:</h3>
-            <p>All information based on World Health Organization (WHO) data and guidelines.</p>
-            <p>For latest updates, visit: <a href="https://www.who.int/health-topics/hepatitis" target="_blank">WHO Hepatitis Information</a></p>
+            <h3 class="info-heading">{% trans "Information Source:" %}</h3>
+            <p>{% trans "All information based on World Health Organization (WHO) data and guidelines." %}</p>
+            <p>{% trans "For latest updates, visit:" %} <a href="https://www.who.int/health-topics/hepatitis" target="_blank">{% trans "WHO Hepatitis Information" %}</a></p>
         </div>
 
     <!-- FOOTER -->
     <footer class="footer">
         <div class="main-container">
-            <p>© 2025 Hepatitis Information Portal | Based on WHO Guidelines</p>
+            <p>{% trans "© 2025 Hepatitis Information Portal" %} | {% trans "Based on WHO Guidelines" %}</p>
         </div>
     </footer>
     <script src="{% static 'publicsite/js/info-theme.js' %}"></script>
