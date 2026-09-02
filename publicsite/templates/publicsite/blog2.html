@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+{% load i18n %}
 
     <head>
       <meta charset="utf-8">
-        <title>Trace and Immunize Gujranwala</title>
+        <title>{% trans "Trace and Immunize Gujranwala" %}</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -37,7 +38,7 @@
         <!-- Spinner Start -->
         <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
+                <span class="sr-only">{% trans "Loading..." %}</span>
             </div>
         </div>
         <!-- Spinner End -->
@@ -49,19 +50,19 @@
             <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
                 <a href="" class="navbar-brand p-0">
                    <h1 class="text-primary custom-logo-text"><!--<i class="fas fa-syringe syringe-verlical me-3">--></i></h1>
-                    <img src="{% static 'publicsite/img/logo.png' %}" alt="Logo">
+                    <img src="{% static 'publicsite/img/logo.png' %}" alt="{% trans 'Logo' %}">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="fa fa-bars"></span>
                 </button>
                  <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
-                        <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
-                        <a href="{% url 'scheduling' %}" class="nav-item nav-link">Schedule now</a>
-                        <a href="" class="nav-item nav-link">Track now</a>
-                        <a href="{% url 'vpd' %}" class="nav-item nav-link">VPDs</a>
-                         <a href="{% url 'nearby' %}" class="nav-item nav-link">Location nearby</a>
-                         <a href="{% url 'faq' %}" class="nav-item nav-link">FAQs</a>
+                        <a href="{% url 'index' %}" class="nav-item nav-link active">{% trans "Home" %}</a>
+                        <a href="{% url 'scheduling' %}" class="nav-item nav-link">{% trans "Schedule now" %}</a>
+                        <a href="" class="nav-item nav-link">{% trans "Track now" %}</a>
+                        <a href="{% url 'vpd' %}" class="nav-item nav-link">{% trans "VPDs" %}</a>
+                         <a href="{% url 'nearby' %}" class="nav-item nav-link">{% trans "Location nearby" %}</a>
+                         <a href="{% url 'faq' %}" class="nav-item nav-link">{% trans "FAQs" %}</a>
                         
                         </div>
                        <!--Code for theme Toggle -->
@@ -71,22 +72,32 @@
                              <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
                               <i class="fas fa-moon"></i>
                            </button>
-                            <button class="language-toggle" id="languageToggle" title="Switch Language"> EN </button>
+                            <form action="{% url 'set_language' %}" method="post" class="d-inline m-0">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.path }}">
+                                {% if LANGUAGE_CODE == 'ur' %}
+                                    <input name="language" type="hidden" value="en">
+                                    <button type="submit" class="language-toggle" title="Switch to English">EN</button>
+                                {% else %}
+                                    <input name="language" type="hidden" value="ur">
+                                    <button type="submit" class="language-toggle" title="Switch to Urdu">UR</button>
+                                {% endif %}
+                            </form>
                         </div>
                     </div>
                     <button class="btn btn-primary btn-md-square d-flex flex-shrink-0 mb-3 mb-lg-0 rounded-circle me-3" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search"></i></button>
-                    <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">Login</a><!--Order now-->
+                    <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">{% trans "Login" %}</a><!--Order now-->
                 </div>
             </nav>
 
             <!-- Header Start -->
             <div class="container-fluid bg-breadcrumb">
                 <div class="container text-center py-5" style="max-width: 900px;">
-                    <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Our News & Blog</h4>
+                    <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">{% trans "Our News & Blog" %}</h4>
                     <ol class="breadcrumb d-flex justify-content-center mb-0 wow fadeInDown" data-wow-delay="0.3s">
-                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="#">Our Blog</a></li>
-                        <li class="breadcrumb-item active blog-txt">News & Blog</li>
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
+                        <li class="breadcrumb-item"><a href="#">{% trans "Our Blog" %}</a></li>
+                        <li class="breadcrumb-item active blog-txt">{% trans "News & Blog" %}</li>
                     </ol>    
                 </div>
             </div>
@@ -99,12 +110,12 @@
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content rounded-0">
                     <div class="modal-header">
-                        <h4 class="modal-title mb-0" id="exampleModalLabel">Search by keyword</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h4 class="modal-title mb-0" id="exampleModalLabel">{% trans "Search by keyword" %}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
                     </div>
                     <div class="modal-body d-flex align-items-center">
                         <div class="input-group w-75 mx-auto d-flex">
-                            <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
+                            <input type="search" class="form-control p-3" placeholder="{% trans 'keywords' %}" aria-describedby="search-icon-1">
                             <span id="search-icon-1" class="input-group-text btn border p-3"><i class="fa fa-search text-white"></i></span>
                         </div>
                     </div>
@@ -118,64 +129,64 @@
 <div class="container">
 
     <h1>
-        WHO and BISP establish 40 new centres to treat 15 000 severely malnourished children across Pakistan
+        {% trans "WHO and BISP establish 40 new centres to treat 15 000 severely malnourished children across Pakistan" %}
     </h1>
 
     <div class="meta">
-        <span>Pakistan</span>
-        <span>Public Health</span>
-        <span>Polio Eradication</span>
+        <span>{% trans "Pakistan" %}</span>
+        <span>{% trans "Public Health" %}</span>
+        <span>{% trans "Polio Eradication" %}</span>
     </div>
     <p>
-        The World Health Organization, in partnership with the Benazir Income Support Programme, will now support a total of 169 centres and 700 staff across the country, covering more than<strong>70,000</strong> children annually and providing counselling to <strong>120,000</strong> mothers and caregivers.
+        {% trans "The World Health Organization, in partnership with the Benazir Income Support Programme, will now support a total of 169 centres and 700 staff across the country, covering more than" %}<strong>70,000</strong> {% trans "children annually and providing counselling to" %} <strong>120,000</strong> {% trans "mothers and caregivers." %}
     </p>
     <div class="text-center my-4">
-        <img src="{% static 'publicsite/img/blog-polio-campaign2.jpg.jpg' %}" class="img-fluid rounded" style="max-width: 100%; height: auto;" alt="WHO staff and a polio vaccinator during a vaccination campaign in Pakistan">
-        <p class="text-muted mt-2" style="font-size: 0.9rem;">Chairperson BISP Senator Rubina Khalid (left) and WHO Representative in Pakistan Dr Luo Dapeng (centre) during a visit to the new nutrition stabilization centre inaugurated this week at Bacha Khan Medical Complex in Swabi, Khyber Pakhtunkhwa (KP) province. Photo credit: Hamid Inam/WHO Pakistan</p>
+        <img src="{% static 'publicsite/img/blog-polio-campaign2.jpg.jpg' %}" class="img-fluid rounded" style="max-width: 100%; height: auto;" alt="{% trans 'WHO staff and a polio vaccinator during a vaccination campaign in Pakistan' %}">
+        <p class="text-muted mt-2" style="font-size: 0.9rem;">{% trans "Chairperson BISP Senator Rubina Khalid (left) and WHO Representative in Pakistan Dr Luo Dapeng (centre) during a visit to the new nutrition stabilization centre inaugurated this week at Bacha Khan Medical Complex in Swabi, Khyber Pakhtunkhwa (KP) province. Photo credit: Hamid Inam/WHO Pakistan" %}</p>
     </div>
     <p>
-       <strong>18 January 2026</strong>, Islamabad, Pakistan. The World Health Organization (WHO), in partnership with Pakistan’s Benazir Income Support Programme (BISP), has supported the establishment of 40 new nutrition stabilization centres since November to provide life saving treatment to children under 5 suffering from severe acute malnutrition with medical complications. With these new facilities, WHO will now support a total of 169 centres and 700 staff across the country, covering more than 70,000 children annually and providing counselling to 120,000 mothers and caregivers.
+       <strong>{% trans "18 January 2026" %}</strong>{% trans ", Islamabad, Pakistan. The World Health Organization (WHO), in partnership with Pakistan's Benazir Income Support Programme (BISP), has supported the establishment of 40 new nutrition stabilization centres since November to provide life saving treatment to children under 5 suffering from severe acute malnutrition with medical complications. With these new facilities, WHO will now support a total of 169 centres and 700 staff across the country, covering more than 70,000 children annually and providing counselling to 120,000 mothers and caregivers." %}
     </p>
     <p>
-       One of the new centres was inaugurated this week at Bacha Khan Medical Complex in Swabi, Khyber Pakhtunkhwa (KP) province, by Chairperson BISP Senator Rubina Khalid, WHO Representative in Pakistan, Dr Luo Dapeng, and KP Health Minister Khaleeq Ur Rehman.
+       {% trans "One of the new centres was inaugurated this week at Bacha Khan Medical Complex in Swabi, Khyber Pakhtunkhwa (KP) province, by Chairperson BISP Senator Rubina Khalid, WHO Representative in Pakistan, Dr Luo Dapeng, and KP Health Minister Khaleeq Ur Rehman." %}
     </p>
     <p>
-        “BISP’s Benazir Nashonuma Programme is an important and effective initiative for promoting the health and nutrition of mothers and children. These nutrition stabilization centres, established in partnership with WHO, provide life saving treatment and will be expanded to more areas across Pakistan in phases, with the cooperation of provincial governments”, said Senator Rubina Khalid.
+        {% trans "BISP's Benazir Nashonuma Programme is an important and effective initiative for promoting the health and nutrition of mothers and children. These nutrition stabilization centres, established in partnership with WHO, provide life saving treatment and will be expanded to more areas across Pakistan in phases, with the cooperation of provincial governments," %} {% trans "said Senator Rubina Khalid." %}
     </p>
 
     <div class="highlight">
-       The <strong>40</strong> new centres will cover an estimated <strong>15,000</strong> children annually and have been supported by WHO teams through repairs and renovations, capacity building, human resource support, provision of supplies including therapeutic food and comprehensive technical assistance.
+       {% trans "The" %} <strong>40</strong> {% trans "new centres will cover an estimated" %} <strong>15,000</strong> {% trans "children annually and have been supported by WHO teams through repairs and renovations, capacity building, human resource support, provision of supplies including therapeutic food and comprehensive technical assistance." %}
     </div>
 
     <p>
-       The cure rate for children treated in stabilization centres supported by WHO and BISP across the country stands at <strong>97%</strong>.
+       {% trans "The cure rate for children treated in stabilization centres supported by WHO and BISP across the country stands at" %} <strong>97%</strong>.
     </p>
     <p>
-        “We are particularly thankful for and proud of this collaboration because we are saving thousands of lives, managing the most challenging cases of malnutrition with medical complications using a science-based approach. Without the treatment provided in the stabilization centres, these children would unfortunately die. Even a single child dying from malnutrition is already one too many,” said Dr Luo Dapeng.
+        {% trans "We are particularly thankful for and proud of this collaboration because we are saving thousands of lives, managing the most challenging cases of malnutrition with medical complications using a science-based approach. Without the treatment provided in the stabilization centres, these children would unfortunately die. Even a single child dying from malnutrition is already one too many," %} {% trans "said Dr Luo Dapeng." %}
     </p>
     <p>
-      “WHO stands with Pakistan to continue saving the lives of children and securing a healthier future for all without distinction, no matter their economic status, where they live, or who they are.”
+      {% trans "WHO stands with Pakistan to continue saving the lives of children and securing a healthier future for all without distinction, no matter their economic status, where they live, or who they are." %}
     </p>
     <p>
-       Pakistan remains among the 10 countries in the world where more than half of the under 5 population suffers from either stunting or wasting, or both. The prevalence rate of stunting among children under 5 is <strong>40%</strong>totaling 10 million stunted children while wasting affects <strong>17.7%</strong>, resulting in 5 million wasted children. Acute malnutrition is causing an annual economic loss of <strong>US$ 17 billion</strong>.
+       {% trans "Pakistan remains among the 10 countries in the world where more than half of the under 5 population suffers from either stunting or wasting, or both. The prevalence rate of stunting among children under 5 is" %} <strong>40%</strong>{% trans "totaling 10 million stunted children while wasting affects" %} <strong>17.7%</strong>, {% trans "resulting in 5 million wasted children. Acute malnutrition is causing an annual economic loss of" %} <strong>{% trans "US$ 17 billion" %}</strong>.
     </p>
     <p>
-       Despite these challenges, evidence indicates that the interventions under BISP’s Nashonuma programme in partnership with WHO and other United Nations agencies like the World Food Programme (WFP) and UNICEF are delivering some of the strongest results ever documented globally for a nutrition programme, with measurable impact on stunting reduction and child survival. These results include a 20% decline in stunting by 6 months of age and a <strong>5.6 percentage point</strong> reduction in low birth weight among beneficiaries.
+       {% trans "Despite these challenges, evidence indicates that the interventions under BISP's Nashonuma programme in partnership with WHO and other United Nations agencies like the World Food Programme (WFP) and UNICEF are delivering some of the strongest results ever documented globally for a nutrition programme, with measurable impact on stunting reduction and child survival. These results include a 20% decline in stunting by 6 months of age and a" %} <strong>{% trans "5.6 percentage point" %}</strong> {% trans "reduction in low birth weight among beneficiaries." %}
     </p>
     <p>
-        WHO will continue to partner with Pakistan and its people in reinforcing this and other health programmes, striving to deliver health for all.
+        {% trans "WHO will continue to partner with Pakistan and its people in reinforcing this and other health programmes, striving to deliver health for all." %}
     </p>
     <p>
-       <strong>For additional information, please contact:</strong>
+       <strong>{% trans "For additional information, please contact:" %}</strong>
        <ul>
-        <li> José Ignacio Martín Galán, Head of Communications, WHO Pakistan: <a href="mailto:jomartin@who.int">jomartin@who.int</a></li>
-        <li> Maryam Yunus, National Professional Officer – Communications, WHO Pakistan:<a href="mailto:yunusm@who.int">yunusm@who.int</a></li>
+        <li> {% trans "José Ignacio Martín Galán, Head of Communications, WHO Pakistan:" %} <a href="mailto:jomartin@who.int">jomartin@who.int</a></li>
+        <li> {% trans "Maryam Yunus, National Professional Officer – Communications, WHO Pakistan:" %}<a href="mailto:yunusm@who.int">yunusm@who.int</a></li>
        </ul>
     </p>
-    <p class="about-who"><strong>About WHO</strong></p>
+    <p class="about-who"><strong>{% trans "About WHO" %}</strong></p>
     <p>
-        Founded in 1948, WHO is the United Nations agency that connects nations, partners and people to promote health, keep the world safe and serve the vulnerable. We work with 194 Member States across more than 150 locations to ensure everyone, everywhere, can attain the highest level of health. WHO has been active in Pakistan since 1960. For more information, visit
-        <a href="https://www.emro.who.int/countries/pak/index.html">WHO Pakistan Country Blogs/News Page</a>
+        {% trans "Founded in 1948, WHO is the United Nations agency that connects nations, partners and people to promote health, keep the world safe and serve the vulnerable. We work with 194 Member States across more than 150 locations to ensure everyone, everywhere, can attain the highest level of health. WHO has been active in Pakistan since 1960. For more information, visit" %}
+        <a href="https://www.emro.who.int/countries/pak/index.html">{% trans "WHO Pakistan Country Blogs/News Page" %}</a>
     </p>
 </div>
         <!-- Blog End -->
@@ -186,8 +197,8 @@
                 <div class="row g-5 mb-5 align-items-center">
                     <div class="col-lg-7">
                         <div class="position-relative mx-auto">
-                            <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
-                            <button type="button" class="btn btn-secondary rounded-pill position-absolute  top-0 end-0 py-2 px-4 mt-2 me-2 button-color">Subscribe</button>
+                            <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="{% trans 'Enter your email' %}">
+                            <button type="button" class="btn btn-secondary rounded-pill position-absolute  top-0 end-0 py-2 px-4 mt-2 me-2 button-color">{% trans "Subscribe" %}</button>
                         </div>
                     </div>
                     <div class="col-lg-5">
@@ -203,8 +214,8 @@
                     <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
                             <div class="footer-item">
-                                <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>About Us</h3>
-                                <p class="mb-3">Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility.</p>
+                                <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>{% trans "About Us" %}</h3>
+                                <p class="mb-3">{% trans "Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility." %}</p>
                             </div>
                            <!-- <div class="position-relative">
                                 <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
@@ -214,36 +225,36 @@
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
-                            <h4 class="text-white mb-4">Quick Links</h4>
-                            <a href="{% url 'index' %}"><i class="fas fa-angle-right me-2"></i> Home</a>
-                            <a href="#"><i class="fas fa-angle-right me-2"></i> Schedule appointments</a>
-                            <a href="#"><i class="fas fa-angle-right me-2"></i> Track Records</a>
-                            <a href="{% url 'vpd' %}"><i class="fas fa-angle-right me-2"></i> Vaccine Information</a>
-                            <a href="#"><i class="fas fa-angle-right me-2"></i> Find Centers</a>
-                            <a href="#"><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
+                            <h4 class="text-white mb-4">{% trans "Quick Links" %}</h4>
+                            <a href="{% url 'index' %}"><i class="fas fa-angle-right me-2"></i> {% trans "Home" %}</a>
+                            <a href="#"><i class="fas fa-angle-right me-2"></i> {% trans "Schedule appointments" %}</a>
+                            <a href="#"><i class="fas fa-angle-right me-2"></i> {% trans "Track Records" %}</a>
+                            <a href="{% url 'vpd' %}"><i class="fas fa-angle-right me-2"></i> {% trans "Vaccine Information" %}</a>
+                            <a href="#"><i class="fas fa-angle-right me-2"></i> {% trans "Find Centers" %}</a>
+                            <a href="#"><i class="fas fa-angle-right me-2"></i> {% trans "Terms & Conditions" %}</a>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
-                            <h4 class="text-white mb-4"> Center Hours </h4>
+                            <h4 class="text-white mb-4"> {% trans "Center Hours" %} </h4>
                             <div class="mb-3">
-                                <h6 class="text-muted mb-0">Mon - Friday:</h6>
-                                <p class="text-white mb-0">09.00 am to 02.00 pm</p>
+                                <h6 class="text-muted mb-0">{% trans "Mon - Friday:" %}</h6>
+                                <p class="text-white mb-0">{% trans "09.00 am to 02.00 pm" %}</p>
                             </div>
                             <div class="mb-3">
-                                <h6 class="text-muted mb-0">Saturday:</h6>
-                                <p class="text-white mb-0">10.00 am to 05.00 pm</p>
+                                <h6 class="text-muted mb-0">{% trans "Saturday:" %}</h6>
+                                <p class="text-white mb-0">{% trans "10.00 am to 05.00 pm" %}</p>
                             </div>
                             <div class="mb-3">
-                                <h6 class="text-muted mb-0">Vacation:</h6>
-                                <p class="text-white mb-0">All Sunday is our vacation</p>
+                                <h6 class="text-muted mb-0">{% trans "Vacation:" %}</h6>
+                                <p class="text-white mb-0">{% trans "All Sunday is our vacation" %}</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
-                            <h4 class="text-white mb-4">Contact Us</h4>
-                            <a href="#"><i class="fa fa-map-marker-alt me-2"></i> Address here</a>
+                            <h4 class="text-white mb-4">{% trans "Contact Us" %}</h4>
+                            <a href="#"><i class="fa fa-map-marker-alt me-2"></i> {% trans "Address here" %}</a>
                             <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> trace&immunize.com</a>
                            <!-- <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> info@example.com</a>-->
                             <a href="tel:+012 345 67890"><i class="fas fa-phone me-2"></i> +92 300 1234567</a>
