@@ -1136,6 +1136,17 @@ body.dark-theme .carousel-caption-2 {
     background: linear-gradient(rgba(0, 0, 0, .55), rgba(0, 0, 0, 0.55)) !important;
 }
 
+/* ── BREADCRUMB LINKS IN DARK THEME (Home, Our Blog) ── */
+body.dark-theme .bg-breadcrumb .breadcrumb-item a {
+    color: #e8e8e8 !important;
+}
+body.dark-theme .bg-breadcrumb .breadcrumb-item a:hover {
+    color: #8fa4e0 !important;
+}
+body.dark-theme .bg-breadcrumb .breadcrumb-item.active {
+    color: #8fa4e0 !important;
+}
+
 /* ── CARDS / SECTIONS used across the site ── */
 body.dark-theme .feature-item,
 body.dark-theme .service-item,
@@ -1475,7 +1486,6 @@ body.dark-theme .feature-item .btn.text-secondary:hover {
     color: #6884d3 !important;
 }
 /*END DARK THEME STYLES */
-
 
 
 /*** copyright Start ***/
