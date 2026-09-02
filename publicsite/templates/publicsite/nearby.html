@@ -1,9 +1,11 @@
 {% load static %}
+{% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Nearby centers, Trace and Immunize Gujranwala</title>
+    <title>{% trans "Nearby centers, Trace and Immunize Gujranwala" %}</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -43,7 +45,7 @@
     <!-- Spinner -->
     <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
-            <span class="sr-only">Loading...</span>
+            <span class="sr-only">{% trans "Loading..." %}</span>
         </div>
     </div>
 
@@ -51,30 +53,40 @@
     <div class="container-fluid position-relative p-0">
         <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
             <a href="{% url 'index' %}" class="navbar-brand p-0">
-                <img src="{% static 'publicsite/img/logo.png' %}" alt="Logo">
+                <img src="{% static 'publicsite/img/logo.png' %}" alt="{% trans 'Logo' %}">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="fa fa-bars"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto py-0">
-                    <a href="{% url 'index' %}" class="nav-item nav-link">Home</a>
-                    <a href="{% url 'scheduling' %}" class="nav-item nav-link">Schedule now</a>
+                    <a href="{% url 'index' %}" class="nav-item nav-link">{% trans "Home" %}</a>
+                    <a href="{% url 'scheduling' %}" class="nav-item nav-link">{% trans "Schedule now" %}</a>
                     {% if user.is_authenticated %}
-                        <a href="/patient/my-appointments/" class="nav-item nav-link">Track now</a>
+                        <a href="/patient/my-appointments/" class="nav-item nav-link">{% trans "Track now" %}</a>
                     {% else %}
-                        <a href="/patient/login/?next=/patient/my-appointments/" class="nav-item nav-link">Track now</a>
+                        <a href="/patient/login/?next=/patient/my-appointments/" class="nav-item nav-link">{% trans "Track now" %}</a>
                     {% endif %}
-                    <a href="{% url 'vpd' %}" class="nav-item nav-link">VPDs</a>
-                    <a href="{% url 'nearby' %}" class="nav-item nav-link active">Location nearby</a>
-                    <a href="{% url 'faq' %}" class="nav-item nav-link">FAQ</a>
+                    <a href="{% url 'vpd' %}" class="nav-item nav-link">{% trans "VPDs" %}</a>
+                    <a href="{% url 'nearby' %}" class="nav-item nav-link active">{% trans "Location nearby" %}</a>
+                    <a href="{% url 'faq' %}" class="nav-item nav-link">{% trans "FAQ" %}</a>
                 </div>
                 <div class="d-none d-xl-flex me-3">
                     <div class="d-flex flex-row pe-3 border-end">
-                        <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                        <button class="theme-toggle" id="themeToggle" title="{% trans 'Toggle Dark Mode' %}">
                             <i class="fas fa-moon"></i>
                         </button>
-                        <button class="language-toggle" id="languageToggle" title="Switch Language"> EN </button>
+                        <form action="{% url 'set_language' %}" method="post" class="d-inline m-0">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.path }}">
+                            {% if LANGUAGE_CODE == 'ur' %}
+                                <input name="language" type="hidden" value="en">
+                                <button type="submit" class="language-toggle" title="{% trans 'Switch to English' %}">EN</button>
+                            {% else %}
+                                <input name="language" type="hidden" value="ur">
+                                <button type="submit" class="language-toggle" title="{% trans 'Switch to Urdu' %}">UR</button>
+                            {% endif %}
+                        </form>
                     </div>
                 </div>
                 {% if user.is_authenticated %}
@@ -100,32 +112,32 @@
                             <li>
                                 <a class="dropdown-item" href="/patient/my-appointments/"
                                 style="border-radius:8px; font-size:13px; padding:8px 16px;">
-                                    <i class="fas fa-calendar-check me-2 text-primary"></i> My Appointments
+                                    <i class="fas fa-calendar-check me-2 text-primary"></i> {% trans "My Appointments" %}
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="/patient/book-appointment/"
                                 style="border-radius:8px; font-size:13px; padding:8px 16px;">
-                                    <i class="fas fa-calendar-plus me-2 text-primary"></i> Book Appointment
+                                    <i class="fas fa-calendar-plus me-2 text-primary"></i> {% trans "Book Appointment" %}
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="/patient/vaccine-card/"
                                 style="border-radius:8px; font-size:13px; padding:8px 16px;">
-                                    <i class="fas fa-id-card me-2 text-primary"></i> Vaccine Card
+                                    <i class="fas fa-id-card me-2 text-primary"></i> {% trans "Vaccine Card" %}
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item text-danger" href="{% url 'logout' %}"
                                 style="border-radius:8px; font-size:13px; padding:8px 16px;">
-                                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    <i class="fas fa-sign-out-alt me-2"></i> {% trans "Logout" %}
                                 </a>
                             </li>
                         </ul>
                     </div>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">Login</a>
+                    <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">{% trans "Login" %}</a>
                 {% endif %}
             </div>
         </nav>
@@ -134,10 +146,10 @@
         <div class="container-fluid bg-breadcrumb">
             <div class="container text-center py-5" style="max-width:900px;">
                 <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">
-                    Track Vaccination Centers
+                    {% trans "Track Vaccination Centers" %}
                 </h4>
                 <p class="text-white mb-0 wow fadeInDown" data-wow-delay="0.2s">
-                    Find nearby vaccination centers in Gujranwala and track your immunization
+                    {% trans "Find nearby vaccination centers in Gujranwala and track your immunization" %}
                 </p>
             </div>
         </div>
@@ -153,7 +165,7 @@
                         <i class="fas fa-hospital"></i>
                         <div>
                             <span class="stat-num">1</span>
-                            <span class="stat-txt">Center</span>
+                            <span class="stat-txt">{% trans "Center" %}</span>
                         </div>
                     </div>
                 </div>
@@ -162,7 +174,7 @@
                         <i class="fas fa-syringe"></i>
                         <div>
                             <span class="stat-num">19</span>
-                            <span class="stat-txt">Vaccines</span>
+                            <span class="stat-txt">{% trans "Vaccines" %}</span>
                         </div>
                     </div>
                 </div>
@@ -171,7 +183,7 @@
                         <i class="fas fa-clock"></i>
                         <div>
                             <span class="stat-num">8am</span>
-                            <span class="stat-txt">Opens</span>
+                            <span class="stat-txt">{% trans "Opens" %}</span>
                         </div>
                     </div>
                 </div>
@@ -179,8 +191,8 @@
                     <div class="stat-pill wow fadeInUp" data-wow-delay="0.4s">
                         <i class="fas fa-hand-holding-heart"></i>
                         <div>
-                            <span class="stat-num">Free</span>
-                            <span class="stat-txt">All Vaccines</span>
+                            <span class="stat-num">{% trans "Free" %}</span>
+                            <span class="stat-txt">{% trans "All Vaccines" %}</span>
                         </div>
                     </div>
                 </div>
@@ -196,15 +208,15 @@
                 <div class="map-topbar">
                     <div class="map-title">
                         <i class="fas fa-map-marked-alt me-2"></i>
-                        Ayesha Dispensary — Gujranwala
+                        {% trans "Ayesha Dispensary — Gujranwala" %}
                     </div>
                     <div class="map-controls">
                         <div class="map-status-badge" id="mapStatusBadge">
                             <span class="status-dot"></span>
-                            <span id="locStatusText">Click Allow Location to find route</span>
+                            <span id="locStatusText">{% trans "Click Allow Location to find route" %}</span>
                         </div>
                         <button class="locate-btn" onclick="requestLocation()">
-                            <i class="fas fa-crosshairs me-1"></i> My Location
+                            <i class="fas fa-crosshairs me-1"></i> {% trans "My Location" %}
                         </button>
                     </div>
                 </div>
@@ -215,14 +227,14 @@
                         <div class="loc-icon">
                             <i class="fas fa-map-location-dot"></i>
                         </div>
-                        <h4>Route to Ayesha Dispensary</h4>
-                        <p>Allow location access to see the complete route from your current location to Ayesha Dispensary in Gujranwala.</p>
+                        <h4>{% trans "Route to Ayesha Dispensary" %}</h4>
+                        <p>{% trans "Allow location access to see the complete route from your current location to Ayesha Dispensary in Gujranwala." %}</p>
                         <button class="btn btn-primary rounded-pill px-4 py-2" onclick="requestLocation()">
-                            <i class="fas fa-crosshairs me-2"></i>Allow My Location
+                            <i class="fas fa-crosshairs me-2"></i>{% trans "Allow My Location" %}
                         </button>
                         <br>
                         <span class="skip-link" onclick="loadDefaultMap()">
-                            Skip — show Ayesha Dispensary
+                            {% trans "Skip — show Ayesha Dispensary" %}
                         </span>
                     </div>
                 </div>
@@ -235,15 +247,15 @@
                     <div class="route-summary" id="routeSummary">
                         <div class="route-summary-item">
                             <i class="fas fa-route"></i>
-                            Distance: <span id="routeDistance">--</span>
+                            {% trans "Distance:" %} <span id="routeDistance">--</span>
                         </div>
                         <div class="route-summary-item">
                             <i class="fas fa-clock"></i>
-                            Estimated Time: <span id="routeTime">--</span>
+                            {% trans "Estimated Time:" %} <span id="routeTime">--</span>
                         </div>
                         <div class="route-summary-item">
                             <i class="fas fa-signs-post"></i>
-                            Steps: <span id="routeStepsCount">--</span>
+                            {% trans "Steps:" %} <span id="routeStepsCount">--</span>
                         </div>
                     </div>
                     <ul class="route-steps" id="routeSteps"></ul>
@@ -259,10 +271,10 @@
 
             <div class="section-title text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
                 <h6 class="text-secondary text-uppercase fw-bold mb-2">
-                    <i class="fas fa-hospital me-2"></i>Vaccination Center
+                    <i class="fas fa-hospital me-2"></i>{% trans "Vaccination Center" %}
                 </h6>
-                <h2 class="display-6 fw-bold">Ayesha Dispensary</h2>
-                <p class="text-muted mt-2">Free vaccines under Pakistan's EPI programme • Gujranwala</p>
+                <h2 class="display-6 fw-bold">{% trans "Ayesha Dispensary" %}</h2>
+                <p class="text-muted mt-2">{% trans "Free vaccines under Pakistan's EPI programme" %} • {% trans "Gujranwala" %}</p>
             </div>
 
             <div class="row g-4 justify-content-center" id="centersGrid">
@@ -272,47 +284,47 @@
                             <div class="center-icon-wrap">
                                 <i class="fas fa-clinic-medical"></i>
                             </div>
-                            <span class="center-badge">Ayesha Dispensary</span>
+                            <span class="center-badge">{% trans "Ayesha Dispensary" %}</span>
                         </div>
                         <div class="center-card-body">
-                            <h5 class="center-name">Ayesha Dispensary</h5>
+                            <h5 class="center-name">{% trans "Ayesha Dispensary" %}</h5>
                             <p class="center-area">
-                                <i class="fas fa-map-marker-alt me-1"></i>Main Road, Peoples Colony, Gujranwala
+                                <i class="fas fa-map-marker-alt me-1"></i>{% trans "Main Road, Peoples Colony, Gujranwala" %}
                             </p>
                             <div class="center-meta">
-                                <span><i class="fas fa-clock me-1"></i>8am – 2pm</span>
-                                <span><i class="fas fa-calendar me-1"></i>Mon – Sat</span>
+                                <span><i class="fas fa-clock me-1"></i>{% trans "8am – 2pm" %}</span>
+                                <span><i class="fas fa-calendar me-1"></i>{% trans "Mon – Sat" %}</span>
                             </div>
 
                             <div class="vaccine-tags">
-                                <span class="vtag">BCG</span>
-                                <span class="vtag">OPV-0</span>
-                                <span class="vtag">Hep-B</span>
-                                <span class="vtag">OPV-I</span>
-                                <span class="vtag">Rotavirus-I</span>
-                                <span class="vtag">Pneumococcal-I</span>
-                                <span class="vtag">Pentavalent-I</span>
-                                <span class="vtag">OPV-II</span>
-                                <span class="vtag">Rotavirus-II</span>
-                                <span class="vtag">Pneumococcal-II</span>
-                                <span class="vtag">Pentavalent-II</span>
-                                <span class="vtag">OPV-III</span>
-                                <span class="vtag">IPV-I</span>
-                                <span class="vtag">Pneumococcal-III</span>
-                                <span class="vtag">Pentavalent-III</span>
-                                <span class="vtag">MR-I</span>
-                                <span class="vtag">IPV-II</span>
-                                <span class="vtag">Typhoid</span>
-                                <span class="vtag">MR-II</span>
+                                <span class="vtag">{% trans "BCG" %}</span>
+                                <span class="vtag">{% trans "OPV-0" %}</span>
+                                <span class="vtag">{% trans "Hep-B" %}</span>
+                                <span class="vtag">{% trans "OPV-I" %}</span>
+                                <span class="vtag">{% trans "Rotavirus-I" %}</span>
+                                <span class="vtag">{% trans "Pneumococcal-I" %}</span>
+                                <span class="vtag">{% trans "Pentavalent-I" %}</span>
+                                <span class="vtag">{% trans "OPV-II" %}</span>
+                                <span class="vtag">{% trans "Rotavirus-II" %}</span>
+                                <span class="vtag">{% trans "Pneumococcal-II" %}</span>
+                                <span class="vtag">{% trans "Pentavalent-II" %}</span>
+                                <span class="vtag">{% trans "OPV-III" %}</span>
+                                <span class="vtag">{% trans "IPV-I" %}</span>
+                                <span class="vtag">{% trans "Pneumococcal-III" %}</span>
+                                <span class="vtag">{% trans "Pentavalent-III" %}</span>
+                                <span class="vtag">{% trans "MR-I" %}</span>
+                                <span class="vtag">{% trans "IPV-II" %}</span>
+                                <span class="vtag">{% trans "Typhoid" %}</span>
+                                <span class="vtag">{% trans "MR-II" %}</span>
                             </div>
 
                             <div class="center-distance" id="distAyesha">
-                                <i class="fas fa-route me-1"></i>Enable location for distance
+                                <i class="fas fa-route me-1"></i>{% trans "Enable location for distance" %}
                             </div>
                         </div>
                         <div class="center-card-footer">
                             <button class="btn btn-primary rounded-pill btn-sm px-3" onclick="flyToAyesha();">
-                                <i class="fas fa-map-pin me-1"></i>View on Map
+                                <i class="fas fa-map-pin me-1"></i>{% trans "View on Map" %}
                             </button>
                         </div>
                     </div>
@@ -325,17 +337,17 @@
     <!-- VIEW ON MAP BUTTON -->
     <section class="view-map-btn-container wow fadeInUp" data-wow-delay="0.1s">
         <button class="view-map-btn" onclick="scrollToMap()">
-            <i class="fas fa-map-marked-alt me-2"></i> View on Map
+            <i class="fas fa-map-marked-alt me-2"></i> {% trans "View on Map" %}
         </button>
     </section>
 
     <!-- APPOINTMENT FLOATING BAR -->
     <div class="appointment-floating-bar wow fadeInUp" data-wow-delay="0.1s">
         <div class="appointment-text">
-            <h4>📅 Book Your Appointment</h4>
-            <p>Secure your slot at Ayesha Dispensary today.</p>
+            <h4>📅 {% trans "Book Your Appointment" %}</h4>
+            <p>{% trans "Secure your slot at Ayesha Dispensary today." %}</p>
         </div>
-        <a href="{% url 'scheduling' %}" class="btn btn-primary rounded-pill px-4 py-2 btn-book-now">Book Now</a>
+        <a href="{% url 'scheduling' %}" class="btn btn-primary rounded-pill px-4 py-2 btn-book-now">{% trans "Book Now" %}</a>
     </div>
 
     <!-- Footer Start -->
@@ -344,8 +356,8 @@
             <div class="row g-5 mb-5 align-items-center">
                 <div class="col-lg-7">
                     <div class="position-relative mx-auto">
-                        <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
-                        <button type="button" class="btn btn-secondary rounded-pill position-absolute top-0 end-0 py-2 px-4 mt-2 me-2 button-color">Subscribe</button>
+                        <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="{% trans 'Enter your email' %}">
+                        <button type="button" class="btn btn-secondary rounded-pill position-absolute top-0 end-0 py-2 px-4 mt-2 me-2 button-color">{% trans "Subscribe" %}</button>
                     </div>
                 </div>
                 <div class="col-lg-5">
@@ -361,51 +373,51 @@
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
                         <div class="footer-item">
-                            <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>About Us</h3>
-                            <p class="mb-3">Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility.</p>
+                            <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>{% trans "About Us" %}</h3>
+                            <p class="mb-3">{% trans "Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility." %}</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="text-white mb-4">Quick Links</h4>
-                        <a href="{% url 'index' %}"><i class="fas fa-angle-right me-2"></i> Home</a>
-                        <a href="{% url 'scheduling' %}"><i class="fas fa-angle-right me-2"></i> Schedule appointments</a>
+                        <h4 class="text-white mb-4">{% trans "Quick Links" %}</h4>
+                        <a href="{% url 'index' %}"><i class="fas fa-angle-right me-2"></i> {% trans "Home" %}</a>
+                        <a href="{% url 'scheduling' %}"><i class="fas fa-angle-right me-2"></i> {% trans "Schedule appointments" %}</a>
                         {% if user.is_authenticated %}
                             <a href="/patient/my-appointments/">
-                                <i class="fas fa-angle-right me-2"></i> Track now
+                                <i class="fas fa-angle-right me-2"></i> {% trans "Track now" %}
                             </a>
                         {% else %}
                             <a href="/patient/login/?next=/patient/my-appointments/">
-                                <i class="fas fa-angle-right me-2"></i> Track now
+                                <i class="fas fa-angle-right me-2"></i> {% trans "Track now" %}
                             </a>
                         {% endif %}
-                        <a href="{% url 'vpd' %}"><i class="fas fa-angle-right me-2"></i> VPDs</a>
-                        <a href="{% url 'nearby' %}"><i class="fas fa-angle-right me-2"></i> Find Centers</a>
-                        <a href="{% url 'faq' %}"><i class="fas fa-angle-right me-2"></i>FAQ</a>
+                        <a href="{% url 'vpd' %}"><i class="fas fa-angle-right me-2"></i> {% trans "VPDs" %}</a>
+                        <a href="{% url 'nearby' %}"><i class="fas fa-angle-right me-2"></i> {% trans "Find Centers" %}</a>
+                        <a href="{% url 'faq' %}"><i class="fas fa-angle-right me-2"></i>{% trans "FAQ" %}</a>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="text-white mb-4"> Center Hours </h4>
+                        <h4 class="text-white mb-4">{% trans "Center Hours" %}</h4>
                         <div class="mb-3">
-                            <h6 class="text-muted mb-0">Mon - Friday:</h6>
-                            <p class="text-white mb-0">09.00 am to 02.00 pm</p>
+                            <h6 class="text-muted mb-0">{% trans "Mon - Friday:" %}</h6>
+                            <p class="text-white mb-0">{% trans "09.00 am to 02.00 pm" %}</p>
                         </div>
                         <div class="mb-3">
-                            <h6 class="text-muted mb-0">Saturday:</h6>
-                            <p class="text-white mb-0">10.00 am to 05.00 pm</p>
+                            <h6 class="text-muted mb-0">{% trans "Saturday:" %}</h6>
+                            <p class="text-white mb-0">{% trans "10.00 am to 05.00 pm" %}</p>
                         </div>
                         <div class="mb-3">
-                            <h6 class="text-muted mb-0">Vacation:</h6>
-                            <p class="text-white mb-0">All Sunday is our vacation</p>
+                            <h6 class="text-muted mb-0">{% trans "Vacation:" %}</h6>
+                            <p class="text-white mb-0">{% trans "All Sunday is our vacation" %}</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="footer-item d-flex flex-column">
-                        <h4 class="text-white mb-4">Contact Us</h4>
-                        <a href="#"><i class="fa fa-map-marker-alt me-2"></i> Address here</a>
+                        <h4 class="text-white mb-4">{% trans "Contact Us" %}</h4>
+                        <a href="#"><i class="fa fa-map-marker-alt me-2"></i> {% trans "Address here" %}</a>
                         <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> trace&immunize.com</a>
                         <a href="tel:+012 345 67890"><i class="fas fa-phone me-2"></i> +92 300 1234567</a>
                         <a href="tel:+012 345 67890" class="mb-3"><i class="fas fa-print me-2"></i> +92 300 1234567</a>
