@@ -1,11 +1,12 @@
+{% load static %}
+{% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
-{% load static %}
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Child Vaccination Diseases Portal</title>
+    <title>{% trans "Child Vaccination Diseases Portal" %}</title>
     <link rel="stylesheet" href="{% static 'publicsite/css/Child.css' %}">
     <link rel="stylesheet" href="{% static 'publicsite/css/info-theme.css' %}">
 
@@ -15,18 +16,31 @@
      <!-- HEADER SECTION -->
     <header class="header">
         <div class="main-container">
-            <div class="logo">Child Vaccination Diseases Portal (VPDS)</div>
-            <p class="header-subtitle">Vaccine-Preventable Diseases in Children - WHO Guidelines</p>
+            <div class="logo">{% trans "Child Vaccination Diseases Portal (VPDS)" %}</div>
+            <p class="header-subtitle">{% trans "Vaccine-Preventable Diseases in Children - WHO Guidelines" %}</p>
         </div>
     </header>
 
     <!-- NAVIGATION BAR -->
     <nav class="nav-bar">
-        <a href="#overview" class="nav-link">Overview</a>
-        <a href="#diseases" class="nav-link">Diseases</a>
-        <a href="#vaccines" class="nav-link">Vaccines</a>
-        <a href="#schedule" class="nav-link">Schedule</a>
-        <button id="themeToggle" title="Toggle Dark Mode">🌙</button>
+        <a href="#overview" class="nav-link">{% trans "Overview" %}</a>
+        <a href="#diseases" class="nav-link">{% trans "Diseases" %}</a>
+        <a href="#vaccines" class="nav-link">{% trans "Vaccines" %}</a>
+        <a href="#schedule" class="nav-link">{% trans "Schedule" %}</a>
+        <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+    <i class="fas fa-moon"></i>
+</button>
+<form action="{% url 'set_language' %}" method="post" class="d-inline m-0">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}">
+    {% if LANGUAGE_CODE == 'ur' %}
+        <input name="language" type="hidden" value="en">
+        <button type="submit" class="language-toggle" title="Switch to English">EN</button>
+    {% else %}
+        <input name="language" type="hidden" value="ur">
+        <button type="submit" class="language-toggle" title="Switch to Urdu">UR</button>
+    {% endif %}
+</form>
     </nav>
 
 
@@ -34,259 +48,259 @@
     <div class="main-container">
         <!-- ======== OVERVIEW SECTION ========== -->
         <section id="overview" class="content-section">
-            <h1 class="main-heading">Childhood Vaccination</h1>
+            <h1 class="main-heading">{% trans "Childhood Vaccination" %}</h1>
             
-            <h2 class="section-heading">Overview</h2>
-            <p>Vaccine-preventable diseases (VPDs) are infectious diseases for which an effective preventive vaccine exists. If a person dies from a VPD, that death is considered a vaccine-preventable death. Immunization is a global health and development success story, saving millions of lives every year.</p>
+            <h2 class="section-heading">{% trans "Overview" %}</h2>
+            <p>{% trans "Vaccine-preventable diseases (VPDs) are infectious diseases for which an effective preventive vaccine exists. If a person dies from a VPD, that death is considered a vaccine-preventable death. Immunization is a global health and development success story, saving millions of lives every year." %}</p>
             
             <div class="highlight-box">
-                <p><strong>According to WHO, immunization prevents 2-3 million deaths every year.</strong> Vaccines reduce risks of getting a disease by working with your body's natural defenses to build protection. When you get a vaccine, your immune system responds.</p>
+                <p><strong>{% trans "According to WHO, immunization prevents 2-3 million deaths every year." %}</strong> {% trans "Vaccines reduce risks of getting a disease by working with your body's natural defenses to build protection. When you get a vaccine, your immune system responds." %}</p>
             </div>
             
-            <p>The World Health Organization's Expanded Programme on Immunization (EPI) was established in 1974 with the goal to make vaccines available to all children throughout the world. Currently, WHO recommends immunization against 13 vaccine-preventable diseases in childhood.</p>
+            <p>{% trans "The World Health Organization's Expanded Programme on Immunization (EPI) was established in 1974 with the goal to make vaccines available to all children throughout the world. Currently, WHO recommends immunization against 13 vaccine-preventable diseases in childhood." %}</p>
             
             <!-- STATISTICS -->
             <div class="stats-container">
                 <div class="stat-box">
-                    <div class="stat-number">2-3 Million</div>
-                    <p>Deaths prevented annually by vaccination</p>
+                    <div class="stat-number">{% trans "2-3 Million" %}</div>
+                    <p>{% trans "Deaths prevented annually by vaccination" %}</p>
                 </div>
                 <div class="stat-box">
                     <div class="stat-number">13+</div>
-                    <p>Vaccine-preventable diseases in children</p>
+                    <p>{% trans "Vaccine-preventable diseases in children" %}</p>
                 </div>
                 <div class="stat-box">
                     <div class="stat-number">90%</div>
-                    <p>Global DTP3 vaccine coverage target by WHO</p>
+                    <p>{% trans "Global DTP3 vaccine coverage target by WHO" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- ========== DISEASES SECTION ========== -->
         <section id="diseases" class="content-section">
-            <h2 class="section-heading">Vaccine-Preventable Diseases</h2>
+            <h2 class="section-heading">{% trans "Vaccine-Preventable Diseases" %}</h2>
             
             <div class="highlight-box">
-                <p><strong>Most vaccine-preventable diseases are caused by germs that spread from person to person.</strong> Vaccines are the safest way to protect against these diseases and their potentially serious complications.</p>
+                <p><strong>{% trans "Most vaccine-preventable diseases are caused by germs that spread from person to person." %}</strong> {% trans "Vaccines are the safest way to protect against these diseases and their potentially serious complications." %}</p>
             </div>
             
             <!-- SYMPTOMS GRID (Modified for Diseases) -->
             <div class="symptoms-container">
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Measles</h3>
-                    <p>Highly contagious viral disease causing fever, rash, and can lead to pneumonia, brain damage, or death</p>
+                    <h3 class="symptom-title">{% trans "Measles" %}</h3>
+                    <p>{% trans "Highly contagious viral disease causing fever, rash, and can lead to pneumonia, brain damage, or death" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Polio</h3>
-                    <p>Infectious disease caused by poliovirus that can cause paralysis and permanent disability</p>
+                    <h3 class="symptom-title">{% trans "Polio" %}</h3>
+                    <p>{% trans "Infectious disease caused by poliovirus that can cause paralysis and permanent disability" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Diphtheria</h3>
-                    <p>Serious bacterial infection affecting mucous membranes of throat and nose</p>
+                    <h3 class="symptom-title">{% trans "Diphtheria" %}</h3>
+                    <p>{% trans "Serious bacterial infection affecting mucous membranes of throat and nose" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Tetanus</h3>
-                    <p>Bacterial disease causing painful muscle contractions, especially of jaw and neck muscles</p>
+                    <h3 class="symptom-title">{% trans "Tetanus" %}</h3>
+                    <p>{% trans "Bacterial disease causing painful muscle contractions, especially of jaw and neck muscles" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Pertussis</h3>
-                    <p>Highly contagious respiratory disease known as whooping cough</p>
+                    <h3 class="symptom-title">{% trans "Pertussis" %}</h3>
+                    <p>{% trans "Highly contagious respiratory disease known as whooping cough" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Hib Disease</h3>
-                    <p>Bacterial infection causing pneumonia, meningitis, and other serious illnesses</p>
+                    <h3 class="symptom-title">{% trans "Hib Disease" %}</h3>
+                    <p>{% trans "Bacterial infection causing pneumonia, meningitis, and other serious illnesses" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- ========== VACCINES SECTION ========== -->
         <section id="vaccines" class="content-section">
-            <h2 class="section-heading">Essential Childhood Vaccines</h2>
+            <h2 class="section-heading">{% trans "Essential Childhood Vaccines" %}</h2>
             
             <!-- PREVENTION GRID (Modified for Vaccines) -->
             <div class="prevention-container">
                 <div class="prevention-box">
-                    <h3>BCG Vaccine</h3>
-                    <p class="vaccine-status">Tuberculosis</p>
-                    <p>Given at birth in high TB burden countries</p>
+                    <h3>{% trans "BCG Vaccine" %}</h3>
+                    <p class="vaccine-status">{% trans "Tuberculosis" %}</p>
+                    <p>{% trans "Given at birth in high TB burden countries" %}</p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Hepatitis B</h3>
-                    <p class="vaccine-status">Hepatitis B</p>
-                    <p>3 doses starting at birth</p>
+                    <h3>{% trans "Hepatitis B" %}</h3>
+                    <p class="vaccine-status">{% trans "Hepatitis B" %}</p>
+                    <p>{% trans "3 doses starting at birth" %}</p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Polio Vaccine</h3>
-                    <p class="vaccine-status">Polio</p>
-                    <p>IPV (inactivated) or OPV (oral)</p>
+                    <h3>{% trans "Polio Vaccine" %}</h3>
+                    <p class="vaccine-status">{% trans "Polio" %}</p>
+                    <p>{% trans "IPV (inactivated) or OPV (oral)" %}</p>
                 </div>
                 <div class="prevention-box">
-                    <h3>DTaP Vaccine</h3>
-                    <p class="vaccine-status">3 Diseases</p>
-                    <p>Diphtheria, Tetanus, Pertussis</p>
+                    <h3>{% trans "DTaP Vaccine" %}</h3>
+                    <p class="vaccine-status">{% trans "3 Diseases" %}</p>
+                    <p>{% trans "Diphtheria, Tetanus, Pertussis" %}</p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Hib Vaccine</h3>
-                    <p class="vaccine-status">Hib Disease</p>
-                    <p>Prevents meningitis and pneumonia</p>
+                    <h3>{% trans "Hib Vaccine" %}</h3>
+                    <p class="vaccine-status">{% trans "Hib Disease" %}</p>
+                    <p>{% trans "Prevents meningitis and pneumonia" %}</p>
                 </div>
                 <div class="prevention-box">
-                    <h3>PCV Vaccine</h3>
-                    <p class="vaccine-status">Pneumococcal</p>
-                    <p>Prevents pneumonia and meningitis</p>
+                    <h3>{% trans "PCV Vaccine" %}</h3>
+                    <p class="vaccine-status">{% trans "Pneumococcal" %}</p>
+                    <p>{% trans "Prevents pneumonia and meningitis" %}</p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Rotavirus Vaccine</h3>
-                    <p class="vaccine-status">Rotavirus</p>
-                    <p>Oral vaccine for diarrhea prevention</p>
+                    <h3>{% trans "Rotavirus Vaccine" %}</h3>
+                    <p class="vaccine-status">{% trans "Rotavirus" %}</p>
+                    <p>{% trans "Oral vaccine for diarrhea prevention" %}</p>
                 </div>
                 <div class="prevention-box">
-                    <h3>MMR Vaccine</h3>
-                    <p class="vaccine-status">3 Diseases</p>
-                    <p>Measles, Mumps, Rubella</p>
+                    <h3>{% trans "MMR Vaccine" %}</h3>
+                    <p class="vaccine-status">{% trans "3 Diseases" %}</p>
+                    <p>{% trans "Measles, Mumps, Rubella" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- ========== FACT SHEETS SECTION ========== -->
         <section id="schedule" class="content-section">
-            <h2 class="section-heading">WHO Recommended Vaccination Schedule</h2>
-            <p>Complete information based on WHO guidelines for childhood immunization.</p>
+            <h2 class="section-heading">{% trans "WHO Recommended Vaccination Schedule" %}</h2>
+            <p>{% trans "Complete information based on WHO guidelines for childhood immunization." %}</p>
 
             <!-- MEASLES FACT SHEET -->
             <div class="fact-box">
-                <h2 class="fact-title">Measles (MMR Vaccine)</h2>
+                <h2 class="fact-title">{% trans "Measles (MMR Vaccine)" %}</h2>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">How it Spreads:</h3>
-                    <div class="transmission-item">Airborne droplets from coughs/sneezes</div>
-                    <div class="transmission-item">Direct contact with nasal/throat secretions</div>
+                    <h3 class="info-heading">{% trans "How it Spreads:" %}</h3>
+                    <div class="transmission-item">{% trans "Airborne droplets from coughs/sneezes" %}</div>
+                    <div class="transmission-item">{% trans "Direct contact with nasal/throat secretions" %}</div>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Vaccine:</h3>
-                    <span class="vaccine-status">Available (MMR)</span>
-                    <p>2 doses: First at 9-12 months, second at 15-18 months</p>
+                    <h3 class="info-heading">{% trans "Vaccine:" %}</h3>
+                    <span class="vaccine-status">{% trans "Available (MMR)" %}</span>
+                    <p>{% trans "2 doses: First at 9-12 months, second at 15-18 months" %}</p>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Key Facts (WHO):</h3>
-                    <p>Before vaccine: 2.6 million deaths annually worldwide</p>
-                    <p>Vaccine prevents: 21.1 million deaths (2000-2017)</p>
-                    <p>Global coverage: 86% for first dose (2022)</p>
+                    <h3 class="info-heading">{% trans "Key Facts (WHO):" %}</h3>
+                    <p>{% trans "Before vaccine: 2.6 million deaths annually worldwide" %}</p>
+                    <p>{% trans "Vaccine prevents: 21.1 million deaths (2000-2017)" %}</p>
+                    <p>{% trans "Global coverage: 86% for first dose (2022)" %}</p>
                 </div>
             </div>
 
             <!-- POLIO FACT SHEET -->
             <div class="fact-box">
-                <h2 class="fact-title">Polio (IPV/OPV Vaccine)</h2>
+                <h2 class="fact-title">{% trans "Polio (IPV/OPV Vaccine)" %}</h2>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">How it Spreads:</h3>
-                    <div class="transmission-item">Fecal-oral route</div>
-                    <div class="transmission-item">Contaminated food/water</div>
+                    <h3 class="info-heading">{% trans "How it Spreads:" %}</h3>
+                    <div class="transmission-item">{% trans "Fecal-oral route" %}</div>
+                    <div class="transmission-item">{% trans "Contaminated food/water" %}</div>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Vaccine:</h3>
-                    <span class="vaccine-status">Available (IPV/OPV)</span>
-                    <p>4 doses: 2, 4, 6-18 months, 4-6 years</p>
+                    <h3 class="info-heading">{% trans "Vaccine:" %}</h3>
+                    <span class="vaccine-status">{% trans "Available (IPV/OPV)" %}</span>
+                    <p>{% trans "4 doses: 2, 4, 6-18 months, 4-6 years" %}</p>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Key Facts (WHO):</h3>
-                    <p>99% reduction in cases since 1988</p>
-                    <p>Only 2 countries remain endemic (2023)</p>
-                    <p>Type 2 and 3 wild poliovirus eradicated</p>
+                    <h3 class="info-heading">{% trans "Key Facts (WHO):" %}</h3>
+                    <p>{% trans "99% reduction in cases since 1988" %}</p>
+                    <p>{% trans "Only 2 countries remain endemic (2023)" %}</p>
+                    <p>{% trans "Type 2 and 3 wild poliovirus eradicated" %}</p>
                 </div>
             </div>
 
             <!-- DIPHTHERIA FACT SHEET -->
             <div class="fact-box">
-                <h2 class="fact-title">Diphtheria (DTaP Vaccine)</h2>
+                <h2 class="fact-title">{% trans "Diphtheria (DTaP Vaccine)" %}</h2>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">How it Spreads:</h3>
-                    <div class="transmission-item">Respiratory droplets</div>
-                    <div class="transmission-item">Direct contact with skin lesions</div>
+                    <h3 class="info-heading">{% trans "How it Spreads:" %}</h3>
+                    <div class="transmission-item">{% trans "Respiratory droplets" %}</div>
+                    <div class="transmission-item">{% trans "Direct contact with skin lesions" %}</div>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Vaccine:</h3>
-                    <span class="vaccine-status">Available (DTaP)</span>
-                    <p>5 doses: 2, 4, 6, 15-18 months, 4-6 years</p>
+                    <h3 class="info-heading">{% trans "Vaccine:" %}</h3>
+                    <span class="vaccine-status">{% trans "Available (DTaP)" %}</span>
+                    <p>{% trans "5 doses: 2, 4, 6, 15-18 months, 4-6 years" %}</p>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Key Facts (WHO):</h3>
-                    <p>Case-fatality rate: 5-10% (higher in children)</p>
-                    <p>Global coverage: 86% for DTP3 (2022)</p>
-                    <p>85% reduction in cases since 1980</p>
+                    <h3 class="info-heading">{% trans "Key Facts (WHO):" %}</h3>
+                    <p>{% trans "Case-fatality rate: 5-10% (higher in children)" %}</p>
+                    <p>{% trans "Global coverage: 86% for DTP3 (2022)" %}</p>
+                    <p>{% trans "85% reduction in cases since 1980" %}</p>
                 </div>
             </div>
 
             <!-- TETANUS FACT SHEET -->
             <div class="fact-box">
-                <h2 class="fact-title">Tetanus (DTaP Vaccine)</h2>
+                <h2 class="fact-title">{% trans "Tetanus (DTaP Vaccine)" %}</h2>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">How it Spreads:</h3>
-                    <div class="transmission-item">Contaminated wounds</div>
-                    <div class="transmission-item">Not person-to-person</div>
+                    <h3 class="info-heading">{% trans "How it Spreads:" %}</h3>
+                    <div class="transmission-item">{% trans "Contaminated wounds" %}</div>
+                    <div class="transmission-item">{% trans "Not person-to-person" %}</div>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Vaccine:</h3>
-                    <span class="vaccine-status">Available (DTaP)</span>
-                    <p>5 doses in childhood, boosters every 10 years</p>
+                    <h3 class="info-heading">{% trans "Vaccine:" %}</h3>
+                    <span class="vaccine-status">{% trans "Available (DTaP)" %}</span>
+                    <p>{% trans "5 doses in childhood, boosters every 10 years" %}</p>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Key Facts (WHO):</h3>
-                    <p>Neonatal tetanus eliminated in 47/59 priority countries</p>
-                    <p>Case-fatality rate: 10-20% (with treatment)</p>
-                    <p>80-100% without treatment</p>
+                    <h3 class="info-heading">{% trans "Key Facts (WHO):" %}</h3>
+                    <p>{% trans "Neonatal tetanus eliminated in 47/59 priority countries" %}</p>
+                    <p>{% trans "Case-fatality rate: 10-20% (with treatment)" %}</p>
+                    <p>{% trans "80-100% without treatment" %}</p>
                 </div>
             </div>
 
             <!-- PERTUSSIS FACT SHEET -->
             <div class="fact-box">
-                <h2 class="fact-title">Pertussis (Whooping Cough)</h2>
+                <h2 class="fact-title">{% trans "Pertussis (Whooping Cough)" %}</h2>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">How it Spreads:</h3>
-                    <div class="transmission-item">Respiratory droplets</div>
-                    <div class="transmission-item">Highly contagious</div>
+                    <h3 class="info-heading">{% trans "How it Spreads:" %}</h3>
+                    <div class="transmission-item">{% trans "Respiratory droplets" %}</div>
+                    <div class="transmission-item">{% trans "Highly contagious" %}</div>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Vaccine:</h3>
-                    <span class="vaccine-status">Available (DTaP)</span>
-                    <p>5 doses in childhood, Tdap booster for adolescents/adults</p>
+                    <h3 class="info-heading">{% trans "Vaccine:" %}</h3>
+                    <span class="vaccine-status">{% trans "Available (DTaP)" %}</span>
+                    <p>{% trans "5 doses in childhood, Tdap booster for adolescents/adults" %}</p>
                 </div>
                 
                 <div class="info-section">
-                    <h3 class="info-heading">Key Facts (WHO):</h3>
-                    <p>Most severe in infants under 6 months</p>
-                    <p>Global cases: 24.1 million annually</p>
-                    <p>Deaths: 160,700 children under 5 (2014)</p>
+                    <h3 class="info-heading">{% trans "Key Facts (WHO):" %}</h3>
+                    <p>{% trans "Most severe in infants under 6 months" %}</p>
+                    <p>{% trans "Global cases: 24.1 million annually" %}</p>
+                    <p>{% trans "Deaths: 160,700 children under 5 (2014)" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- SOURCE INFORMATION -->
         <div class="source-info">
-            <h3 class="info-heading">Information Source:</h3>
-            <p>All information based on World Health Organization (WHO) data and guidelines.</p>
-            <p>For latest updates, visit: <a href="https://www.who.int/health-topics/vaccines-and-immunization" target="_blank">WHO Vaccines and Immunization</a></p>
-            <p>WHO Expanded Programme on Immunization (EPI): <a href="https://www.who.int/teams/immunization-vaccines-and-biologicals" target="_blank">Immunization, Vaccines and Biologicals</a></p>
+            <h3 class="info-heading">{% trans "Information Source:" %}</h3>
+            <p>{% trans "All information based on World Health Organization (WHO) data and guidelines." %}</p>
+            <p>{% trans "For latest updates, visit:" %} <a href="https://www.who.int/health-topics/vaccines-and-immunization" target="_blank">{% trans "WHO Vaccines and Immunization" %}</a></p>
+            <p>{% trans "WHO Expanded Programme on Immunization (EPI):" %} <a href="https://www.who.int/teams/immunization-vaccines-and-biologicals" target="_blank">{% trans "Immunization, Vaccines and Biologicals" %}</a></p>
         </div>
 
     <!-- FOOTER -->
     <footer class="footer">
         <div class="main-container">
-            <p>© 2025 Child Vaccination Diseases Portal (VPDS) | Based on WHO Guidelines</p>
-            <p style="margin-top: 10px; font-size: 14px; opacity: 0.9;">Vaccination prevents 2-3 million deaths every year. Protect every child.</p>
+            <p>{% trans "© 2025 Child Vaccination Diseases Portal (VPDS) | Based on WHO Guidelines" %}</p>
+            <p style="margin-top: 10px; font-size: 14px; opacity: 0.9;">{% trans "Vaccination prevents 2-3 million deaths every year. Protect every child." %}</p>
         </div>
     </footer>
     <script src="{% static 'publicsite/js/info-theme.js' %}"></script>
