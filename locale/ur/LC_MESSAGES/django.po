@@ -677,7 +677,7 @@ msgstr "ابھی ٹریک کریں"
 #: .\publicsite\templates\publicsite\vpd.html:68
 #: .\publicsite\templates\publicsite\vpd.html:266
 msgid "VPDs"
-msgstr "VPDs"
+msgstr "ویکسین امراض"
 
 #: .\publicsite\templates\publicsite\FAQ.html:65
 #: .\publicsite\templates\publicsite\blog1.html:63
