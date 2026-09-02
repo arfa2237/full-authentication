@@ -1,11 +1,12 @@
 {% load static %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
 
     <head>
         <meta charset="utf-8">
-        <title>TIG-Vaccine Preventable Diseases</title>
+        <title>{% trans "TIG-Vaccine Preventable Diseases" %}</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -41,7 +42,7 @@
         <!-- Spinner Start -->
         <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
+                <span class="sr-only">{% trans "Loading..." %}</span>
             </div>
         </div>
         <!-- Spinner End -->
@@ -50,32 +51,42 @@
         <div class="container-fluid position-relative p-0">
             <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
                 <a href="" class="navbar-brand p-0">
-                    <img src="{% static "publicsite/img/logo.png" %}" alt="Logo">
+                    <img src="{% static "publicsite/img/logo.png" %}" alt="{% trans 'Logo' %}">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="fa fa-bars"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
-                        <a href="{% url "index" %}" class="nav-item nav-link">Home</a>
-                        <a href="{% url "scheduling" %}" class="nav-item nav-link">Schedule now</a>
+                        <a href="{% url "index" %}" class="nav-item nav-link">{% trans "Home" %}</a>
+                        <a href="{% url "scheduling" %}" class="nav-item nav-link">{% trans "Schedule now" %}</a>
                         {% if user.is_authenticated %}
-                            <a href="/patient/my-appointments/" class="nav-item nav-link">Track now</a>
+                            <a href="/patient/my-appointments/" class="nav-item nav-link">{% trans "Track now" %}</a>
                         {% else %}
-                            <a href="/patient/login/?next=/patient/my-appointments/" class="nav-item nav-link">Track now</a>
+                            <a href="/patient/login/?next=/patient/my-appointments/" class="nav-item nav-link">{% trans "Track now" %}</a>
                         {% endif %} 
-                        <a href="{% url "vpd" %}" class="nav-item nav-link active">VPDs</a>
-                        <a href="{% url "nearby" %}" class="nav-item nav-link">Location nearby</a>
-                        <a href="{% url "faq" %}" class="nav-item nav-link">FAQ</a>                          
+                        <a href="{% url "vpd" %}" class="nav-item nav-link active">{% trans "VPDs" %}</a>
+                        <a href="{% url "nearby" %}" class="nav-item nav-link">{% trans "Location nearby" %}</a>
+                        <a href="{% url "faq" %}" class="nav-item nav-link">{% trans "FAQ" %}</a>                          
                         </div>
                       <!--Code for theme Toggle -->
                     </div>
                    <div class="d-none d-xl-flex me-3">
                         <div class="d-flex flex-row pe-3 border-end "> <!--Border-primary remove-->
-                             <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                             <button class="theme-toggle" id="themeToggle" title="{% trans 'Toggle Dark Mode' %}">
                               <i class="fas fa-moon"></i>
                            </button>
-                            <button class="language-toggle" id="languageToggle" title="Switch Language"> EN </button>
+                            <form action="{% url 'set_language' %}" method="post" class="d-inline m-0">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.path }}">
+                                {% if LANGUAGE_CODE == 'ur' %}
+                                    <input name="language" type="hidden" value="en">
+                                    <button type="submit" class="language-toggle" title="{% trans 'Switch to English' %}">EN</button>
+                                {% else %}
+                                    <input name="language" type="hidden" value="ur">
+                                    <button type="submit" class="language-toggle" title="{% trans 'Switch to Urdu' %}">UR</button>
+                                {% endif %}
+                            </form>
                         </div>
                     </div>
                     
@@ -102,32 +113,32 @@
                                 <li>
                                     <a class="dropdown-item" href="/patient/my-appointments/"
                                     style="border-radius:8px; font-size:13px; padding:8px 16px;">
-                                        <i class="fas fa-calendar-check me-2 text-primary"></i> My Appointments
+                                        <i class="fas fa-calendar-check me-2 text-primary"></i> {% trans "My Appointments" %}
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="/patient/book-appointment/"
                                     style="border-radius:8px; font-size:13px; padding:8px 16px;">
-                                        <i class="fas fa-calendar-plus me-2 text-primary"></i> Book Appointment
+                                        <i class="fas fa-calendar-plus me-2 text-primary"></i> {% trans "Book Appointment" %}
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="/patient/vaccine-card/"
                                     style="border-radius:8px; font-size:13px; padding:8px 16px;">
-                                        <i class="fas fa-id-card me-2 text-primary"></i> Vaccine Card
+                                        <i class="fas fa-id-card me-2 text-primary"></i> {% trans "Vaccine Card" %}
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item text-danger" href="{% url 'logout' %}"
                                     style="border-radius:8px; font-size:13px; padding:8px 16px;">
-                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                        <i class="fas fa-sign-out-alt me-2"></i> {% trans "Logout" %}
                                     </a>
                                 </li>
                             </ul>
                         </div>
                     {% else %} 
-                            <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">Login</a>
+                            <a href="{% url 'login' %}" class="btn btn-primary rounded-pill d-inline-flex flex-shrink-0 py-2 px-4">{% trans "Login" %}</a>
                     {% endif %}
                 </div>
             </nav>
@@ -135,7 +146,7 @@
             <!-- Header Start -->
             <div class="container-fluid bg-breadcrumb">
                 <div class="container text-center py-5" style="max-width: 900px;">
-                    <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Vaccine Preventable Diseases</h4>
+                    <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">{% trans "Vaccine Preventable Diseases" %}</h4>
                 </div>
             </div>
             <!-- Header End -->
@@ -148,24 +159,24 @@
         <div class="container-fluid service bg-light overflow-hidden py-5">
             <div class="container py-5">
                 <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.2s" style="max-width: 800px;">
-                    <h1 class="display-3 text-capitalize mb-3">Protect Your Family with Vaccination</h1>
+                    <h1 class="display-3 text-capitalize mb-3">{% trans "Protect Your Family with Vaccination" %}</h1>
                 </div>
               
                 <!---Diseases 1 child vaccination--> 
                     <div class="disease">
-                        <h2><a href="{% url "child_vaccination" %}">Child Vaccination</a></h2>
-                        <p>Child vaccination is very important because it protects children from dangerous diseases like measles, polio, diphtheria, and whooping cough. Vaccines help strengthen a child’s immune system and prevent serious illness, disability, or even death.</p>
+                        <h2><a href="{% url "child_vaccination" %}">{% trans "Child Vaccination" %}</a></h2>
+                        <p>{% trans "Child vaccination is very important because it protects children from dangerous diseases like measles, polio, diphtheria, and whooping cough. Vaccines help strengthen a child's immune system and prevent serious illness, disability, or even death." %}</p>
                     </div>   
                 <!---Disease 2 Pneumococcal-->
                 <div class="disease">
-                    <h2><a href="{% url "pneumococcal" %}">Pneumococcal</a></h2>
-                    <p>Pneumococcal disease is caused by the bacterium Streptococcus pneumoniae and can lead to serious infections such as pneumonia, meningitis, and bloodstream infections (sepsis). It commonly affects young children, older adults, and people with weakened immune systems. Symptoms vary depending on the infection but may include fever, cough, difficulty breathing, and severe headache.</p>
+                    <h2><a href="{% url "pneumococcal" %}">{% trans "Pneumococcal" %}</a></h2>
+                    <p>{% trans "Pneumococcal disease is caused by the bacterium Streptococcus pneumoniae and can lead to serious infections such as pneumonia, meningitis, and bloodstream infections (sepsis). It commonly affects young children, older adults, and people with weakened immune systems. Symptoms vary depending on the infection but may include fever, cough, difficulty breathing, and severe headache." %}</p>
                 </div>
                 
                 <!---Diseases 3 Tetanus-->
                 <div class="disease">
-                    <h2><a href="{% url "tetanus" %}">Tetanus</a></h2>
-                    <p>Tetanus is a serious disease caused by the bacterium Clostridium tetani, which produces a toxin affecting the nervous system and causing severe muscle stiffness and spasms, often starting with the jaw (lockjaw). It can enter the body through cuts, wounds, or burns, and can be life-threatening if it affects breathing. Pregnent women and newborn babies are highly affected by tetanus.</p>
+                    <h2><a href="{% url "tetanus" %}">{% trans "Tetanus" %}</a></h2>
+                    <p>{% trans "Tetanus is a serious disease caused by the bacterium Clostridium tetani, which produces a toxin affecting the nervous system and causing severe muscle stiffness and spasms, often starting with the jaw (lockjaw). It can enter the body through cuts, wounds, or burns, and can be life-threatening if it affects breathing. Pregnent women and newborn babies are highly affected by tetanus." %}</p>
                 </div>
                 <div class="d-flex justify-content-center my-4">
                     <div class="chart">
@@ -174,13 +185,13 @@
                 </div> 
                 <!---Diseases 4 Hepatitis-->
                 <div class="disease">
-                    <h2><a href="{% url "hepatitis" %}">Hepatitis</a></h2> 
-                    <p>It spreads through exchange of infected blood or other body fluids of an infected person or from mother to child during birth or unsafe injections. Unlike Hepatitis A, Hepatitis B can become  chronic and lead to severe complications like liver cirrhosis or liver cancer.</p>
+                    <h2><a href="{% url "hepatitis" %}">{% trans "Hepatitis" %}</a></h2> 
+                    <p>{% trans "It spreads through exchange of infected blood or other body fluids of an infected person or from mother to child during birth or unsafe injections. Unlike Hepatitis A, Hepatitis B can become chronic and lead to severe complications like liver cirrhosis or liver cancer." %}</p>
                 </div>
                 <!---Diseases 5 Measles-->
                 <div class="disease">
-                    <h2><a href="{% url "measles" %}">Measles</a></h2>
-                    <p>Measles is a highly contagious viral disease caused by the measles virus. It is characterized by high fever, cough, runny nose, red eyes, and a distinctive red rash that usually starts on the face and spreads across the body. Measles spreads through airborne droplets from coughing and sneezing.</p>
+                    <h2><a href="{% url "measles" %}">{% trans "Measles" %}</a></h2>
+                    <p>{% trans "Measles is a highly contagious viral disease caused by the measles virus. It is characterized by high fever, cough, runny nose, red eyes, and a distinctive red rash that usually starts on the face and spreads across the body. Measles spreads through airborne droplets from coughing and sneezing." %}</p>
                 </div>
                 <div class="d-flex justify-content-center my-4">
                     <div class="chart">
@@ -189,13 +200,13 @@
                 </div> 
                 <!---Diseases 6 Mumps-->
                 <div class="disease">
-                    <h2><a href="{% url "mumps" %}">Mumps</a></h2> 
-                    <p>Mumps is a contagious viral infection caused by the mumps virus, primarily affecting the salivary glands, leading to swelling and pain, especially near the jaw. Common symptoms include fever, headache, muscle aches, and fatigue.</p>
+                    <h2><a href="{% url "mumps" %}">{% trans "Mumps" %}</a></h2> 
+                    <p>{% trans "Mumps is a contagious viral infection caused by the mumps virus, primarily affecting the salivary glands, leading to swelling and pain, especially near the jaw. Common symptoms include fever, headache, muscle aches, and fatigue." %}</p>
                 </div>
                  <!---Diseases 7 Rubella-->
                 <div class="disease">
-                    <h2><a href="{% url "rubella" %}">Rubella</a></h2>
-                    <p>Rubella, also known as German measles, usually causes a mild fever, rash, and swollen lymph nodes. While often mild in children and adults, rubella can be very dangerous during pregnancy, as it can lead to congenital rubella syndrome, causing birth defects in the baby.</p>
+                    <h2><a href="{% url "rubella" %}">{% trans "Rubella" %}</a></h2>
+                    <p>{% trans "Rubella, also known as German measles, usually causes a mild fever, rash, and swollen lymph nodes. While often mild in children and adults, rubella can be very dangerous during pregnancy, as it can lead to congenital rubella syndrome, causing birth defects in the baby." %}</p>
                 </div> 
                 <div class="d-flex justify-content-center my-4">
                     <div class="chart">
@@ -212,8 +223,8 @@
                 <div class="row g-5 mb-5 align-items-center">
                     <div class="col-lg-7">
                         <div class="position-relative mx-auto">
-                            <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
-                            <button type="button" class="btn btn-secondary rounded-pill position-absolute  top-0 end-0 py-2 px-4 mt-2 me-2 button-color">Subscribe</button>
+                            <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="{% trans 'Enter your email' %}">
+                            <button type="button" class="btn btn-secondary rounded-pill position-absolute  top-0 end-0 py-2 px-4 mt-2 me-2 button-color">{% trans "Subscribe" %}</button>
                         </div>
                     </div>
                     <div class="col-lg-5">
@@ -229,8 +240,8 @@
                     <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
                             <div class="footer-item">
-                                <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>About Us</h3>
-                                <p class="mb-3">Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility.</p>
+                                <h3 class="text-white mb-4"><i class="fas fa-syringe text-primary me-3 text-syringe"></i>{% trans "About Us" %}</h3>
+                                <p class="mb-3">{% trans "Trace and Immunize Gujranwala is a government digital health platform under the District Health Authority, designed to modernize vaccination services and improve healthcare accessibility." %}</p>
                             </div>
                            <!-- <div class="position-relative">
                                 <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text" placeholder="Enter your email">
@@ -240,44 +251,44 @@
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
-                            <h4 class="text-white mb-4">Quick Links</h4>
-                            <a href="{% url 'index' %}"><i class="fas fa-angle-right me-2"></i> Home</a>
-                            <a href="{% url 'scheduling' %}"><i class="fas fa-angle-right me-2"></i> Schedule appointments</a>
+                            <h4 class="text-white mb-4">{% trans "Quick Links" %}</h4>
+                            <a href="{% url 'index' %}"><i class="fas fa-angle-right me-2"></i> {% trans "Home" %}</a>
+                            <a href="{% url 'scheduling' %}"><i class="fas fa-angle-right me-2"></i> {% trans "Schedule appointments" %}</a>
                             {% if user.is_authenticated %}
                                 <a href="/patient/my-appointments/">
-                                    <i class="fas fa-angle-right me-2"></i> Track now
+                                    <i class="fas fa-angle-right me-2"></i> {% trans "Track now" %}
                                 </a>
                             {% else %}
                                 <a href="/patient/login/?next=/patient/my-appointments/">
-                                    <i class="fas fa-angle-right me-2"></i> Track now
+                                    <i class="fas fa-angle-right me-2"></i> {% trans "Track now" %}
                                 </a>
                             {% endif %}
-                            <a href="{% url 'vpd' %}"><i class="fas fa-angle-right me-2"></i> VPDs</a>
-                            <a href="{% url 'nearby' %}"><i class="fas fa-angle-right me-2"></i> Find Centers</a>
-                            <a href="{% url 'faq' %}"><i class="fas fa-angle-right me-2"></i>FAQ</a>
+                            <a href="{% url 'vpd' %}"><i class="fas fa-angle-right me-2"></i> {% trans "VPDs" %}</a>
+                            <a href="{% url 'nearby' %}"><i class="fas fa-angle-right me-2"></i> {% trans "Find Centers" %}</a>
+                            <a href="{% url 'faq' %}"><i class="fas fa-angle-right me-2"></i>{% trans "FAQ" %}</a>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
-                            <h4 class="text-white mb-4"> Center Hours </h4>
+                            <h4 class="text-white mb-4">{% trans "Center Hours" %}</h4>
                             <div class="mb-3">
-                                <h6 class="text-muted mb-0">Mon - Friday:</h6>
-                                <p class="text-white mb-0">09.00 am to 02.00 pm</p>
+                                <h6 class="text-muted mb-0">{% trans "Mon - Friday:" %}</h6>
+                                <p class="text-white mb-0">{% trans "09.00 am to 02.00 pm" %}</p>
                             </div>
                             <div class="mb-3">
-                                <h6 class="text-muted mb-0">Saturday:</h6>
-                                <p class="text-white mb-0">10.00 am to 05.00 pm</p>
+                                <h6 class="text-muted mb-0">{% trans "Saturday:" %}</h6>
+                                <p class="text-white mb-0">{% trans "10.00 am to 05.00 pm" %}</p>
                             </div>
                             <div class="mb-3">
-                                <h6 class="text-muted mb-0">Vacation:</h6>
-                                <p class="text-white mb-0">All Sunday is our vacation</p>
+                                <h6 class="text-muted mb-0">{% trans "Vacation:" %}</h6>
+                                <p class="text-white mb-0">{% trans "All Sunday is our vacation" %}</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
-                            <h4 class="text-white mb-4">Contact Us</h4>
-                            <a href="#"><i class="fa fa-map-marker-alt me-2"></i> Address here</a>
+                            <h4 class="text-white mb-4">{% trans "Contact Us" %}</h4>
+                            <a href="#"><i class="fa fa-map-marker-alt me-2"></i> {% trans "Address here" %}</a>
                             <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> trace&immunize.com</a>
                            <!-- <a href="mailto:info@example.com"><i class="fas fa-envelope me-2"></i> info@example.com</a>-->
                             <a href="tel:+012 345 67890"><i class="fas fa-phone me-2"></i> +92 300 1234567</a>
