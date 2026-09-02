@@ -96,12 +96,80 @@ body.dark-theme .footer {
     border-top: 1px solid #22283a !important;
 }
 
-/* Toggle button itself, plain emoji, no icon dependency */
+/* ── ICON TOGGLE BUTTONS — theme toggle (moon icon) and language
+   toggle (EN/UR). This mirrors the exact .theme-toggle / .language-toggle
+   block from style.css (used on all main site pages), with its
+   var(--text) / var(--primary-lighter) / var(--primary-dark) swapped
+   for real hex colors, since those variables aren't defined on these
+   standalone info pages. Works in both light and dark mode. ── */
+.theme-toggle,
+.language-toggle,
 #themeToggle {
-    background: none;
-    border: none;
-    font-size: 20px;
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    font-size: 1.2rem;
     cursor: pointer;
-    margin-left: 12px;
-    color: inherit;
+    margin-left: 15px;
+    color: #28375f;
+    transition: color 0.3s, background-color 0.3s;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.language-toggle {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.theme-toggle:hover,
+.language-toggle:hover,
+#themeToggle:hover {
+    background-color: rgba(104, 132, 211, 0.15) !important;
+    color: #6884d3;
+}
+
+.theme-toggle:focus,
+.theme-toggle:active,
+.language-toggle:focus,
+.language-toggle:active,
+#themeToggle:focus,
+#themeToggle:active {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+body.dark-theme .theme-toggle,
+body.dark-theme .language-toggle,
+body.dark-theme #themeToggle {
+    color: #e8e8e8;
+}
+
+body.dark-theme .theme-toggle:hover,
+body.dark-theme .language-toggle:hover,
+body.dark-theme #themeToggle:hover {
+    background-color: rgba(104, 132, 211, 0.2) !important;
+    color: #8fa4e0;
+}
+
+/* Keep the language-switch <form> from disturbing nav-bar's flex layout */
+.nav-bar form {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+}
+
+/* Nudge the moon icon down slightly so it sits on the same visual
+   baseline as the nav-link text (Overview, Symptoms, etc.) next to it */
+.theme-toggle i,
+#themeToggle i {
+    position: relative;
+    top: 10px;
 }
