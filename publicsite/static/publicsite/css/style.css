@@ -500,6 +500,15 @@
     color: var(--bs-white);
 }
 
+/* Light Theme Breadcrumb Hover/Active Fix */
+.bg-breadcrumb .breadcrumb .breadcrumb-item a:hover {
+    color: #8fa4e0 !important;
+}
+
+.bg-breadcrumb .breadcrumb .breadcrumb-item.active {
+    color: #8fa4e0 !important;
+}
+
 @media (max-width: 992px) {
     .bg-breadcrumb {
         padding: 60px 0 60px 0;
