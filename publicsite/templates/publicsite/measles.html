@@ -1,11 +1,12 @@
-{% load static %} 
+{% load static %}
+{% load i18n %} 
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Measles Information - Vaccine Preventable Disease</title>
+    <title>{% trans "Measles Information - Vaccine Preventable Disease" %}</title>
     <link rel="stylesheet" href="{% static "publicsite/css/measles.css" %}">  
     <link rel="stylesheet" href="{% static 'publicsite/css/info-theme.css' %}">
 </head>
@@ -14,180 +15,194 @@
     <header class="header">
         <div class="main-container">
             <div class="header-content">
-                <div class="logo">Measles Information Portal</div>
-                <p class="header-subtitle">Measles - A Vaccine Preventable Disease</p>
+                <div class="logo">{% trans "Measles Information Portal" %}</div>
+                <p class="header-subtitle">{% trans "Measles - A Vaccine Preventable Disease" %}</p>
             </div>
         </div>
     </header>
 
     <!-- NAVIGATION BAR -->
     <nav class="nav-bar">
-        <a href="#overview" class="nav-link">Overview</a>
-        <a href="#symptoms" class="nav-link">Symptoms</a>
-        <a href="#prevention" class="nav-link">Prevention</a>
-        <a href="#complications" class="nav-link">Complications</a>
-        <button id="themeToggle" title="Toggle Dark Mode">🌙</button>
+        <a href="#overview" class="nav-link">{% trans "Overview" %}</a>
+        <a href="#symptoms" class="nav-link">{% trans "Symptoms" %}</a>
+        <a href="#prevention" class="nav-link">{% trans "Prevention" %}</a>
+        <a href="#complications" class="nav-link">{% trans "Complications" %}</a>
+        <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+    <i class="fas fa-moon"></i>
+</button>
+<form action="{% url 'set_language' %}" method="post" class="d-inline m-0">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}">
+    {% if LANGUAGE_CODE == 'ur' %}
+        <input name="language" type="hidden" value="en">
+        <button type="submit" class="language-toggle" title="Switch to English">EN</button>
+    {% else %}
+        <input name="language" type="hidden" value="ur">
+        <button type="submit" class="language-toggle" title="Switch to Urdu">UR</button>
+    {% endif %}
+</form>
+
     </nav>
 
     <!-- MAIN CONTENT -->
     <div class="main-container">
         <!-- OVERVIEW SECTION -->
         <section id="overview" class="content-section">
-            <h1 class="main-heading">Measles (Rubeola)</h1>
+            <h1 class="main-heading">{% trans "Measles (Rubeola)" %}</h1>
             
-            <h2 class="section-heading">Overview</h2>
-            <p>Measles is a highly contagious, serious viral disease that remains a leading cause of death among young children globally, despite the availability of a safe and effective vaccine. Measles is caused by a virus in the paramyxovirus family and is normally passed through direct contact and through the air.</p>
+            <h2 class="section-heading">{% trans "Overview" %}</h2>
+            <p>{% trans "Measles is a highly contagious, serious viral disease that remains a leading cause of death among young children globally, despite the availability of a safe and effective vaccine. Measles is caused by a virus in the paramyxovirus family and is normally passed through direct contact and through the air." %}</p>
             
             <div class="highlight-box">
-                <p>The measles vaccine has been in use since the 1960s. It is safe, effective, and inexpensive. WHO recommends immunization for all susceptible children and adults for whom measles vaccination is not contraindicated. Two doses of the measles vaccine are about 97% effective at preventing measles.</p>
+                <p>{% trans "The measles vaccine has been in use since the 1960s. It is safe, effective, and inexpensive. WHO recommends immunization for all susceptible children and adults for whom measles vaccination is not contraindicated. Two doses of the measles vaccine are about 97% effective at preventing measles." %}</p>
             </div>
             
-            <p>Before the introduction of the measles vaccine in 1963, major epidemics occurred approximately every 2-3 years, causing an estimated 2.6 million deaths each year. Despite significant progress, measles continues to cause outbreaks worldwide, particularly in areas with low vaccination coverage.</p>
+            <p>{% trans "Before the introduction of the measles vaccine in 1963, major epidemics occurred approximately every 2-3 years, causing an estimated 2.6 million deaths each year. Despite significant progress, measles continues to cause outbreaks worldwide, particularly in areas with low vaccination coverage." %}</p>
             
             <!-- STATISTICS -->
             <div class="stats-container">
                 <div class="stat-box">
                     <div class="stat-number">140,000+</div>
-                    <p>Measles deaths annually (2018 data)</p>
+                    <p>{% trans "Measles deaths annually (2018 data)" %}</p>
                 </div>
                 <div class="stat-box">
                     <div class="stat-number">97%</div>
-                    <p>Measles vaccine effectiveness</p>
+                    <p>{% trans "Measles vaccine effectiveness" %}</p>
                 </div>
                 <div class="stat-box">
                     <div class="stat-number">86%</div>
-                    <p>Global measles vaccine coverage (first dose)</p>
+                    <p>{% trans "Global measles vaccine coverage (first dose)" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- SYMPTOMS SECTION -->
         <section id="symptoms" class="content-section">
-            <h2 class="section-heading">Symptoms of Measles</h2>
+            <h2 class="section-heading">{% trans "Symptoms of Measles" %}</h2>
             
             <div class="highlight-box">
-                <p><strong>Symptoms typically appear 7-14 days after exposure to the virus.</strong> Measles is contagious from 4 days before to 4 days after the rash appears.</p>
+                <p><strong>{% trans "Symptoms typically appear 7-14 days after exposure to the virus." %}</strong> {% trans "Measles is contagious from 4 days before to 4 days after the rash appears." %}</p>
             </div>
             
             <!-- SYMPTOMS GRID -->
             <div class="symptoms-container">
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Early Symptoms</h3>
-                    <p>High fever (often >104°F/40°C), cough, runny nose, red watery eyes (conjunctivitis), and fatigue</p>
+                    <h3 class="symptom-title">{% trans "Early Symptoms" %}</h3>
+                    <p>{% trans "High fever (often >104°F/40°C), cough, runny nose, red watery eyes (conjunctivitis), and fatigue" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Koplik Spots</h3>
-                    <p>Small white spots with bluish-white centers inside the mouth, appearing 2-3 days before the rash</p>
+                    <h3 class="symptom-title">{% trans "Koplik Spots" %}</h3>
+                    <p>{% trans "Small white spots with bluish-white centers inside the mouth, appearing 2-3 days before the rash" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Measles Rash</h3>
-                    <p>Red, blotchy rash that starts on the face and behind the ears, then spreads downward to the chest, arms, and legs</p>
+                    <h3 class="symptom-title">{% trans "Measles Rash" %}</h3>
+                    <p>{% trans "Red, blotchy rash that starts on the face and behind the ears, then spreads downward to the chest, arms, and legs" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Fever Pattern</h3>
-                    <p>Fever rises as rash appears, reaching up to 104-105°F, then subsides as rash fades</p>
+                    <h3 class="symptom-title">{% trans "Fever Pattern" %}</h3>
+                    <p>{% trans "Fever rises as rash appears, reaching up to 104-105°F, then subsides as rash fades" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Contagious Period</h3>
-                    <p>From 4 days before rash appears until 4 days after rash appears</p>
+                    <h3 class="symptom-title">{% trans "Contagious Period" %}</h3>
+                    <p>{% trans "From 4 days before rash appears until 4 days after rash appears" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Duration</h3>
-                    <p>Illness typically lasts 7-10 days, with rash fading in the same order it appeared</p>
+                    <h3 class="symptom-title">{% trans "Duration" %}</h3>
+                    <p>{% trans "Illness typically lasts 7-10 days, with rash fading in the same order it appeared" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- PREVENTION SECTION -->
         <section id="prevention" class="content-section">
-            <h2 class="section-heading">Prevention & Vaccination</h2>
+            <h2 class="section-heading">{% trans "Prevention & Vaccination" %}</h2>
             
             <div class="prevention-container">
                 <div class="prevention-box">
-                    <h3>MMR Vaccine</h3>
-                    <p class="vaccine-status">Primary Prevention</p>
-                    <p>Two doses: First at 12-15 months, second at 4-6 years</p>
-                    <p><small>97% effective against measles</small></p>
+                    <h3>{% trans "MMR Vaccine" %}</h3>
+                    <p class="vaccine-status">{% trans "Primary Prevention" %}</p>
+                    <p>{% trans "Two doses: First at 12-15 months, second at 4-6 years" %}</p>
+                    <p><small>{% trans "97% effective against measles" %}</small></p>
                 </div>
                 <div class="prevention-box">
-                    <h3>MMRV Vaccine</h3>
-                    <p class="vaccine-status">Combination Vaccine</p>
-                    <p>Protects against measles, mumps, rubella, and varicella</p>
-                    <p><small>Available for children 12 months to 12 years</small></p>
+                    <h3>{% trans "MMRV Vaccine" %}</h3>
+                    <p class="vaccine-status">{% trans "Combination Vaccine" %}</p>
+                    <p>{% trans "Protects against measles, mumps, rubella, and varicella" %}</p>
+                    <p><small>{% trans "Available for children 12 months to 12 years" %}</small></p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Outbreak Response</h3>
-                    <p class="vaccine-status">Mass Vaccination</p>
-                    <p>During outbreaks, vaccination campaigns target all susceptible individuals</p>
-                    <p><small>Post-exposure prophylaxis within 72 hours</small></p>
+                    <h3>{% trans "Outbreak Response" %}</h3>
+                    <p class="vaccine-status">{% trans "Mass Vaccination" %}</p>
+                    <p>{% trans "During outbreaks, vaccination campaigns target all susceptible individuals" %}</p>
+                    <p><small>{% trans "Post-exposure prophylaxis within 72 hours" %}</small></p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Travel Precautions</h3>
-                    <p class="vaccine-status">International Travel</p>
-                    <p>Infants 6-11 months need early MMR dose before international travel</p>
-                    <p><small>Check vaccination status before travel</small></p>
+                    <h3>{% trans "Travel Precautions" %}</h3>
+                    <p class="vaccine-status">{% trans "International Travel" %}</p>
+                    <p>{% trans "Infants 6-11 months need early MMR dose before international travel" %}</p>
+                    <p><small>{% trans "Check vaccination status before travel" %}</small></p>
                 </div>
             </div>
         </section>
 
         <!-- COMPLICATIONS SECTION -->
         <section id="complications" class="content-section">
-            <h2 class="section-heading">Complications of Measles</h2>
+            <h2 class="section-heading">{% trans "Complications of Measles" %}</h2>
             
             <div class="highlight-box">
-                <p><strong>Measles can cause serious, sometimes fatal complications,</strong> especially in children under 5 years, adults over 20, pregnant women, and immunocompromised individuals.</p>
+                <p><strong>{% trans "Measles can cause serious, sometimes fatal complications," %}</strong> {% trans "especially in children under 5 years, adults over 20, pregnant women, and immunocompromised individuals." %}</p>
             </div>
             
             <!-- COMPLICATIONS GRID -->
             <div class="complications-container">
                 <div class="complication-box">
-                    <h3 class="complication-title">Pneumonia</h3>
-                    <p>The most common cause of death from measles. Accounts for 60% of measles-related deaths. Can be viral or secondary bacterial pneumonia.</p>
+                    <h3 class="complication-title">{% trans "Pneumonia" %}</h3>
+                    <p>{% trans "The most common cause of death from measles. Accounts for 60% of measles-related deaths. Can be viral or secondary bacterial pneumonia." %}</p>
                 </div>
                 <div class="complication-box">
-                    <h3 class="complication-title">Encephalitis</h3>
-                    <p>Brain swelling occurring in 1 in 1,000 cases. Can cause permanent brain damage, seizures, intellectual disability, or death.</p>
+                    <h3 class="complication-title">{% trans "Encephalitis" %}</h3>
+                    <p>{% trans "Brain swelling occurring in 1 in 1,000 cases. Can cause permanent brain damage, seizures, intellectual disability, or death." %}</p>
                 </div>
                 <div class="complication-box">
-                    <h3 class="complication-title">SSPE</h3>
-                    <p>Subacute sclerosing panencephalitis - a fatal brain disease that develops 7-10 years after measles infection. 100% fatal.</p>
+                    <h3 class="complication-title">{% trans "SSPE" %}</h3>
+                    <p>{% trans "Subacute sclerosing panencephalitis - a fatal brain disease that develops 7-10 years after measles infection. 100% fatal." %}</p>
                 </div>
                 <div class="complication-box">
-                    <h3 class="complication-title">Ear Infections</h3>
-                    <p>Occurs in 1 in 10 children with measles. Can lead to permanent hearing loss.</p>
+                    <h3 class="complication-title">{% trans "Ear Infections" %}</h3>
+                    <p>{% trans "Occurs in 1 in 10 children with measles. Can lead to permanent hearing loss." %}</p>
                 </div>
                 <div class="complication-box">
-                    <h3 class="complication-title">Severe Diarrhea</h3>
-                    <p>Common complication that can lead to dehydration and malnutrition, especially in developing countries.</p>
+                    <h3 class="complication-title">{% trans "Severe Diarrhea" %}</h3>
+                    <p>{% trans "Common complication that can lead to dehydration and malnutrition, especially in developing countries." %}</p>
                 </div>
                 <div class="complication-box">
-                    <h3 class="complication-title">Pregnancy Risks</h3>
-                    <p>Increased risk of miscarriage, preterm birth, and low birth weight. No congenital syndrome but serious for mother.</p>
+                    <h3 class="complication-title">{% trans "Pregnancy Risks" %}</h3>
+                    <p>{% trans "Increased risk of miscarriage, preterm birth, and low birth weight. No congenital syndrome but serious for mother." %}</p>
                 </div>
             </div>
 
             <div class="highlight-box">
-                <h3>WHO Global Impact Data:</h3>
-                <p>Before widespread vaccination, measles caused an estimated 2.6 million deaths annually. Despite a 73% reduction in measles deaths between 2000-2018, measles still caused over 140,000 deaths in 2018, mostly children under 5. Measles remains endemic in many parts of the world.</p>
+                <h3>{% trans "WHO Global Impact Data:" %}</h3>
+                <p>{% trans "Before widespread vaccination, measles caused an estimated 2.6 million deaths annually. Despite a 73% reduction in measles deaths between 2000-2018, measles still caused over 140,000 deaths in 2018, mostly children under 5. Measles remains endemic in many parts of the world." %}</p>
             </div>
         </section>
 
         <!-- SOURCE INFORMATION -->
         <div class="source-info">
-            <h3 class="info-heading">Information Source:</h3>
-            <p>All information based on World Health Organization (WHO) data, guidelines, and publications including:</p>
-            <p>• WHO Measles Fact Sheets<br>
-            • Weekly Epidemiological Record (WER) publications<br>
-            • Global Measles and Rubella Strategic Plan</p>
-            <p>For latest updates, visit: <a href="https://www.who.int/health-topics/measles" target="_blank" style="color: var(--primary-blue);">WHO Measles Information</a></p>
+            <h3 class="info-heading">{% trans "Information Source:" %}</h3>
+            <p>{% trans "All information based on World Health Organization (WHO) data, guidelines, and publications including:" %}</p>
+            <p>{% trans "• WHO Measles Fact Sheets" %}<br>
+            {% trans "• Weekly Epidemiological Record (WER) publications" %}<br>
+            {% trans "• Global Measles and Rubella Strategic Plan" %}</p>
+            <p>{% trans "For latest updates, visit:" %} <a href="https://www.who.int/health-topics/measles" target="_blank" style="color: var(--primary-blue);">{% trans "WHO Measles Information" %}</a></p>
         </div>
     </div>
 
     <!-- FOOTER -->
     <footer class="footer">
         <div class="main-container">
-            <p>© 2025 Measles Information Portal | Based on WHO Guidelines & Data</p>
-            <p style="margin-top: 10px; font-size: 14px; opacity: 0.9;">Data Sources: WHO Fact Sheets, Immunization Coverage Estimates, Global Vaccine Action Plan</p>
+            <p>{% trans "© 2025 Measles Information Portal" %} | {% trans "Based on WHO Guidelines & Data" %}</p>
+            <p style="margin-top: 10px; font-size: 14px; opacity: 0.9;">{% trans "Data Sources: WHO Fact Sheets, Immunization Coverage Estimates, Global Vaccine Action Plan" %}</p>
         </div>
     </footer>
     <script src="{% static 'publicsite/js/info-theme.js' %}"></script>
