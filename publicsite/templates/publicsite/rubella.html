@@ -1,11 +1,12 @@
 {% load static %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rubella Information - Vaccine Preventable Disease</title>
+    <title>{% trans "Rubella Information - Vaccine Preventable Disease" %}</title>
     <link rel="stylesheet" href="{% static "publicsite/css/rubella.css" %}"> 
     <link rel="stylesheet" href="{% static 'publicsite/css/info-theme.css' %}">
 </head>
@@ -14,182 +15,195 @@
     <header class="header">
         <div class="main-container">
             <div class="header-content">
-                <div class="logo">Rubella Information Portal</div>
-                <p class="header-subtitle">Rubella (German Measles) - A Vaccine Preventable Disease</p>
+                <div class="logo">{% trans "Rubella Information Portal" %}</div>
+                <p class="header-subtitle">{% trans "Rubella (German Measles) - A Vaccine Preventable Disease" %}</p>
             </div>
         </div>
     </header>
 
     <!-- NAVIGATION BAR -->
     <nav class="nav-bar">
-        <a href="#overview" class="nav-link">Overview</a>
-        <a href="#symptoms" class="nav-link">Symptoms</a>
-        <a href="#prevention" class="nav-link">Prevention</a>
-        <a href="#complications" class="nav-link">Complications</a>
-        <button id="themeToggle" title="Toggle Dark Mode">🌙</button>
+        <a href="#overview" class="nav-link">{% trans "Overview" %}</a>
+        <a href="#symptoms" class="nav-link">{% trans "Symptoms" %}</a>
+        <a href="#prevention" class="nav-link">{% trans "Prevention" %}</a>
+        <a href="#complications" class="nav-link">{% trans "Complications" %}</a>
+        <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+    <i class="fas fa-moon"></i>
+</button>
+<form action="{% url 'set_language' %}" method="post" class="d-inline m-0">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}">
+    {% if LANGUAGE_CODE == 'ur' %}
+        <input name="language" type="hidden" value="en">
+        <button type="submit" class="language-toggle" title="Switch to English">EN</button>
+    {% else %}
+        <input name="language" type="hidden" value="ur">
+        <button type="submit" class="language-toggle" title="Switch to Urdu">UR</button>
+    {% endif %}
+</form>
     </nav>
 
     <!-- MAIN CONTENT -->
     <div class="main-container">
         <!-- ========== OVERVIEW SECTION ========== -->
         <section id="overview" class="content-section">
-            <h1 class="main-heading">Rubella (German Measles)</h1>
+            <h1 class="main-heading">{% trans "Rubella (German Measles)" %}</h1>
             
-            <h2 class="section-heading">Overview</h2>
-            <p>Rubella, also known as German measles or three-day measles, is a contagious viral infection caused by the rubella virus. While rubella is generally mild in children and adults, it poses a serious threat to pregnant women and their developing babies.</p>
+            <h2 class="section-heading">{% trans "Overview" %}</h2>
+            <p>{% trans "Rubella, also known as German measles or three-day measles, is a contagious viral infection caused by the rubella virus. While rubella is generally mild in children and adults, it poses a serious threat to pregnant women and their developing babies." %}</p>
             
             <div class="highlight-box">
-                <p>The rubella vaccine has been available since 1969. The MMR vaccine provides about 97% protection against rubella after two doses. The primary goal of rubella vaccination is to prevent Congenital Rubella Syndrome (CRS), which can cause severe birth defects.</p>
+                <p>{% trans "The rubella vaccine has been available since 1969. The MMR vaccine provides about 97% protection against rubella after two doses. The primary goal of rubella vaccination is to prevent Congenital Rubella Syndrome (CRS), which can cause severe birth defects." %}</p>
             </div>
             
-            <p>Rubella was a common childhood disease before the vaccine. Since vaccination programs began, rubella and CRS have been eliminated from many developed countries. WHO has set a goal to eliminate rubella in at least five WHO regions by 2025.</p>
+            <p>{% trans "Rubella was a common childhood disease before the vaccine. Since vaccination programs began, rubella and CRS have been eliminated from many developed countries. WHO has set a goal to eliminate rubella in at least five WHO regions by 2025." %}</p>
             
             <!-- STATISTICS -->
             <div class="stats-container">
                 <div class="stat-box">
                     <div class="stat-number">100,000+</div>
-                    <p>CRS cases estimated annually</p>
+                    <p>{% trans "CRS cases estimated annually" %}</p>
                 </div>
                 <div class="stat-box">
                     <div class="stat-number">97%</div>
-                    <p>Rubella vaccine effectiveness</p>
+                    <p>{% trans "Rubella vaccine effectiveness" %}</p>
                 </div>
                 <div class="stat-box">
                     <div class="stat-number">90%</div>
-                    <p>CRS risk in first trimester</p>
+                    <p>{% trans "CRS risk in first trimester" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- SYMPTOMS SECTION -->
         <section id="symptoms" class="content-section">
-            <h2 class="section-heading">Symptoms of Rubella</h2>
+            <h2 class="section-heading">{% trans "Symptoms of Rubella" %}</h2>
             
             <div class="highlight-box">
-                <p><strong>Symptoms typically appear 14-21 days after exposure to the virus.</strong> Up to 50% of rubella infections are subclinical (no symptoms).</p>
+                <p><strong>{% trans "Symptoms typically appear 14-21 days after exposure to the virus." %}</strong> {% trans "Up to 50% of rubella infections are subclinical (no symptoms)." %}</p>
             </div>
             
             <!-- SYMPTOMS GRID -->
             <div class="symptoms-container">
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Early Symptoms</h3>
-                    <p>Low-grade fever (below 101°F/38.3°C), headache, runny nose, red eyes, and general malaise</p>
+                    <h3 class="symptom-title">{% trans "Early Symptoms" %}</h3>
+                    <p>{% trans "Low-grade fever (below 101°F/38.3°C), headache, runny nose, red eyes, and general malaise" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Lymphadenopathy</h3>
-                    <p>Swollen, tender lymph nodes behind the ears and at the back of the neck (characteristic sign)</p>
+                    <h3 class="symptom-title">{% trans "Lymphadenopathy" %}</h3>
+                    <p>{% trans "Swollen, tender lymph nodes behind the ears and at the back of the neck (characteristic sign)" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Rubella Rash</h3>
-                    <p>Pink or light red rash that starts on the face and spreads to the trunk, arms, and legs. Fades in 2-3 days</p>
+                    <h3 class="symptom-title">{% trans "Rubella Rash" %}</h3>
+                    <p>{% trans "Pink or light red rash that starts on the face and spreads to the trunk, arms, and legs. Fades in 2-3 days" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Joint Pain</h3>
-                    <p>Arthritis or arthralgia (joint pain) common in adult women, affecting fingers, wrists, and knees</p>
+                    <h3 class="symptom-title">{% trans "Joint Pain" %}</h3>
+                    <p>{% trans "Arthritis or arthralgia (joint pain) common in adult women, affecting fingers, wrists, and knees" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Contagious Period</h3>
-                    <p>From 1 week before to 1 week after rash appears. Most contagious when rash is developing</p>
+                    <h3 class="symptom-title">{% trans "Contagious Period" %}</h3>
+                    <p>{% trans "From 1 week before to 1 week after rash appears. Most contagious when rash is developing" %}</p>
                 </div>
                 <div class="symptom-box">
-                    <h3 class="symptom-title">Duration</h3>
-                    <p>Illness typically lasts 2-3 days, which is why it's called "three-day measles"</p>
+                    <h3 class="symptom-title">{% trans "Duration" %}</h3>
+                    <p>{% trans "Illness typically lasts 2-3 days, which is why it's called 'three-day measles'" %}</p>
                 </div>
             </div>
         </section>
 
         <!-- PREVENTION SECTION -->
         <section id="prevention" class="content-section">
-            <h2 class="section-heading">Prevention & Vaccination</h2>
+            <h2 class="section-heading">{% trans "Prevention & Vaccination" %}</h2>
             
             <div class="prevention-container">
                 <div class="prevention-box">
-                    <h3>MMR Vaccine</h3>
-                    <p class="vaccine-status">Primary Prevention</p>
-                    <p>Two doses: First at 12-15 months, second at 4-6 years</p>
-                    <p><small>97% effective against rubella</small></p>
+                    <h3>{% trans "MMR Vaccine" %}</h3>
+                    <p class="vaccine-status">{% trans "Primary Prevention" %}</p>
+                    <p>{% trans "Two doses: First at 12-15 months, second at 4-6 years" %}</p>
+                    <p><small>{% trans "97% effective against rubella" %}</small></p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Preconception Vaccination</h3>
-                    <p class="vaccine-status">For Women</p>
-                    <p>Women should be vaccinated at least 1 month before becoming pregnant</p>
-                    <p><small>No pregnancy for 4 weeks after vaccination</small></p>
+                    <h3>{% trans "Preconception Vaccination" %}</h3>
+                    <p class="vaccine-status">{% trans "For Women" %}</p>
+                    <p>{% trans "Women should be vaccinated at least 1 month before becoming pregnant" %}</p>
+                    <p><small>{% trans "No pregnancy for 4 weeks after vaccination" %}</small></p>
                 </div>
                 <div class="prevention-box">
-                    <h3>CRS Elimination</h3>
-                    <p class="vaccine-status">Global Goal</p>
-                    <p>WHO aims to eliminate rubella and CRS in 5 regions by 2025</p>
-                    <p><small>Through high vaccination coverage</small></p>
+                    <h3>{% trans "CRS Elimination" %}</h3>
+                    <p class="vaccine-status">{% trans "Global Goal" %}</p>
+                    <p>{% trans "WHO aims to eliminate rubella and CRS in 5 regions by 2025" %}</p>
+                    <p><small>{% trans "Through high vaccination coverage" %}</small></p>
                 </div>
                 <div class="prevention-box">
-                    <h3>Rubella Screening</h3>
-                    <p class="vaccine-status">Prenatal Care</p>
-                    <p>Pregnant women tested for rubella immunity early in pregnancy</p>
-                    <p><small>Non-immune women vaccinated after delivery</small></p>
+                    <h3>{% trans "Rubella Screening" %}</h3>
+                    <p class="vaccine-status">{% trans "Prenatal Care" %}</p>
+                    <p>{% trans "Pregnant women tested for rubella immunity early in pregnancy" %}</p>
+                    <p><small>{% trans "Non-immune women vaccinated after delivery" %}</small></p>
                 </div>
             </div>
         </section>
 
         <!-- COMPLICATIONS SECTION -->
         <section id="complications" class="content-section">
-            <h2 class="section-heading">Complications of Rubella</h2>
+            <h2 class="section-heading">{% trans "Complications of Rubella" %}</h2>
             
             <div class="highlight-box">
-                <p><strong>The most serious complication of rubella is Congenital Rubella Syndrome (CRS)</strong> in babies born to infected mothers, especially during the first trimester of pregnancy.</p>
+                <p><strong>{% trans "The most serious complication of rubella is Congenital Rubella Syndrome (CRS)" %}</strong> {% trans "in babies born to infected mothers, especially during the first trimester of pregnancy." %}</p>
             </div>
             
             <!-- COMPLICATIONS GRID -->
             <div class="complications-container">
                 <div class="complication-box">
-                    <h3 class="complication-title">Congenital Rubella Syndrome</h3>
-                    <p>Devastating condition causing multiple birth defects including deafness, cataracts, heart defects, and intellectual disabilities</p>
+                    <h3 class="complication-title">{% trans "Congenital Rubella Syndrome" %}</h3>
+                    <p>{% trans "Devastating condition causing multiple birth defects including deafness, cataracts, heart defects, and intellectual disabilities" %}</p>
                 </div>
                 <div class="complication-box">
-                    <h3 class="complication-title">CRS - Hearing Loss</h3>
-                    <p>Sensorineural hearing loss affects up to 80% of CRS cases. Can be unilateral or bilateral.</p>
+                    <h3 class="complication-title">{% trans "CRS - Hearing Loss" %}</h3>
+                    <p>{% trans "Sensorineural hearing loss affects up to 80% of CRS cases. Can be unilateral or bilateral." %}</p>
                 </div>
                 <div class="complication-box">
-                    <h3 class="complication-title">CRS - Eye Defects</h3>
-                    <p>Cataracts (cloudy lens), glaucoma, retinopathy, and microphthalmia (abnormally small eyes)</p>
+                    <h3 class="complication-title">{% trans "CRS - Eye Defects" %}</h3>
+                    <p>{% trans "Cataracts (cloudy lens), glaucoma, retinopathy, and microphthalmia (abnormally small eyes)" %}</p>
                 </div>
                 <div class="complication-box">
-                    <h3 class="complication-title">CRS - Heart Defects</h3>
-                    <p>Pulmonary artery stenosis, patent ductus arteriosus, and other congenital heart abnormalities</p>
+                    <h3 class="complication-title">{% trans "CRS - Heart Defects" %}</h3>
+                    <p>{% trans "Pulmonary artery stenosis, patent ductus arteriosus, and other congenital heart abnormalities" %}</p>
                 </div>
                 <div class="complication-box">
-                    <h3 class="complication-title">Arthritis</h3>
-                    <p>Joint pain and swelling occurs in up to 70% of adult women with rubella. Usually resolves but can be chronic</p>
+                    <h3 class="complication-title">{% trans "Arthritis" %}</h3>
+                    <p>{% trans "Joint pain and swelling occurs in up to 70% of adult women with rubella. Usually resolves but can be chronic" %}</p>
                 </div>
                 <div class="complication-box">
-                    <h3 class="complication-title">Thrombocytopenia</h3>
-                    <p>Low platelet count causing bleeding tendency. Usually resolves but may require treatment</p>
+                    <h3 class="complication-title">{% trans "Thrombocytopenia" %}</h3>
+                    <p>{% trans "Low platelet count causing bleeding tendency. Usually resolves but may require treatment" %}</p>
                 </div>
             </div>
 
             <div class="highlight-box">
-                <h3>WHO Global Impact Data:</h3>
-                <p>Rubella causes approximately 100,000 cases of Congenital Rubella Syndrome annually worldwide. Since rubella vaccine introduction, rubella and CRS have been eliminated from the Americas and many other regions. WHO has set a goal to eliminate rubella in at least five WHO regions by 2025 through high vaccination coverage.</p>
+                <h3>{% trans "WHO Global Impact Data:" %}</h3>
+                <p>{% trans "Rubella causes approximately 100,000 cases of Congenital Rubella Syndrome annually worldwide. Since rubella vaccine introduction, rubella and CRS have been eliminated from the Americas and many other regions. WHO has set a goal to eliminate rubella in at least five WHO regions by 2025 through high vaccination coverage." %}</p>
             </div>
         </section>
 
         <!-- SOURCE INFORMATION -->
         <div class="source-info">
-            <h3 class="info-heading">Information Source:</h3>
-            <p>All information based on World Health Organization (WHO) data, guidelines, and publications including:</p>
-            <p>• WHO Rubella Fact Sheets<br>
-            • Weekly Epidemiological Record (WER) publications<br>
-            • Global Measles and Rubella Strategic Plan 2012-2020</p>
-            <p>For latest updates, visit: <a href="https://www.who.int/health-topics/rubella" target="_blank" style="color: var(--primary-blue);">WHO Rubella Information</a></p>
+            <h3 class="info-heading">{% trans "Information Source:" %}</h3>
+            <p>{% trans "All information based on World Health Organization (WHO) data, guidelines, and publications including:" %}</p>
+            <p>{% trans "• WHO Rubella Fact Sheets" %}<br>
+            {% trans "• Weekly Epidemiological Record (WER) publications" %}<br>
+            {% trans "• Global Measles and Rubella Strategic Plan 2012-2020" %}</p>
+            <p>{% trans "For latest updates, visit:" %} <a href="https://www.who.int/health-topics/rubella" target="_blank" style="color: var(--primary-blue);">{% trans "WHO Rubella Information" %}</a></p>
         </div>
     </div>
 
     <!-- FOOTER -->
     <footer class="footer">
         <div class="main-container">
-            <p>© 2025 Rubella Information Portal | Based on WHO Guidelines & Data</p>
-            <p style="margin-top: 10px; font-size: 14px; opacity: 0.9;">Data Sources: WHO Fact Sheets, Immunization Coverage Estimates, Global Vaccine Action Plan</p>
+            <p>{% trans "© 2025 Rubella Information Portal" %} | {% trans "Based on WHO Guidelines & Data" %}</p>
+            <p style="margin-top: 10px; font-size: 14px; opacity: 0.9;">{% trans "Data Sources: WHO Fact Sheets, Immunization Coverage Estimates, Global Vaccine Action Plan" %}</p>
         </div>
     </footer>
     <script src="{% static 'publicsite/js/info-theme.js' %}"></script>
 </body>
-</html> 
+</html>
