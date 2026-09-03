@@ -11,8 +11,15 @@ class PasswordReset(models.Model):
         return f"Password reset for {self.user.username} at {self.created_when}"
     
 class PatientProfile(models.Model):
-    user       = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    unique_pin = models.CharField(max_length=20, unique=True, editable=False)
+    user          = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    unique_pin    = models.CharField(max_length=20, unique=True, editable=False)
+
+    #  Child / Guardian Info 
+    child_name    = models.CharField(max_length=100, blank=True, null=True)
+    child_gender  = models.CharField(max_length=10, blank=True, null=True,
+                                      choices=[('male','Male (Boy)'),('female','Female (Girl)')])
+    guardian_name = models.CharField(max_length=100, blank=True, null=True)
+    guardian_cnic = models.CharField(max_length=15, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.unique_pin:
@@ -80,11 +87,16 @@ class Appointment(models.Model):
     guardian_cnic    = models.CharField(max_length=15, blank=True, null=True)
     reminder_sent    = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"{self.child_name or self.patient.username} — {self.vaccine_type}"
 
     class Meta:
         ordering = ['appointment_date', 'appointment_time']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['patient', 'vaccine_type', 'dose_number'],
+                condition=models.Q(status__in=['pending', 'scheduled']),
+                name='unique_active_appointment'
+            )
+        ]
 
     def __str__(self):
         return f"{self.patient.username} — {self.vaccine_type} Dose {self.dose_number} on {self.appointment_date}"
