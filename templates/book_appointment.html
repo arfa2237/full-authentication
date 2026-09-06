@@ -1245,6 +1245,7 @@
         <input
             type="text"
             name="child_name"
+            value="{{ prefill.child_name }}"
             placeholder="Enter child's full name"
             required
             style="
@@ -1305,7 +1306,8 @@
                        this.style.background='#f0f2ff';"
                class="gender-label">
                 <input type="radio" name="child_gender" value="male"
-                       style="accent-color:var(--accent-color);width:16px;height:16px;"/>
+                       {% if prefill.child_gender == 'male' %}checked{% endif %}
+                       style="accent-color:var(--accent-color);width:16px;height:16px;" />
                 Boy (Male)
             </label>
             <label style="
@@ -1329,7 +1331,8 @@
                        this.style.background='#f0f2ff';"
                class="gender-label">
                 <input type="radio" name="child_gender" value="female"
-                       style="accent-color:var(--accent-color);width:16px;height:16px;"/>
+                       {% if prefill.child_gender == 'female' %}checked{% endif %}
+                       style="accent-color:var(--accent-color);width:16px;height:16px;" />
                 Girl (Female)
             </label>
         </div>
@@ -1357,6 +1360,7 @@
             <input
                 type="text"
                 name="guardian_cnic"
+                value="{{ prefill.guardian_cnic }}"
                 placeholder="35202-1234567-1"
                 maxlength="15"
                 required
@@ -1400,6 +1404,7 @@
             <input
                 type="text"
                 name="guardian_name"
+                value="{{ prefill.guardian_name }}"
                 placeholder="Father/Mother name"
                 required
                 style="

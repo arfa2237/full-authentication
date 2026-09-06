@@ -289,6 +289,14 @@ def ResetPassword(request, reset_id):
 @login_required
 def BookAppointment(request):
     profile, _ = PatientProfile.objects.get_or_create(user=request.user)
+
+    #  Pre-fill child info from profile 
+    prefill = {
+        'child_name':    profile.child_name    or '',
+        'child_gender':  profile.child_gender  or '',
+        'guardian_name': profile.guardian_name or '',
+        'guardian_cnic': profile.guardian_cnic or '',
+    }
     today       = date.today().strftime("%A, %d %B %Y")
     centers     = VaccinationCenter.objects.filter(is_active=True)
 
@@ -406,7 +414,8 @@ def BookAppointment(request):
                 'today':    today,
                 'centers':  centers,
                 'vaccines': vaccines,
-                'pending_count': Appointment.objects.filter(patient=request.user, status='pending').count(),  # ADD THIS
+                'prefill':  prefill,
+                'pending_count': Appointment.objects.filter(patient=request.user, status='pending').count(),
             })
 
         # .......................... Save Appointment ............................
@@ -426,6 +435,14 @@ def BookAppointment(request):
                     guardian_name    = guardian_name,
                     guardian_cnic    = guardian_cnic,
                 )
+
+                #  Save child info to PatientProfile for future pre-fill 
+                if not profile.child_name and child_name:
+                    profile.child_name    = child_name
+                    profile.child_gender  = child_gender
+                    profile.guardian_name = guardian_name
+                    profile.guardian_cnic = guardian_cnic
+                    profile.save()
         except DatabaseError:
             messages.error(
                 request,
@@ -436,6 +453,7 @@ def BookAppointment(request):
                 'today': today,
                 'centers': centers,
                 'vaccines': vaccines,
+                'prefill': prefill,
                 'pending_count': 0,
             })
         messages.success(
@@ -448,6 +466,7 @@ def BookAppointment(request):
         'today':    today,
         'centers':  centers,
         'vaccines': vaccines,
+        'prefill':  prefill,
     })
 
 

@@ -1,1 +1,1 @@
-web: gunicorn AuthenticationProject.wsgi --log-file -
+web: gunicorn AuthenticationProject.wsgi --bind 0.0.0.0:$PORT --log-file -
