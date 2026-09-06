@@ -27,7 +27,6 @@
            background: 
                 /* Lighter overlay for better image visibility */
                 linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)),
-                /* Your background image - SIRF HEADER KI PICHE */
                 url("../img/WhatsApp Image 2025-12-30 at 6.00.47 PM.jpeg");
             background-attachment: fixed;
             background-size: cover;
@@ -36,10 +35,7 @@
             position: relative;
             padding: 40px 0;
             text-align: center;
-           
-            
-            /* HEADER KI HEIGHT BADHAI HAI */
-            height: 300px;
+            height: 400px;
         }
         .header-content {
             position: relative;
