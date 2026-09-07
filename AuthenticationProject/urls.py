@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import Http404
 
-#  Disable default Django admin 
 def disabled_admin(request, *args, **kwargs):
     raise Http404
 
