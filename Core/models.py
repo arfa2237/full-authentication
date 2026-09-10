@@ -16,8 +16,7 @@ class PatientProfile(models.Model):
 
     #  Child / Guardian Info 
     child_name    = models.CharField(max_length=100, blank=True, null=True)
-    child_gender  = models.CharField(max_length=10, blank=True, null=True,
-                                      choices=[('male','Male (Boy)'),('female','Female (Girl)')])
+    child_gender  = models.CharField(max_length=10, blank=True, null=True, choices=[('male','Male (Boy)'),('female','Female (Girl)')])
     guardian_name = models.CharField(max_length=100, blank=True, null=True)
     guardian_cnic = models.CharField(max_length=15, blank=True, null=True)
 
@@ -71,8 +70,7 @@ class Appointment(models.Model):
     ]
 
     patient          = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
-    center           = models.ForeignKey(VaccinationCenter, on_delete=models.SET_NULL,
-                                         null=True, blank=True, related_name='appointments')
+    center           = models.ForeignKey(VaccinationCenter, on_delete=models.SET_NULL, null=True, blank=True, related_name='appointments')
     vaccine_type     = models.CharField(max_length=100, choices=VACCINE_CHOICES)
     dose_number      = models.PositiveSmallIntegerField(default=1)   
     appointment_date = models.DateField()

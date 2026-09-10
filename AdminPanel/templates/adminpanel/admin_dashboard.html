@@ -94,7 +94,6 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #gold, #ffd700);
         background: linear-gradient(135deg, #f59e0b, #fbbf24);
         display: flex;
         align-items: center;
@@ -624,8 +623,7 @@
       </header>
 
       <div class="content">
-        {% if messages %} {% for message in messages %} {% if message.tags ==
-        'error' %}
+        {% if messages %} {% for message in messages %} {% if message.tags == 'error' %}
         <div class="msg-error">
           <i class="fa-solid fa-circle-xmark"></i> {{ message }}
         </div>
