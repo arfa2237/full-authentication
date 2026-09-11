@@ -154,15 +154,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #LOGIN_URL = 'login'
 LOGIN_URL = '/patient/login/'
 
-EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST          = 'smtp.gmail.com'
-EMAIL_PORT          = 587
-EMAIL_USE_TLS       = True
-EMAIL_USE_SSL       = False
-EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL  = config('EMAIL_HOST_USER')
-EMAIL_TIMEOUT       = 10
+#EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST          = 'smtp.gmail.com'
+#EMAIL_PORT          = 587
+#EMAIL_USE_TLS       = True
+#EMAIL_USE_SSL       = False
+#EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
+#EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+#DEFAULT_FROM_EMAIL  = config('EMAIL_HOST_USER')
+#EMAIL_TIMEOUT       = 10
 
 
 
@@ -170,5 +170,25 @@ EMAIL_TIMEOUT       = 10
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
+import os
 
+# ── Email Settings ────────────────────────────────────────────────────────
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST          = 'smtp.gmail.com'
+EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL  = config('EMAIL_HOST_USER')
+EMAIL_TIMEOUT       = 10
+
+# Railway uses port 465 SSL, localhost uses 587 TLS
+if config('DEBUG', default=False, cast=bool):
+    # Local development
+    EMAIL_PORT    = 587
+    EMAIL_USE_TLS = True
+    EMAIL_USE_SSL = False
+else:
+    # Railway production
+    EMAIL_PORT    = 465
+    EMAIL_USE_SSL = True
+    EMAIL_USE_TLS = False
 
