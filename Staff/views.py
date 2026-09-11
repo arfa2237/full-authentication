@@ -432,7 +432,8 @@ def _send_email(subject, body, to_email):
             [to_email],
         )
         email.fail_silently = True
-        email.send()
+        email.send(fail_silently=True)
+        #email.send()
     except Exception:
         pass
 
