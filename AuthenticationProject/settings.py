@@ -35,7 +35,11 @@ ALLOWED_HOSTS = [
     'localhost',
                 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://web-production-fc932.up.railway.app']
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-fc932.up.railway.app',
+    'https://tig-gujranwala.com',
+    'https://www.tig-gujranwala.com',
+]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -170,25 +174,24 @@ LOGIN_URL = '/patient/login/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-import os
 
-# ── Email Settings ────────────────────────────────────────────────────────
+
+# ── Email Settings ─────────────────────────────────────────────────────────
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST          = 'smtp.gmail.com'
 EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL  = config('EMAIL_HOST_USER')
 EMAIL_TIMEOUT       = 10
 
-# Railway uses port 465 SSL, localhost uses 587 TLS
 if config('DEBUG', default=False, cast=bool):
-    # Local development
+    # ── Local development → Gmail ──────────────────────────────────────────
+    EMAIL_HOST    = 'smtp.gmail.com'
     EMAIL_PORT    = 587
     EMAIL_USE_TLS = True
     EMAIL_USE_SSL = False
 else:
-    # Railway production
-    EMAIL_PORT    = 465
-    EMAIL_USE_SSL = True
-    EMAIL_USE_TLS = False
-
+    # ── Railway production → Brevo ─────────────────────────────────────────
+    EMAIL_HOST    = config('EMAIL_HOST', default='smtp-relay.brevo.com')
+    EMAIL_PORT    = config('EMAIL_PORT', default=587, cast=int)
+    EMAIL_USE_TLS = True
+    EMAIL_USE_SSL = False
