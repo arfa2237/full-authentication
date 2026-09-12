@@ -158,40 +158,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #LOGIN_URL = 'login'
 LOGIN_URL = '/patient/login/'
 
-#EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_HOST          = 'smtp.gmail.com'
-#EMAIL_PORT          = 587
-#EMAIL_USE_TLS       = True
-#EMAIL_USE_SSL       = False
-#EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
-#EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-#DEFAULT_FROM_EMAIL  = config('EMAIL_HOST_USER')
-#EMAIL_TIMEOUT       = 10
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST          = 'smtp.gmail.com'
+EMAIL_PORT          = 587
+EMAIL_USE_TLS       = True
+EMAIL_USE_SSL       = False
+EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL  = config('EMAIL_HOST_USER')
+EMAIL_TIMEOUT       = 10
 
 
 
 # Static files for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-
-
-# ── Email Settings ─────────────────────────────────────────────────────────
-EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL  = config('EMAIL_HOST_USER')
-EMAIL_TIMEOUT       = 10
-
-if config('DEBUG', default=False, cast=bool):
-    # ── Local development → Gmail ──────────────────────────────────────────
-    EMAIL_HOST    = 'smtp.gmail.com'
-    EMAIL_PORT    = 587
-    EMAIL_USE_TLS = True
-    EMAIL_USE_SSL = False
-else:
-    # ── Railway production → Brevo ─────────────────────────────────────────
-    EMAIL_HOST    = config('EMAIL_HOST', default='smtp-relay.brevo.com')
-    EMAIL_PORT    = config('EMAIL_PORT', default=587, cast=int)
-    EMAIL_USE_TLS = True
-    EMAIL_USE_SSL = False
