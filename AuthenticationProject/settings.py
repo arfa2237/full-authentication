@@ -158,18 +158,38 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #LOGIN_URL = 'login'
 LOGIN_URL = '/patient/login/'
 
-EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST          = 'smtp.gmail.com'
-EMAIL_PORT          = 587
-EMAIL_USE_TLS       = True
-EMAIL_USE_SSL       = False
-EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL  = config('EMAIL_HOST_USER')
-EMAIL_TIMEOUT       = 10
+#EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST          = 'smtp.gmail.com'
+#EMAIL_PORT          = 587
+#EMAIL_USE_TLS       = True
+#EMAIL_USE_SSL       = False
+#EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
+#EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+#DEFAULT_FROM_EMAIL  = config('EMAIL_HOST_USER')
+#EMAIL_TIMEOUT       = 10
 
 
 
 # Static files for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# ── Email Settings ─────────────────────────────────────────────────────────
+if config('DEBUG', default=False, cast=bool):
+    # Localhost → Gmail SMTP
+    EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST          = 'smtp.gmail.com'
+    EMAIL_PORT          = 587
+    EMAIL_USE_TLS       = True
+    EMAIL_USE_SSL       = False
+    EMAIL_HOST_USER     = config('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+    DEFAULT_FROM_EMAIL  = config('EMAIL_HOST_USER')
+    EMAIL_TIMEOUT       = 10
+else:
+    # Railway → SendGrid API
+    EMAIL_BACKEND                  = 'sendgrid_backend.SendgridBackend'
+    SENDGRID_API_KEY               = config('SENDGRID_API_KEY')
+    DEFAULT_FROM_EMAIL             = 'noreply@tig-gujranwala.com'
+    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+    EMAIL_TIMEOUT                  = 10
 
