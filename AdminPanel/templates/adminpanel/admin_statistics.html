@@ -518,7 +518,7 @@
         <div>
           <h2>Statistics & Reports</h2>
           <p>
-            {{ today }} &nbsp;&middot;&nbsp; System-wide vaccination analytics
+            {{ today }} &nbsp;&middot;&nbsp; System wide vaccination analytics
           </p>
         </div>
         <div
@@ -597,12 +597,11 @@
 
         <!-- Row 1: Donut + Line Chart -->
         <div class="grid-2">
-          <!-- Donut — Appointment Status -->
+          <!-- Donut --> Appointment Status -->
           <div class="section-card">
             <div class="card-header">
               <h3>
-                <i class="fa-solid fa-chart-pie"></i> Appointment Status
-                Breakdown
+                <i class="fa-solid fa-chart-pie"></i> Appointment Status Breakdown
               </h3>
             </div>
             <div class="card-body">
@@ -634,7 +633,7 @@
             </div>
           </div>
 
-          <!-- Line Chart — Monthly Trend -->
+          <!-- Line Chart --> Monthly Trend -->
           <div class="section-card">
             <div class="card-header">
               <h3>
@@ -651,12 +650,11 @@
 
         <!-- Row 2: Bar Chart + Vaccine Progress -->
         <div class="grid-2">
-          <!-- Bar Chart — Vaccines Completed -->
+          <!-- Bar Chart --> Vaccines Completed -->
           <div class="section-card">
             <div class="card-header">
               <h3>
-                <i class="fa-solid fa-chart-bar"></i> Vaccines Completed
-                (System-wide)
+                <i class="fa-solid fa-chart-bar"></i> Vaccines Completed (System wide)
               </h3>
             </div>
             <div class="card-body">
@@ -670,7 +668,7 @@
           <div class="section-card">
             <div class="card-header">
               <h3>
-                <i class="fa-solid fa-syringe"></i> Vaccine-wise Completion Rate
+                <i class="fa-solid fa-syringe"></i> Vaccine wise Completion Rate
               </h3>
             </div>
             <div class="card-body">
@@ -684,8 +682,8 @@
                   <div class="hbar-track">
                     <div
                       class="hbar-fill"
-                      style="width:{{ vac.percent }}%; background:{{ vac.color }};"
-                    ></div>
+                      style="width:{{ vac.percent }}%; background:{{ vac.color }};">
+                    </div>
                   </div>
                 </div>
                 {% endfor %}
@@ -694,12 +692,11 @@
           </div>
         </div>
 
-        <!-- Center-wise Table -->
+        <!-- Center wise Table -->
         <div class="section-card">
           <div class="card-header">
             <h3>
-              <i class="fa-solid fa-hospital"></i> Center-wise Vaccination
-              Statistics
+              <i class="fa-solid fa-hospital"></i> Center wise Vaccination Statistics
             </h3>
           </div>
           <table class="c-table">
@@ -720,17 +717,13 @@
                   {{ c.done }}
                 </td>
                 <td>
-                  {% if c.total > 0 %} {% widthratio c.done c.total 100 %}% {%
-                  else %} 0% {% endif %}
+                  {% if c.total > 0 %} {% widthratio c.done c.total 100 %}% {% else %} 0% {% endif %}
                 </td>
               </tr>
               {% empty %}
               <tr>
                 <td
-                  colspan="4"
-                  style="text-align: center; padding: 30px; color: var(--muted)"
-                >
-                  No center data available.
+                  colspan="4" style="text-align: center; padding: 30px; color: var(--muted)"> No center data available.
                 </td>
               </tr>
               {% endfor %}
