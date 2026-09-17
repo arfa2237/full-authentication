@@ -25,7 +25,7 @@ def send_appointment_reminders():
     print(f"Reminder check at {now_time} | Date: {today}")
     logger.info(f"Reminder check at {now_time}")
 
-    # Calculate 30-minute window (25 to 35 minutes ahead)
+    # Calculate 30 minute window (25 to 35 minutes ahead)
     now_dt       = datetime.datetime.combine(today, now_time)
     window_start = (now_dt + timedelta(minutes=25)).time()
     window_end   = (now_dt + timedelta(minutes=35)).time()
