@@ -565,35 +565,19 @@
       </div>
       <nav class="sidebar-nav">
         <div class="nav-label">Main Menu</div>
-        <a class="nav-item active" href="{% url 'admin-dashboard' %}"
-          ><i class="fa-solid fa-gauge-high"></i> Dashboard</a
-        >
+        <a class="nav-item active" href="{% url 'admin-dashboard' %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
         <a class="nav-item" href="{% url 'admin-staff' %}">
-          <i class="fa-solid fa-user-nurse"></i> Staff Management {% if
-          pending_staff %}<span class="nav-badge">{{ pending_staff }}</span>{%
-          endif %}
+          <i class="fa-solid fa-user-nurse"></i> Staff Management {% if pending_staff %}<span class="nav-badge">{{ pending_staff }}</span>{% endif %}
         </a>
-        <a class="nav-item" href="{% url 'admin-users' %}"
-          ><i class="fa-solid fa-users"></i> Patients</a
-        >
-        <a class="nav-item" href="{% url 'admin-appointments' %}"
-          ><i class="fa-solid fa-calendar-check"></i> Appointments</a
-        >
+        <a class="nav-item" href="{% url 'admin-users' %}"><i class="fa-solid fa-users"></i> Patients</a>
+        <a class="nav-item" href="{% url 'admin-appointments' %}"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
         <div class="nav-label" style="margin-top: 8px">Management</div>
-        <a class="nav-item" href="{% url 'admin-centers' %}"
-          ><i class="fa-solid fa-hospital"></i> Centers</a
-        >
-        <a class="nav-item" href="{% url 'admin-blogs' %}"
-          ><i class="fa-solid fa-newspaper"></i> Blogs</a
-        >
-        <a class="nav-item" href="{% url 'admin-statistics' %}"
-          ><i class="fa-solid fa-chart-bar"></i> Statistics</a
-        >
+        <a class="nav-item" href="{% url 'admin-centers' %}"><i class="fa-solid fa-hospital"></i> Centers</a>
+        <a class="nav-item" href="{% url 'admin-blogs' %}"><i class="fa-solid fa-newspaper"></i> Blogs</a>
+        <a class="nav-item" href="{% url 'admin-statistics' %}"><i class="fa-solid fa-chart-bar"></i> Statistics</a>
       </nav>
       <div class="sidebar-footer">
-        <a class="logout-btn" href="{% url 'admin-logout' %}"
-          ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
-        >
+        <a class="logout-btn" href="{% url 'admin-logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
       </div>
     </aside>
 
@@ -616,8 +600,7 @@
             font-size: 15px;
             color: white;
             font-weight: 700;
-          "
-        >
+          ">
           {{ request.user.first_name|first|upper }}
         </div>
       </header>
@@ -639,11 +622,7 @@
             <h1>Welcome, {{ request.user.first_name }}! </h1>
             <p>
               You have
-              <strong
-                >{{ pending_staff }} staff registration{{
-                pending_staff|pluralize }}</strong
-              >
-              waiting for approval.
+              <strong>{{ pending_staff }} staff registration{{ pending_staff|pluralize }}</strong>waiting for approval.
             </p>
           </div>
           <div class="wb-badge">
@@ -787,15 +766,11 @@
                           <i class="fa-solid fa-check"></i> Approve
                         </button>
                       </form>
-                      <form
-                        method="POST"
-                        action="{% url 'update-staff-status' sp.id %}"
-                      >
+                      <form method="POST" action="{% url 'update-staff-status' sp.id %}" >
                         {% csrf_token %}<input
                           type="hidden"
                           name="action"
-                          value="reject"
-                        />
+                          value="reject"/>
                         <button type="submit" class="act-btn reject">
                           <i class="fa-solid fa-xmark"></i> Reject
                         </button>
@@ -850,9 +825,7 @@
             <h3>
               <i class="fa-solid fa-calendar-days"></i> Recent Appointments
             </h3>
-            <a href="{% url 'admin-appointments' %}" class="view-all"
-              >View All</a
-            >
+            <a href="{% url 'admin-appointments' %}" class="view-all" >View All</a>
           </div>
           <table class="data-table">
             <thead>
@@ -874,18 +847,14 @@
                     </div>
                     <div>
                       <div class="p-nm">
-                        {{ appt.patient.first_name }} {{ appt.patient.last_name
-                        }}
+                        {{ appt.patient.first_name }} {{ appt.patient.last_name }}
                       </div>
                       <div class="p-em">{{ appt.patient.email }}</div>
                     </div>
                   </div>
                 </td>
                 <td>
-                  {{ appt.vaccine_type }}<br /><small
-                    style="color: var(--muted)"
-                    >Dose {{ appt.dose_number }}</small
-                  >
+                  {{ appt.vaccine_type }}<br /><small style="color: var(--muted)">Dose {{ appt.dose_number }}</small>
                 </td>
                 <td style="font-size: 11px">
                   {{ appt.center.name|default:"—" }}
@@ -894,17 +863,12 @@
                   {{ appt.appointment_date|date:"d M Y" }}
                 </td>
                 <td>
-                  <span class="status-pill {{ appt.status }}"
-                    >{{ appt.status|capfirst }}</span
-                  >
+                  <span class="status-pill {{ appt.status }}">{{ appt.status|capfirst }}</span>
                 </td>
               </tr>
               {% empty %}
               <tr>
-                <td
-                  colspan="5"
-                  style="text-align: center; padding: 30px; color: var(--muted)"
-                >
+                <td colspan="5" style="text-align: center; padding: 30px; color: var(--muted)">
                   No appointments yet.
                 </td>
               </tr>

@@ -410,8 +410,7 @@
     <aside class="sidebar">
       <div class="sidebar-logo">
         <div class="logo-icon"><i class="fa-solid fa-crown"></i></div>
-        <div class="logo-text">
-          TIG Admin <span>Administration Portal</span>
+        <div class="logo-text">TIG Admin <span>Administration Portal</span>
         </div>
       </div>
       <div class="sidebar-user">
@@ -425,30 +424,16 @@
       </div>
       <nav class="sidebar-nav">
         <div class="nav-label">Main Menu</div>
-        <a class="nav-item" href="{% url 'admin-dashboard' %}"
-          ><i class="fa-solid fa-gauge-high"></i> Dashboard</a
-        >
-        <a class="nav-item" href="{% url 'admin-staff' %}"
-          ><i class="fa-solid fa-user-nurse"></i> Staff Management</a
-        >
-        <a class="nav-item" href="{% url 'admin-users' %}"
-          ><i class="fa-solid fa-users"></i> Patients</a
-        >
-        <a class="nav-item" href="{% url 'admin-appointments' %}"
-          ><i class="fa-solid fa-calendar-check"></i> Appointments</a
-        >
+        <a class="nav-item" href="{% url 'admin-dashboard' %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a class="nav-item" href="{% url 'admin-staff' %}"><i class="fa-solid fa-user-nurse"></i> Staff Management</a>
+        <a class="nav-item" href="{% url 'admin-users' %}"><i class="fa-solid fa-users"></i> Patients</a>
+        <a class="nav-item" href="{% url 'admin-appointments' %}"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
         <div class="nav-label" style="margin-top: 8px">Management</div>
-        <a class="nav-item active" href="{% url 'admin-centers' %}"
-          ><i class="fa-solid fa-hospital"></i> Centers</a
-        >
-        <a class="nav-item" href="{% url 'admin-blogs' %}"
-          ><i class="fa-solid fa-newspaper"></i> Blogs</a
-        >
+        <a class="nav-item active" href="{% url 'admin-centers' %}"><i class="fa-solid fa-hospital"></i> Centers</a>
+        <a class="nav-item" href="{% url 'admin-blogs' %}"><i class="fa-solid fa-newspaper"></i> Blogs</a>
       </nav>
       <div class="sidebar-footer">
-        <a class="logout-btn" href="{% url 'admin-logout' %}"
-          ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
-        >
+        <a class="logout-btn" href="{% url 'admin-logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
       </div>
     </aside>
     <div class="main">
@@ -469,8 +454,7 @@
             font-size: 15px;
             color: white;
             font-weight: 700;
-          "
-        >
+          ">
           {{ request.user.first_name|first|upper }}
         </div>
       </header>
@@ -506,8 +490,7 @@
                     type="text"
                     name="name"
                     placeholder="e.g. DHQ Teaching Hospital"
-                    required
-                  />
+                    required/>
                 </div>
                 <div class="field">
                   <label>Address *</label>
@@ -515,32 +498,28 @@
                     type="text"
                     name="address"
                     placeholder="e.g. GT Road, Gujranwala"
-                    required
-                  />
+                    required/>
                 </div>
                 <div class="field">
                   <label>Availability</label>
                   <input
                     type="text"
                     name="availability"
-                    placeholder="e.g. Open 8am–4pm"
-                  />
+                    placeholder="e.g. Open 8am–4pm"/>
                 </div>
                 <div class="field">
                   <label>Latitude (optional)</label>
                   <input
                     type="text"
                     name="latitude"
-                    placeholder="e.g. 32.1617"
-                  />
+                    placeholder="e.g. 32.1617"/>
                 </div>
                 <div class="field">
                   <label>Longitude (optional)</label>
                   <input
                     type="text"
                     name="longitude"
-                    placeholder="e.g. 74.1883"
-                  />
+                    placeholder="e.g. 74.1883"/>
                 </div>
                 <button type="submit" class="btn-add">
                   <i class="fa-solid fa-plus"></i> Add Center
@@ -558,26 +537,21 @@
                 <div class="c-info">
                   <div class="c-name">{{ center.name }}</div>
                   <div class="c-addr">
-                    <i class="fa-solid fa-location-dot"></i> {{ center.address
-                    }}
+                    <i class="fa-solid fa-location-dot"></i> {{ center.address}}
                   </div>
                   <div class="c-avail">
-                    <i class="fa-regular fa-clock"></i> {{ center.availability
-                    }}
+                    <i class="fa-regular fa-clock"></i> {{ center.availability}}
                   </div>
                 </div>
-                <span
-                  class="c-status {% if center.is_active %}active{% else %}inactive{% endif %}"
-                >
+                <span class="c-status {% if center.is_active %}active{% else %}inactive{% endif %}">
                   {% if center.is_active %}Active{% else %}Inactive{% endif %}
                 </span>
                 <div class="c-actions">
-                  <form method="POST">
-                    {% csrf_token %}<input
+                  <form method="POST">{% csrf_token %}
+                    <input
                       type="hidden"
                       name="action"
-                      value="toggle"
-                    /><input
+                      value="toggle"/><input
                       type="hidden"
                       name="center_id"
                       value="{{ center.id }}"
@@ -586,19 +560,15 @@
                       <i class="fa-solid fa-toggle-on"></i> Toggle
                     </button>
                   </form>
-                  <form
-                    method="POST"
-                    onsubmit="return confirm('Delete {{ center.name }}?')"
-                  >
+                  <form method="POST" onsubmit="return confirm('Delete {{ center.name }}?')">
                     {% csrf_token %}<input
                       type="hidden"
                       name="action"
-                      value="delete"
-                    /><input
+                      value="delete"/>
+                      <input
                       type="hidden"
                       name="center_id"
-                      value="{{ center.id }}"
-                    />
+                      value="{{ center.id }}"/>
                     <button type="submit" class="act-btn del">
                       <i class="fa-solid fa-trash"></i>
                     </button>
@@ -613,8 +583,7 @@
                   color: var(--muted);
                   background: white;
                   border-radius: var(--radius);
-                "
-              >
+                ">
                 <i
                   class="fa-solid fa-hospital"
                   style="
@@ -622,9 +591,7 @@
                     opacity: 0.3;
                     display: block;
                     margin-bottom: 10px;
-                  "
-                ></i>
-                No centers added yet. Add one using the form!
+                  "></i> No centers added yet. Add one using the form!
               </div>
               {% endfor %}
             </div>

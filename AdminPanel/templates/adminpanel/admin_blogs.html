@@ -498,8 +498,7 @@
         </div>
       </header>
       <div class="content">
-        {% if messages %}{% for message in messages %} {% if message.tags ==
-        'error' %}
+        {% if messages %}{% for message in messages %} {% if message.tags =='error' %}
         <div class="msg-error">
           <i class="fa-solid fa-circle-xmark"></i> {{ message }}
         </div>
@@ -526,8 +525,7 @@
                     type="text"
                     name="title"
                     placeholder="Blog title"
-                    required
-                  />
+                    required/>
                 </div>
                 <div class="field">
                   <label>Category</label>
@@ -543,16 +541,13 @@
                   <textarea
                     name="summary"
                     placeholder="Brief summary (max 500 chars)..."
-                    style="min-height: 60px"
-                  ></textarea>
+                    style="min-height: 60px"></textarea>
                 </div>
                 <div class="field">
                   <label>Content *</label>
                   <textarea
                     name="content"
-                    placeholder="Full blog content..."
-                    required
-                  ></textarea>
+                    placeholder="Full blog content..." required></textarea>
                 </div>
                 <button type="submit" class="btn-add">
                   <i class="fa-solid fa-paper-plane"></i> Publish Blog
@@ -565,51 +560,40 @@
           <div class="blogs-list">
             {% for blog in blogs %}
             <div
-              class="blog-card {% if not blog.is_published %}unpublished{% endif %}"
-            >
+              class="blog-card {% if not blog.is_published %}unpublished{% endif %}">
               <div class="blog-top">
                 <div class="blog-title">{{ blog.title }}</div>
-                <span class="blog-cat {{ blog.category }}"
-                  >{{ blog.category|capfirst }}</span
-                >
+                <span class="blog-cat {{ blog.category }}">{{ blog.category|capfirst }}</span>
               </div>
               <div class="blog-summary">
                 {{ blog.summary|default:blog.content|truncatechars:120 }}
               </div>
               <div class="blog-footer">
                 <div class="blog-meta">
-                  <i class="fa-regular fa-calendar"></i> {{
-                  blog.published_at|date:"d M Y" }} &middot; {% if
-                  blog.is_published %}<span style="color: var(--success)"
-                    >Published</span
-                  >{% else %}<span style="color: var(--danger)"
-                    >Unpublished</span
-                  >{% endif %}
+                  <i class="fa-regular fa-calendar"></i> {{ blog.published_at|date:"d M Y" }} &middot; {% if blog.is_published %}<span style="color: var(--success)">Published</span>{% else %}<span style="color: var(--danger)">Unpublished</span>{% endif %}
                 </div>
                 <div class="blog-actions">
-                  <form method="POST">
-                    {% csrf_token %}<input
+                  <form method="POST">{% csrf_token %}
+                    <input
                       type="hidden"
                       name="action"
-                      value="toggle"
-                    /><input
+                      value="toggle"/>
+                      <input
                       type="hidden"
                       name="blog_id"
-                      value="{{ blog.id }}"
-                    />
+                      value="{{ blog.id }}"/>
                     <button type="submit" class="act-btn toggle">
                       <i class="fa-solid fa-eye"></i> Toggle
                     </button>
                   </form>
                   <form
                     method="POST"
-                    onsubmit="return confirm('Delete this blog?');"
-                  >
+                    onsubmit="return confirm('Delete this blog?');">
                     {% csrf_token %}<input
                       type="hidden"
                       name="action"
-                      value="delete"
-                    /><input
+                      value="delete"/>
+                      <input
                       type="hidden"
                       name="blog_id"
                       value="{{ blog.id }}"
@@ -629,8 +613,7 @@
                 background: white;
                 border-radius: var(--radius);
                 color: var(--muted);
-              "
-            >
+              ">
               <i
                 class="fa-solid fa-newspaper"
                 style="
@@ -638,8 +621,8 @@
                   opacity: 0.3;
                   display: block;
                   margin-bottom: 10px;
-                "
-              ></i>
+                ">
+              </i>
               No blogs yet. Write your first blog!
             </div>
             {% endfor %}

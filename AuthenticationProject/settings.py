@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'AuthenticationProject.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE':   'django.db.backends.postgresql',
+        'ENGINE':   'django.db.backends.postgresql', 
         'NAME':     config('DB_NAME'),
         'USER':     config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
@@ -173,9 +173,9 @@ LOGIN_URL = '/patient/login/'
 # Static files for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# ── Email Settings ─────────────────────────────────────────────────────────
+# Email Settings
 if config('DEBUG', default=False, cast=bool):
-    # Localhost → Gmail SMTP
+    # Localhost --> Gmail SMTP
     EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST          = 'smtp.gmail.com'
     EMAIL_PORT          = 587
@@ -186,7 +186,7 @@ if config('DEBUG', default=False, cast=bool):
     DEFAULT_FROM_EMAIL  = config('EMAIL_HOST_USER')
     EMAIL_TIMEOUT       = 10
 else:
-    # Railway → SendGrid API
+    # Railway --> SendGrid API
     EMAIL_BACKEND                  = 'sendgrid_backend.SendgridBackend'
     SENDGRID_API_KEY               = config('SENDGRID_API_KEY')
     DEFAULT_FROM_EMAIL             = 'noreply@tig-gujranwala.com'
