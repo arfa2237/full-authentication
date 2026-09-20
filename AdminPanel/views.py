@@ -10,8 +10,6 @@ from Core.models import Appointment, VaccinationCenter, PatientProfile
 from Staff.models import StaffProfile
 from .models import Blog, AdminProfile
 from django.db.models.functions import TruncMonth
-from Core.models import Appointment, VaccinationCenter, PatientProfile
-from Staff.models import StaffProfile
 
 
 #  Helper decorator 
