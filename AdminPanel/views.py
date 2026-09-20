@@ -9,6 +9,9 @@ from datetime import date
 from Core.models import Appointment, VaccinationCenter, PatientProfile
 from Staff.models import StaffProfile
 from .models import Blog, AdminProfile
+from django.db.models.functions import TruncMonth
+from Core.models import Appointment, VaccinationCenter, PatientProfile
+from Staff.models import StaffProfile
 
 
 #  Helper decorator 
@@ -142,7 +145,7 @@ def UpdateStaffStatus(request, staff_id):
                 f'TIG - Staff Account Approved',
                 f'Dear {sp.user.get_full_name()},\n\n'
                 f'Your healthcare staff account has been APPROVED!\n\n'
-                f'You can now login at: https://tig-gujranwala.com/staff/login/'
+                f'You can now login at: https://tig-gujranwala.com/staff/login/\n'
                 f'Username: {sp.user.username}\n\n'
                 f'Regards,\nTIG Admin',
                 sp.user.email
@@ -325,7 +328,7 @@ def _send_email(subject, body, to_email):
     try:
         email = EmailMessage(
             subject, body,
-            settings.EMAIL_HOST_USER,
+            settings.DEFAULT_FROM_EMAIL,
             [to_email],
         )
         email.fail_silently = True
@@ -333,17 +336,11 @@ def _send_email(subject, body, to_email):
     except Exception:
         pass
 
-
-from django.db.models.functions import TruncMonth
-
 @admin_required
 def AdminStatistics(request):
     today = date.today().strftime("%A, %d %B %Y")
 
-    #  System-wide counts 
-    from Core.models import Appointment, VaccinationCenter, PatientProfile
-    from Staff.models import StaffProfile
-
+    #  System wide counts 
     total_patients    = PatientProfile.objects.count()
     total_staff       = StaffProfile.objects.filter(status='approved').count()
     total_centers     = VaccinationCenter.objects.filter(is_active=True).count()
@@ -360,7 +357,7 @@ def AdminStatistics(request):
     immun_rate = int((completed_appts / total_possible) * 100) if total_possible > 0 else 0
 
     #  Vaccine-wise stats 
-    VACCINES = ['Child Vaccine - At Birth', 'Child Vaccine - 6 weeks', 'Child Vaccine - 10 week', 'Child Vaccine - 14 week', 'Child Vaccine - 9 months', 'Child Vaccine - 15 months']
+    VACCINES = ['Child Vaccine - At Birth', 'Child Vaccine - 6 week', 'Child Vaccine - 10 week', 'Child Vaccine - 14 week', 'Child Vaccine - 9 months', 'Child Vaccine - 15 months']
     VACCINE_COLORS = ['#6884d3', '#43a047', '#fb8c00', '#f06272', '#1a6fb3', '#28375f']
 
     vaccine_stats = []
@@ -376,7 +373,7 @@ def AdminStatistics(request):
             'color':   VACCINE_COLORS[i],
         })
 
-    #  Center-wise stats
+    #  Center wise stats
     centers = VaccinationCenter.objects.filter(is_active=True)
     center_stats = []
     for center in centers:

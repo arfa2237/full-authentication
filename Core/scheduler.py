@@ -89,7 +89,7 @@ def send_appointment_reminders():
             f'   Please arrive at the center on time.\n'
             f'   Bring your child\'s vaccination card.\n\n'
             f'Thank you for choosing TIG.\n'
-            f'Together we protect every child! 💉\n\n'
+            f'Together we protect every child! \n\n'
             f'Regards,\n'
             f'Trace and Immunize Gujranwala (TIG)'
         )
@@ -107,7 +107,7 @@ def send_appointment_reminders():
             appt.reminder_sent = True
             appt.save()
 
-            print(f"✅ Reminder sent to {patient_email}")
+            print(f" Reminder sent to {patient_email}")
             logger.info(f"Reminder sent to {patient_email}")
 
         except Exception as e:
