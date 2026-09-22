@@ -443,10 +443,10 @@
             </div>
         </div>
 
-        <!-- ── ROW 1: DONUT + VACCINE PROGRESS ── -->
-        <div class="records-grid">
+        <!--  ROW 1: DONUT CHART -->
+        <div style="max-width: 600px; margin: 0 auto 22px auto;">
 
-            <!-- Donut Chart — Appointment Status -->
+            <!-- Donut Chart : Appointment Status -->
             <div class="section-card">
                 <div class="card-header">
                     <h3><i class="fa-solid fa-chart-pie"></i> Appointment Status</h3>
@@ -479,102 +479,6 @@
                 </div>
             </div>
 
-            <!-- Vaccine Progress Bars -->
-            <div class="section-card">
-                <div class="card-header">
-                    <h3><i class="fa-solid fa-syringe"></i> Vaccine Progress</h3>
-                    <span style="font-size:11px;color:var(--text-muted);">{{ completed_count }}/{{ TOTAL_DOSES }} doses</span>
-                </div>
-                <div class="card-body">
-                    <div class="hbar-list">
-                        {% for vac in vaccine_progress %}
-                        <div class="hbar-item">
-                            <div class="hbar-label">
-                                {{ vac.name }}
-                                <span>{{ vac.done }}/{{ vac.total }} doses &nbsp; {{ vac.percent }}%</span>
-                            </div>
-                            <div class="hbar-track">
-                                <div class="hbar-fill"
-                                     style="width:{{ vac.percent }}%; background:{{ vac.color }};"
-                                     data-width="{{ vac.percent }}">
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-        </div><!-- end records-grid -->
-
-        <!-- ── ROW 2: BAR CHART + COMPLETED TABLE ── -->
-        <div class="records-grid">
-
-            <!-- Bar Chart — Doses Completed per Vaccine -->
-            <div class="section-card">
-                <div class="card-header">
-                    <h3><i class="fa-solid fa-chart-bar"></i> Doses Completed by Vaccine</h3>
-                </div>
-                <div class="card-body">
-                    {% if completed_count > 0 %}
-                    <div class="chart-wrap">
-                        <canvas id="barChart"></canvas>
-                    </div>
-                    {% else %}
-                    <div class="empty-chart">
-                        <i class="fa-solid fa-chart-bar"></i>
-                        <p>No completed vaccinations yet. Complete your appointments to see progress here!</p>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Recent Completed Appointments -->
-            <div class="section-card">
-                <div class="card-header">
-                    <h3><i class="fa-solid fa-list-check"></i> Completed Vaccinations</h3>
-                    <a href="{% url 'my-appointments' %}" style="font-size:11px;font-weight:600;color:var(--accent-dark);text-decoration:none;padding:5px 12px;background:var(--input-color);border-radius:20px;">View All</a>
-                </div>
-                {% if recent_completed %}
-                <table class="rec-table">
-                    <thead>
-                        <tr>
-                            <th>Vaccine</th>
-                            <th>Dose</th>
-                            <th>Date</th>
-                            <th>Center</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for appt in recent_completed %}
-                        <tr>
-                            <td>
-                                <div class="vax-cell">
-                                    <div class="vax-icon-sm"><i class="fa-solid fa-check"></i></div>
-                                    <span style="font-weight:600;">{{ appt.vaccine_type }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                {% if appt.dose_number == 0 %}Booster
-                                {% else %}Dose {{ appt.dose_number }}{% endif %}
-                            </td>
-                            <td style="font-size:11px;">{{ appt.appointment_date|date:"d M Y" }}</td>
-                            <td style="font-size:11px;">{{ appt.center.name|default:"—" }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <div class="empty-chart">
-                    <i class="fa-solid fa-list-check"></i>
-                    <p>No completed vaccinations yet!</p>
-                    <a href="{% url 'book-appointment' %}" class="btn-book-sm">
-                        <i class="fa-solid fa-calendar-plus"></i> Book Appointment
-                    </a>
-                </div>
-                {% endif %}
-            </div>
-
         </div><!-- end records-grid -->
 
     </div><!-- end content -->
@@ -584,18 +488,14 @@
 {% include "publicsite/chatbot.html" %}
 
 <script>
-// ── DATA FROM DJANGO ──────────────────────────────────────────────────────────
+//  DATA FROM DJANGO 
 const donutLabels  = {{ donut_labels|safe }};
 const donutData    = {{ donut_data|safe }};
 const donutColors  = {{ donut_colors|safe }};
-const barLabels    = {{ bar_labels|safe }};
-const barDone      = {{ bar_done|safe }};
-const barTotal     = {{ bar_total|safe }};
-const barColors    = {{ bar_colors|safe }};
 const immPct       = {{ immunization_pct }};
 const totalCount   = {{ total_count }};
 
-// ── CIRCULAR PROGRESS ────────────────────────────────────────────────────────
+//  CIRCULAR PROGRESS 
 window.addEventListener('load', () => {
     const circle = document.getElementById('circleProgress');
     const label  = document.getElementById('circleLabel');
@@ -615,7 +515,7 @@ window.addEventListener('load', () => {
     }
 });
 
-// ── DONUT CHART ───────────────────────────────────────────────────────────────
+//  DONUT CHART 
 {% if total_count > 0 %}
 const donutCtx = document.getElementById('donutChart').getContext('2d');
 new Chart(donutCtx, {
@@ -645,68 +545,6 @@ new Chart(donutCtx, {
             }
         },
         animation: { animateRotate: true, duration: 1200 }
-    }
-});
-{% endif %}
-
-// ── BAR CHART ─────────────────────────────────────────────────────────────────
-{% if completed_count > 0 %}
-const barCtx = document.getElementById('barChart').getContext('2d');
-new Chart(barCtx, {
-    type: 'bar',
-    data: {
-        labels: barLabels,
-        datasets: [
-            {
-                label: 'Completed',
-                data: barDone,
-                backgroundColor: barColors.map(c => c + 'CC'),
-                borderColor: barColors,
-                borderWidth: 2,
-                borderRadius: 8,
-                borderSkipped: false,
-            },
-            {
-                label: 'Remaining',
-                data: barTotal.map((t, i) => t - barDone[i]),
-                backgroundColor: 'rgba(104,132,211,0.12)',
-                borderColor: 'rgba(104,132,211,0.2)',
-                borderWidth: 1,
-                borderRadius: 8,
-                borderSkipped: false,
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: { font: { family: 'Poppins', size: 11 }, boxWidth: 12, padding: 16 }
-            },
-            tooltip: {
-                callbacks: {
-                    afterBody: function(ctx) {
-                        const i = ctx[0].dataIndex;
-                        return `Total needed: ${barTotal[i]} doses`;
-                    }
-                }
-            }
-        },
-        scales: {
-            x: {
-                stacked: false,
-                grid: { display: false },
-                ticks: { font: { family: 'Poppins', size: 10 } }
-            },
-            y: {
-                beginAtZero: true,
-                max: Math.max(...barTotal) + 1,
-                ticks: { stepSize: 1, font: { family: 'Poppins', size: 10 } },
-                grid: { color: 'rgba(104,132,211,0.08)' }
-            }
-        },
-        animation: { duration: 1200 }
     }
 });
 {% endif %}
