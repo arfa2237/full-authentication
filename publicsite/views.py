@@ -8,6 +8,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods 
 from django.http import JsonResponse, StreamingHttpResponse
+import logging
+logger = logging.getLogger(__name__)
 
 
 
@@ -99,8 +101,70 @@ def chatbot(request):
 GROQ_API_KEY = "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" 
 GROQ_MODEL = "openai/gpt-oss-20b" 
 
+TIG_WEBSITE_GUIDE = """
+TIG WEBSITE GUIDE (use ONLY this information for questions about using the TIG platform):
+
+1. BOOKING A CHILD VACCINATION APPOINTMENT:
+   Step 1: <<e.g. First Sign up and then log in>>
+   Step 2: <<e.g. Click on "Schedule Appointment" button>>
+   Step 3: <<e.g. Select dose number from 1 to 6>>
+   Step 4: <<e.g. Choose Ayesha Dispensary center and enter child datails>>
+   Step 5: <<e.g. Choose date and time slot>>
+   Step 6: <<e.g. You will receive confirmation email for appointment >>
+   Documents to bring: <<e.g. vaccination card, parent CNIC>>
+
+2. RESCHEDULING OR CANCELLING
+   Step 1: <<e.g. Go to Track now page>>
+   Step 2: <<e.g. Click on Reshedule or cancellation button from your appointment>>
+
+3. VIEWING VACCINATION RECORD:
+   Step 1: <<e.g. Click on Schedule now, Track now page or from dropdown menu on login button>>
+   Step 2: <<e.g. Go to My Records page>>
+
+4. FINDING A VACCINATION CENTER:
+   Step 1: <<e.g. Go to Nearby Center page from navbar>>
+   Step 2: <<e.g. Turn on your device location>>
+   Step 3: <<e.g. You can see location of Ayesha Dispensary on map and distance>>
+
+5. REGISTERING / LOGIN PROBLEMS:
+   Step 1: <<e.g. Click on Login button in top right corner>>
+   Step 2: <<e.g. If already have an acount, Enter username and password>>
+   Step 3: <<e.g. Otherwise, click on signup option>>
+   Step 4: <<e.g. Enter first name, last name, username, email and password>>
+   Step 5: <<e.g. Click on register button>>
+   Step 6: <<e.g. After signup, login in website>>
+
+6. PASSWORD RESET / RESET PASSWORD:
+   Step 1: <<e.g. Click on Reset Password button provided on login page>
+   Step 2: <<e.g. Enter you email and click on Reset Password button>>
+   Step 3: <<e.g. You will receive an email>>
+   Step 4: <<e.g. Click on link and enter new password>>
+   Step 5: <<e.g. Your new password will be set>>
+
+7. LANGUAGE TOGGLE:
+   Step 1: <<e.g. Click on language conversion (EN/UR) button from navbar>
+   Step 2: <<e.g. The website will change in your required language>>
+
+8. DARK / LIGHT THEME:
+   Step 1: <<e.g. Click on moon like theme button from navbar>
+   Step 2: <<e.g. The website will change in your required mode (dark / light)>>
+
+9. CONTACT:
+    <<Visit Ayesha Dispensary for deatiled query in working hours 9:00 am to 2:00 pm. Sunday is off>>
+"""
+
+WEBSITE_RULES = """
+WEBSITE GUIDANCE RULES:
+- When the user asks how to book, reschedule, cancel, register, find a center, or view records, explain step by step using ONLY the TIG WEBSITE GUIDE above.
+- Give numbered steps, one action per step, and mention the exact button/menu name.
+- Never invent pages, buttons, fees, timings, or rules that are not in the guide. If the guide does not cover the question, say you are not sure and suggest the TIG helpline or the Ayesha Dispensary vaccination center.
+- After the steps, if useful, tell the parent which vaccine is due at their child's age and remind them to bring the documents listed.
+- Keep button and menu names exactly as they appear on the site (for example "Schedule Appointment"), even when replying in Urdu or Roman Urdu. Write the explanation around them in the user's language.
+- Booking and using the TIG website counts as in-scope, not off-topic.
+"""
+
 SYSTEM_PROMPT = """You are TIG Assistant — an intelligent vaccine advisor for Trace and Immunize Gujranwala (TIG), a government digital health platform under the District Health Authority of Gujranwala, Pakistan.
- 
+
 YOUR EXPERTISE:
 - Child vaccination schedules: BCG, OPV (0,I,II,III), Hep-B, Pentavalent (I,II,III), Rotavirus (I,II), Pneumococcal (I,II,III), IPV (I,II), MR (I,II), Typhoid
 - Vaccine-preventable diseases: Childhood Tuberculosis (TB), Pneumonia, Diphtheria, Meningitis, Typhoid, Hepatitis B, Measles, Rubella, Tetanus, Polio, Diarrhoea, Whooping cough
@@ -135,7 +199,8 @@ BOUNDARIES:
 - Only answer vaccine and immunization related questions
 - For anything else say: I specialize in vaccine information. For other queries, consult with their specialized fields.
 - Always recommend consulting a doctor for personal medical decisions"""
- 
+
+SYSTEM_PROMPT = SYSTEM_PROMPT + "\n\n" + TIG_WEBSITE_GUIDE + "\n" + WEBSITE_RULES 
 
 def detect_language(text):
     """Detect if text is Urdu script, Roman Urdu, or English."""
@@ -222,7 +287,7 @@ def chatbot_api(request):
                     model      = GROQ_MODEL,
                     messages   = messages,
                     temperature= 0.4,
-                    max_tokens = 512, 
+                    max_tokens = 700, 
                     stream     = True,         
                 )
                 for chunk in completion:
@@ -230,8 +295,9 @@ def chatbot_api(request):
                     if token:
                         yield f"data: {json.dumps({'token': token})}\n\n"
                 yield "data: [DONE]\n\n" 
-            except Exception as e:
-                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            except Exception:
+                logger.exception("Groq streaming error")
+                yield f"data: {json.dumps({'error': 'Something went wrong. Please try again.'})}\n\n"
  
         response = StreamingHttpResponse(
             stream_generator(),
@@ -243,6 +309,7 @@ def chatbot_api(request):
  
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON."}, status=400)
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500) 
+    except Exception:
+        logger.exception("Chatbot API error")
+        return JsonResponse({"error": "Something went wrong. Please try again."}, status=500)
 
