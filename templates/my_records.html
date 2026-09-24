@@ -4,99 +4,12 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Records — TIG</title>
+    <title>My Records - TIG</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link rel="stylesheet" href="{% static 'dashboard.css' %}"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <style>
-        /* ── PAGE GRID ── */
-        .records-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 22px;
-            margin-bottom: 22px;
-        }
-
-        .records-grid-3 {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr 1fr;
-            gap: 22px;
-            margin-bottom: 22px;
-        }
-
-        /* ── IMMUNIZATION BANNER ── */
-        .immun-banner {
-            background: linear-gradient(120deg, var(--accent-deeper) 0%, var(--accent-dark) 50%, var(--accent-color) 100%);
-            border-radius: var(--radius);
-            padding: 28px 32px;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 28px;
-            position: relative;
-            overflow: hidden;
-            animation: fadeUp 0.4s ease both;
-        }
-
-        .immun-banner::before {
-            content: '';
-            position: absolute;
-            right: -40px; top: -40px;
-            width: 200px; height: 200px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.07);
-        }
-
-        .immun-text h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
-        .immun-text p  { font-size: 13px; opacity: 0.85; max-width: 400px; line-height: 1.7; }
-
-        /* Circular progress */
-        .circle-wrap {
-            position: relative;
-            width: 110px;
-            height: 110px;
-            flex-shrink: 0;
-            z-index: 1;
-        }
-
-        .circle-wrap svg {
-            transform: rotate(-90deg);
-        }
-
-        .circle-bg { fill: none; stroke: rgba(255,255,255,0.2); stroke-width: 10; }
-        .circle-fill {
-            fill: none;
-            stroke: white;
-            stroke-width: 10;
-            stroke-linecap: round;
-            stroke-dasharray: 283;
-            stroke-dashoffset: 283;
-            transition: stroke-dashoffset 1.5s ease;
-        }
-
-        .circle-text {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-
-        .circle-text .pct {
-            font-size: 22px;
-            font-weight: 800;
-            color: white;
-            line-height: 1;
-        }
-
-        .circle-text .lbl {
-            font-size: 9px;
-            color: rgba(255,255,255,0.8);
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        /* ── STAT CARDS ── */
+        /*  STAT CARDS */
         .mini-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -132,7 +45,7 @@
         .ms-val   { font-size: 22px; font-weight: 800; color: var(--accent-deeper); line-height: 1; }
         .ms-label { font-size: 10px; color: var(--text-muted); margin-top: 3px; font-weight: 500; }
 
-        /* ── SECTION CARDS ── */
+        /*  SECTION CARDS */
         .section-card {
             background: white;
             border-radius: var(--radius);
@@ -162,7 +75,7 @@
 
         .card-body { padding: 18px 22px; }
 
-        /* ── CHART CONTAINERS ── */
+        /* CHART CONTAINERS  */
         .chart-wrap {
             position: relative;
             padding: 10px 0;
@@ -192,36 +105,7 @@
         .chart-center-label .big { font-size: 28px; font-weight: 800; color: var(--accent-deeper); }
         .chart-center-label .sm  { font-size: 11px; color: var(--text-muted); }
 
-        /* ── PROGRESS BARS (horizontal) ── */
-        .hbar-list { display: flex; flex-direction: column; gap: 16px; }
-
-        .hbar-item {}
-
-        .hbar-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--accent-deeper);
-        }
-
-        .hbar-label span { color: var(--text-muted); font-weight: 400; font-size: 11px; }
-
-        .hbar-track {
-            height: 10px;
-            background: var(--input-color);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .hbar-fill {
-            height: 100%;
-            border-radius: 10px;
-            transition: width 1.2s ease;
-        }
-
-        /* ── COMPLETED TABLE ── */
+        /*  COMPLETED TABLE  */
         .rec-table { width: 100%; border-collapse: collapse; }
 
         .rec-table th {
@@ -267,7 +151,7 @@
         .status-dot.scheduled { background: var(--input-color); color: var(--accent-dark); }
         .status-dot.missed    { background: #fff0f1; color: var(--danger); }
 
-        /* ── LEGEND ── */
+        /*  LEGEND */
         .chart-legend {
             display: flex;
             flex-wrap: wrap;
@@ -290,7 +174,7 @@
             flex-shrink: 0;
         }
 
-        /* ── EMPTY STATE ── */
+        /* EMPTY STATE */
         .empty-chart {
             display: flex;
             flex-direction: column;
@@ -342,7 +226,7 @@
 </head>
 <body>
 
-<!-- ════════ SIDEBAR ════════ -->
+<!--  SIDEBAR -->
 <aside class="sidebar">
     <div class="sidebar-logo">
         <div class="logo-icon">
@@ -376,7 +260,7 @@
     </div>
 </aside>
 
-<!-- ════════ MAIN ════════ -->
+<!--  MAIN  -->
 <div class="main">
 
     <header class="topbar">
@@ -391,7 +275,7 @@
 
     <div class="content">
 
-        <!-- ── MINI STAT CARDS ── -->
+        <!--  MINI STAT CARDS  -->
         <div class="mini-stats">
             <div class="mini-stat">
                 <div class="ms-icon purple"><i class="fa-solid fa-list"></i></div>

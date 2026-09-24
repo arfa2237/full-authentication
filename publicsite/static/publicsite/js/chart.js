@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function() {
 
     let ctx5 = document.getElementById("tetanus"); 

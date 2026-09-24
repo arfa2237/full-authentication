@@ -77,16 +77,6 @@ def AdminDashboard(request):
     # Recent appointments
     recent_appts = Appointment.objects.order_by('-created_at')[:5]
 
-    # Vaccine stats for chart
-    vaccine_stats = []
-    VACCINES = ['Child Vaccine - At Birth', 'Child Vaccine - 10 week', 'Child Vaccine - 14 week', 'Child Vaccine - 9 months', 'Child Vaccine - 15 months']
-    for vac in VACCINES:
-        count = Appointment.objects.filter(
-            vaccine_type=vac,
-            status='completed'
-        ).count()
-        vaccine_stats.append({'name': vac, 'count': count})
-
     return render(request, 'adminpanel/admin_dashboard.html', {
         'today':            today,
         'total_patients':   total_patients,
@@ -99,7 +89,6 @@ def AdminDashboard(request):
         'total_blogs':      total_blogs,
         'pending_staff_list': pending_staff_list,
         'recent_appts':     recent_appts,
-        'vaccine_stats':    vaccine_stats,
     })
 
 

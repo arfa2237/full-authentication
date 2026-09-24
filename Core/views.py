@@ -16,11 +16,9 @@ from django.utils.cache import add_never_cache_headers
 from django.db import DatabaseError, transaction
 from datetime import date, datetime
 import re
-from .models import PatientProfile, VaccinationCenter, Appointment
-from .models import *
+from .models import PatientProfile, VaccinationCenter, Appointment, PasswordReset
 
 
-# Create your views here.
 def RegisterView(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
@@ -90,7 +88,7 @@ def ForgotPassword(request):
             email_message = EmailMessage(
                 'Reset your password', # email subject
                 email_body,
-                settings.EMAIL_HOST_USER, # email sender
+                settings.DEFAULT_FROM_EMAIL, # email sender
                 [email] # email  receiver 
             )
 
@@ -136,7 +134,7 @@ def ResetPassword(request, reset_id):
                 passwords_have_error = True
                 messages.error(request, 'Passwords do not match')
 
-            # Server-side password validation (matching client-side rules)
+            # Server side password validation (matching client side rules)
             if password and not passwords_have_error:
                 # Minimum length
                 if len(password) < 8:
@@ -228,7 +226,7 @@ def ResetPassword(request, reset_id):
 def BookAppointment(request):
     profile, _ = PatientProfile.objects.get_or_create(user=request.user)
 
-    #  Pre-fill child info from profile 
+    #  Pre fill child info from profile 
     prefill = {
         'child_name':    profile.child_name    or '',
         'child_gender':  profile.child_gender  or '',
@@ -395,7 +393,7 @@ def BookAppointment(request):
             })
         messages.success(
             request,
-            f'Appointment request submitted! Vaccine {vaccine_type} Dose {dose_number} on {parsed_date.strftime("%d %B %Y")} — Status: Pending Confirmation.'
+            f'Appointment request submitted! Vaccine {vaccine_type} Dose {dose_number} on {parsed_date.strftime("%d %B %Y")} - Status: Pending Confirmation.'
         )
         return redirect('my-appointments')
     return render(request, 'book_appointment.html', {
@@ -597,8 +595,7 @@ def DownloadVaccineCard(request):
     p.line(30, y, width - 30, y)
     y -= 20
 
-    # Table header
-    col_widths = [180, 60, 160, 100]
+    # Table headers
     col_x = [30, 210, 270, 430]
     headers = ['VACCINE', 'DOSE', 'CENTER', 'STATUS']
 
@@ -708,11 +705,6 @@ def MyRecords(request):
         'data':   [completed_count, pending_count, scheduled_count, missed_count, cancelled_count],
         'colors': ['#43a047', '#fb8c00', '#6884d3', '#f06272', '#9e9e9e'],
     }
-
-    # Recent completed appointments .....................................
-    recent_completed = appointments.filter(
-        status='completed'
-    ).order_by('-appointment_date')[:5]
 
     return render(request, 'my_records.html', {
         'profile':           profile,

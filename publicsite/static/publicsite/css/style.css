@@ -205,6 +205,10 @@
     .navbar-light .navbar-brand img {
         max-height: 45px;
     }
+
+    .navbar > .dropdown {
+        margin-left: 12px;
+    }
 }
 /*This CSS code defines a responsive, modern navbar with hover effects, sticky behavior, dropdown menus, and smooth transitions. It also adapts to mobile and desktop views using media queries, making the navbar behave differently depending on screen size.*/
 @media (min-width: 992px) {
@@ -424,19 +428,19 @@
 
 @media (max-width: 992px) {
     .carousel .carousel-inner .carousel-item {
-        height: 700px;
-        margin-top: -100px;
+        height: 560px;
+        margin-top: 0;
     }
 
     .carousel .carousel-inner .carousel-item img {
-        height: 700px;
+        height: 560px;
         object-fit: cover;
     }
-
 
     .carousel .carousel-inner .carousel-item .carousel-caption-1 {
         max-width: 100% !important;
         justify-content: center;
+        padding-top: 60px;
     }
 
     .carousel-caption-1-content {
@@ -446,12 +450,25 @@
 
     .carousel-caption-1-content .carousel-caption-1-content-btn {
         justify-content: center;
+        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
     }
 
+    .carousel-caption-1-content .carousel-caption-1-content-btn a,
+    .carousel-caption-2-content .carousel-caption-2-content-btn a {
+        width: 100%;
+        max-width: 340px;
+        margin: 0 !important;
+        white-space: normal;
+        text-align: center;
+    }
 
     .carousel .carousel-inner .carousel-item .carousel-caption-2 {
         max-width: 100% !important;
         justify-content: center;
+        padding-top: 60px;
     }
 
     .carousel-caption-2-content {
@@ -461,9 +478,11 @@
 
     .carousel-caption-2-content .carousel-caption-2-content-btn {
         justify-content: center;
+        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
     }
-
-
 
     .carousel .carousel-control-prev .carousel-control-prev-icon,
     .carousel .carousel-control-next .carousel-control-next-icon {
