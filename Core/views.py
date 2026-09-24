@@ -2,9 +2,6 @@ from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
-from urllib import request
-from datetime import date
-from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -39,49 +36,10 @@ def Home(request):
     upcoming_count  = Appointment.objects.filter(patient=request.user, status__in=['pending','scheduled']).count()
     missed_count    = Appointment.objects.filter(patient=request.user, status='missed').count()
 
-    # Immunization percentage (out of 13 total doses)
-    TOTAL_DOSES = 13
+    # Immunization percentage (out of 6 total doses)
+    TOTAL_DOSES = 6
     percent = int((completed_count / TOTAL_DOSES) * 100) if completed_count else 0
 
-    # Vaccine progress for progress bars
-    VACCINE_TOTAL_DOSES = {
-        'Child Vaccine - At Birth':     1,
-        'Child Vaccine - 6 week':       2,
-        'Child Vaccine - 10 week':      3,
-        'Child Vaccine - 14 week':      4,
-        'Child Vaccine - 9 months':     5,
-        'Child Vaccine - 15 months':    6,
-    }
-    COLORS = ['green', 'purple', 'orange', 'purple', 'green', 'blue']
-
-    vaccine_progress = []
-    for i, (vac_name, total) in enumerate(VACCINE_TOTAL_DOSES.items()):
-        done = Appointment.objects.filter(
-            patient=request.user,
-            vaccine_type=vac_name,
-            status='completed'
-        ).count()
-        vac_percent = int((done / total) * 100) if total > 0 else 0
-        vaccine_progress.append({
-            'name':    vac_name,
-            'done':    done,
-            'total':   total,
-            'percent': vac_percent,
-            'color':   COLORS[i % len(COLORS)],
-        })
-
-    return render(request, 'dashboard.html', {
-        'profile':          profile,
-        'today':            today,
-        'appointments':     all_appointments,
-        'pending_count':    pending_count,
-        'completed_count':  completed_count,
-        'upcoming_count':   upcoming_count,
-        'missed_count':     missed_count,
-        'immunization_pct': percent,
-        'vaccine_progress': vaccine_progress,
-        'completed_doses':  completed_count,
-    })
 def RegisterView(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
@@ -178,7 +136,6 @@ def PasswordResetSent(request, reset_id):
 
 
 def ResetPassword(request, reset_id):
-    import re
 
     try:
         password_reset_id = PasswordReset.objects.get(reset_id=reset_id)
@@ -300,7 +257,7 @@ def BookAppointment(request):
     today       = date.today().strftime("%A, %d %B %Y")
     centers     = VaccinationCenter.objects.filter(is_active=True)
 
-    # Static vaccine list (jb tk static rehy gy Vaccine mode ni bnaty)
+    
     vaccines = [
         {'name': 'Child Vaccine - At Birth',        'doses': 1,  'icon': 'fa-solid fa-shield-halved'},
         {'name': 'Child Vaccine - 6 week',          'doses': 2,  'icon': 'fa-solid fa-virus-slash'},
@@ -317,7 +274,6 @@ def BookAppointment(request):
         appt_date    = request.POST.get('appt_date',    '').strip()
         appt_time    = request.POST.get('appt_time',    '').strip()
         notes        = request.POST.get('notes',        '').strip()
-        # NEW fields
         child_name     = request.POST.get('child_name',     '').strip()
         child_gender   = request.POST.get('child_gender',   '').strip()
         guardian_name  = request.POST.get('guardian_name',  '').strip()
@@ -429,7 +385,7 @@ def BookAppointment(request):
                     appointment_date = parsed_date,
                     appointment_time = parsed_time,
                     notes            = notes,
-                    status            = 'pending',
+                    status           = 'pending',
                     child_name       = child_name,
                     child_gender     = child_gender,
                     guardian_name    = guardian_name,
@@ -516,8 +472,6 @@ def CancelAppointment(request, appt_id):
     return redirect('my-appointments')
 
 
-
-
 @login_required
 def VaccineCard(request):
     profile, _ = PatientProfile.objects.get_or_create(user=request.user)
@@ -539,45 +493,18 @@ def VaccineCard(request):
     child_gender  = latest.child_gender  if latest else None
     guardian_name = latest.guardian_name if latest else None
     guardian_cnic = latest.guardian_cnic if latest else None
-
-    # Vaccine progress calculation
-    VACCINE_TOTAL_DOSES = {
-        'Child Vaccine - At Birth':     1,
-        'Child Vaccine - 6 week':       2,
-        'Child Vaccine - 10 week':      3,
-        'Child Vaccine - 14 week':      4,
-        'Child Vaccine - 9 months':     5,
-        'Child Vaccine - 15 months':    6,
-    }
-
-    COLORS = ['purple', 'green', 'orange', 'blue', 'purple', 'green']
-
-    vaccine_progress = []
-    for i, (vac_name, total) in enumerate(VACCINE_TOTAL_DOSES.items()):
-        done = appointments.filter(
-            vaccine_type=vac_name,
-            status='completed'
-        ).count()
-        percent = int((done / total) * 100) if total > 0 else 0
-        vaccine_progress.append({
-            'name':    vac_name,
-            'done':    done,
-            'total':   total,
-            'percent': percent,
-            'color':   COLORS[i % len(COLORS)],
-        })
+   
 
     return render(request, 'vaccine_card.html', {
-        'profile':          profile,
-        'today':            today,
-        'appointments':     appointments,
-        'completed_doses':  completed_doses,
-        'pending_count':    pending_count,
-        'vaccine_progress': vaccine_progress,
-        'child_name':       child_name,
-        'child_gender':     child_gender,
-        'guardian_name':    guardian_name,
-        'guardian_cnic':    guardian_cnic,
+        'profile': profile,
+        'today': today,
+        'appointments': appointments,
+        'completed_doses': completed_doses,
+        'pending_count': pending_count,
+        'child_name': child_name,
+        'child_gender': child_gender,
+        'guardian_name': guardian_name,
+        'guardian_cnic': guardian_cnic,
     })
 
 
@@ -663,7 +590,7 @@ def DownloadVaccineCard(request):
     # PIN
     p.drawString(50, y - 92, f'PIN: {profile.unique_pin}')
 
-    # ── Completed doses badge (right side) ────────────────────────────────
+    #  Completed doses badge (right side) 
     completed_doses = appointments.filter(status='completed').count()
     p.setFillColor(accent)
     p.roundRect(width - 160, y - 100, 120, 78, 8, fill=1, stroke=0)
@@ -795,35 +722,7 @@ def MyRecords(request):
     missed_count    = appointments.filter(status='missed').count()
     cancelled_count = appointments.filter(status='cancelled').count()
 
-    # Vaccine progress ............................................................
-    VACCINE_TOTAL_DOSES = {
-        'Child Vaccine - At Birth':     1,
-        'Child Vaccine - 6 week':       2,
-        'Child Vaccine - 10 week':      3,
-        'Child Vaccine - 14 week':      4,
-        'Child Vaccine - 9 months':     5,
-        'Child Vaccine - 15 months':    6,
-    }
-    TOTAL_DOSES = sum(VACCINE_TOTAL_DOSES.values())  # 13
-
-    CHART_COLORS = ['#6884d3', '#43a047', '#fb8c00', '#f06272', '#1a6fb3', '#28375f']
-
-    vaccine_progress = []
-    for i, (vac_name, total) in enumerate(VACCINE_TOTAL_DOSES.items()):
-        done = appointments.filter(
-            vaccine_type=vac_name,
-            status='completed'
-        ).count()
-        percent = int((done / total) * 100) if total > 0 else 0
-        vaccine_progress.append({
-            'name':    vac_name,
-            'done':    done,
-            'total':   total,
-            'percent': percent,
-            'color':   CHART_COLORS[i % len(CHART_COLORS)],
-        })
-
-    # Immunization percentage  .........................
+    TOTAL_DOSES = 6  # 6 child vaccines total
     immunization_pct = int((completed_count / TOTAL_DOSES) * 100) if completed_count else 0
 
     # Data for Donut chart (appointment status) ..............................
@@ -832,12 +731,6 @@ def MyRecords(request):
         'data':   [completed_count, pending_count, scheduled_count, missed_count, cancelled_count],
         'colors': ['#43a047', '#fb8c00', '#6884d3', '#f06272', '#9e9e9e'],
     }
-
-    # Data for horizontal bar chart (vaccine progress) .....................
-    bar_labels  = [v['name'] for v in vaccine_progress]
-    bar_done    = [v['done'] for v in vaccine_progress]
-    bar_total   = [v['total'] for v in vaccine_progress]
-    bar_colors  = [v['color'] for v in vaccine_progress]
 
     # Recent completed appointments .....................................
     recent_completed = appointments.filter(
@@ -854,16 +747,10 @@ def MyRecords(request):
         'missed_count':      missed_count,
         'cancelled_count':   cancelled_count,
         'immunization_pct':  immunization_pct,
-        'vaccine_progress':  vaccine_progress,
-        'recent_completed':  recent_completed,
-        # JSON-safe data for charts
+        # Donut chart data
         'donut_labels':      donut_data['labels'],
         'donut_data':        donut_data['data'],
         'donut_colors':      donut_data['colors'],
-        'bar_labels':        bar_labels,
-        'bar_done':          bar_done,
-        'bar_total':         bar_total,
-        'bar_colors':        bar_colors,
         'TOTAL_DOSES':       TOTAL_DOSES,
     })
         

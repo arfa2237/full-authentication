@@ -11,7 +11,7 @@
         /*  VACCINE CARD PAGE  */
         .card-page-grid {
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
+            grid-template-columns: 1fr;
             gap: 24px;
             align-items: start;
         }
@@ -483,98 +483,7 @@
                     </a>
                 </div>
 
-                <!-- Progress Section -->
-                <div class="progress-section" style="margin-top:20px">
-                    <div class="card-header">
-                        <h3><i class="fa-solid fa-chart-pie"></i> Vaccination Progress</h3>
-                    </div>
-                    <div class="prog-grid">
-                        {% for vac in vaccine_progress %}
-                        <div class="prog-item">
-                            <div class="pi-label">
-                                {{ vac.name }} <span>{{ vac.percent }}%</span>
-                            </div>
-                            <div class="prog-bar">
-                                <div class="prog-fill {{ vac.color }}" style="width:{{ vac.percent }}%"></div>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-muted);font-size:12px;">
-                            No vaccination data yet.
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
             </div><!-- end left col -->
-
-            <!-- RIGHT: Vaccination Records Table -->
-            <div class="records-card">
-                <div class="card-header">
-                    <h3><i class="fa-solid fa-list-check"></i> Vaccination Records</h3>
-                    <span style="font-size:11px;color:var(--text-muted);">{{ completed_doses }} completed</span>
-                </div>
-
-                {% if appointments %}
-                <table class="records-table">
-                    <thead>
-                        <tr>
-                            <th>Vaccine</th>
-                            <th>Dose</th>
-                            <th>Center</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for appt in appointments %}
-                        <tr>
-                            <td>
-                                <div class="vax-name-cell">
-                                    <div class="vax-icon-sm">
-                                        {% if appt.vaccine_type == 'Child Vaccine - At Birth' %}<i class="fa-solid fa-shield-halved"></i>
-                                        {% elif appt.vaccine_type == 'Child Vaccine - 6 week' %}<i class="fa-solid fa-virus-slash"></i>
-                                        {% elif appt.vaccine_type == 'Child Vaccine - 10 week' %}<i class="fa-solid fa-syringe"></i>
-                                        {% elif appt.vaccine_type == 'Child Vaccine - 14 week' %}<i class="fa-solid fa-lungs"></i>
-                                        {% elif appt.vaccine_type == 'Child Vaccine - 9 months' %}<i class="fa-solid fa-baby"></i>
-                                        {% elif appt.vaccine_type == 'Child Vaccine - 15 months' %}<i class="fa-solid fa-biohazard"></i>
-                                        {% else %}<i class="fa-solid fa-syringe"></i>{% endif %}
-                                    </div>
-                                    <div>
-                                        <div class="vax-nm">{{ appt.vaccine_type }}</div>
-                                        <div class="vax-dt">{{ appt.appointment_date|date:"d M Y" }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="dose-badge">
-                                    {% if appt.dose_number == 0 %}B{% else %}{{ appt.dose_number }}{% endif %}
-                                </span>
-                            </td>
-                            <td style="font-size:11px;">{{ appt.center.name|default:"—" }}</td>
-                            <td>
-                                <span class="status-dot {{ appt.status }}">
-                                    {% if appt.status == 'completed' %}Completed
-                                    {% elif appt.status == 'pending' %}Pending
-                                    {% elif appt.status == 'scheduled' %}Scheduled
-                                    {% elif appt.status == 'missed' %}Missed
-                                    {% else %}{{ appt.status|capfirst }}{% endif %}
-                                </span>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <div class="empty-records">
-                    <i class="fa-solid fa-clipboard-list"></i>
-                    <p>No vaccination records found. Book your first appointment to get started!</p>
-                    <a href="{% url 'book-appointment' %}" class="btn-download-pdf" style="display:inline-flex;width:auto;">
-                        <i class="fa-solid fa-calendar-plus"></i> Book Appointment
-                    </a>
-                </div>
-                {% endif %}
-
-            </div><!-- end records card -->
 
         </div><!-- end card-page-grid -->
 

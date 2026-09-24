@@ -1,7 +1,6 @@
 import datetime
 import logging
 from datetime import timedelta
-
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.utils import timezone
@@ -10,11 +9,9 @@ logger = logging.getLogger(__name__)
 
 
 def send_appointment_reminders():
-    """
-    Checks for appointments in next 25-35 minutes
-    and sends reminder emails.
-    Called every 5 minutes via Railway Cron Job.
-    """
+    
+    #Checks for appointments in next 25-35 minutes and sends reminder emails.
+
     from Core.models import Appointment
 
     # Get current Pakistan time
@@ -30,7 +27,7 @@ def send_appointment_reminders():
     window_start = (now_dt + timedelta(minutes=25)).time()
     window_end   = (now_dt + timedelta(minutes=35)).time()
 
-    print(f"Window: {window_start} → {window_end}")
+    print(f"Window: {window_start}  {window_end}")
 
     # Find matching appointments
     upcoming = Appointment.objects.filter(
@@ -67,10 +64,10 @@ def send_appointment_reminders():
         )
 
         if not patient_email:
-            print(f"No email for {patient_name} — skipping")
+            print(f"No email for {patient_name}  skipping")
             continue
 
-        subject = f'TIG Reminder — {vaccine} in 30 Minutes!'
+        subject = f'TIG Reminder  {vaccine} in 30 Minutes!'
         body = (
             f'Dear {patient_name},\n\n'
             f'APPOINTMENT REMINDER\n\n'
@@ -86,8 +83,8 @@ def send_appointment_reminders():
             f'  Time            : {appt_time_str}\n'
             f'  Center          : {center_name}\n'
             f'--------------------------------------\n\n'
-            f'   Please arrive at the center on time.\n'
-            f'   Bring your child\'s vaccination card.\n\n'
+            f'Please arrive at the center on time.\n'
+            f'Bring your child\'s vaccination card.\n\n'
             f'Thank you for choosing TIG.\n'
             f'Together we protect every child! \n\n'
             f'Regards,\n'
