@@ -6,6 +6,42 @@ const chatInput  = document.getElementById("chat-input");
 
 const HISTORY_KEY = "tig_chat_history";
 const OPEN_KEY    = "tig_chat_open";
+const OWNER_KEY   = "tig_chat_owner";
+const ACTIVE_KEY  = "tig_chat_last_active";
+const MAX_IDLE_MS = 10 * 60 * 1000;
+
+const currentOwner =
+    document.getElementById("chatbot-container").dataset.owner || "guest";
+
+function clearChatStorage() {
+    try {
+        sessionStorage.removeItem(HISTORY_KEY);
+        sessionStorage.removeItem(OPEN_KEY);
+        sessionStorage.removeItem(OWNER_KEY);
+        sessionStorage.removeItem(ACTIVE_KEY);
+    } catch {}
+}
+
+function touchActive() {
+    try { sessionStorage.setItem(ACTIVE_KEY, String(Date.now())); } catch {}
+}
+
+function validateChatSession() {
+    try {
+        const savedOwner = sessionStorage.getItem(OWNER_KEY);
+        const lastActive = parseInt(sessionStorage.getItem(ACTIVE_KEY) || "0", 10);
+
+        const userChanged = savedOwner && savedOwner !== currentOwner;   // logout
+        const tooOld      = lastActive && (Date.now() - lastActive > MAX_IDLE_MS);
+
+        if (userChanged || tooOld) clearChatStorage();
+
+        sessionStorage.setItem(OWNER_KEY, currentOwner);
+        touchActive();
+    } catch {}
+}
+
+validateChatSession();
 
 function loadHistory() {
     try { return JSON.parse(sessionStorage.getItem(HISTORY_KEY)) || []; }
@@ -13,8 +49,10 @@ function loadHistory() {
 }
 
 function saveHistory() {
-    try { sessionStorage.setItem(HISTORY_KEY, JSON.stringify(chatHistory.slice(-20))); }
-    catch (e) { console.error("Could not save chat", e); }
+    try {
+        sessionStorage.setItem(HISTORY_KEY, JSON.stringify(chatHistory.slice(-20)));
+        touchActive();
+    } catch (e) { console.error("Could not save chat", e); }
 }
 
 function setOpen(isOpen) {
@@ -42,7 +80,7 @@ function restoreChat() {
 }
 
 restoreChat();
-if (sessionStorage.getItem(OPEN_KEY) === "1") setOpen(true);  
+try { if (sessionStorage.getItem(OPEN_KEY) === "1") setOpen(true); } catch {} 
 
 chatbotBtn.onclick = () => {
     setOpen(true);                        
@@ -127,6 +165,7 @@ async function sendMessage() {
 
                 if (parsed.error) {
                     removeTyping(typingEl);
+                    rollbackUserMsg();
                     appendMessage("bot", "⚠️ " + parsed.error);
                     chatInput.disabled = false;
                     return;
@@ -203,7 +242,7 @@ function escapeHtml(s) {
 }
 
 function renderMarkdown(text) {
-    return text
+    return escapeHtml(text)
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
         .replace(/^(\d+)\.\s+(.+)$/gm,
             "<div class='chat-list-item'><span class='chat-num'>$1.</span><span class='chat-text'>$2</span></div>")
@@ -230,3 +269,10 @@ function removeTyping(el) {
     if (el && el.parentNode) el.parentNode.removeChild(el);
 }
 
+// Clear chat when the user logout
+document.addEventListener("click", (e) => {
+    if (e.target.closest('a[href*="logout"], button[formaction*="logout"]')) clearChatStorage();
+});
+document.addEventListener("submit", (e) => {
+    if (e.target.matches('form[action*="logout"]')) clearChatStorage();
+});
