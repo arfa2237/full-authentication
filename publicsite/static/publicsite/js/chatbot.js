@@ -4,16 +4,53 @@ const closeChat  = document.getElementById("close-chat");
 const chatBody   = document.querySelector(".chat-body");
 const chatInput  = document.getElementById("chat-input");
 
-let chatHistory  = [];
+const HISTORY_KEY = "tig_chat_history";
+const OPEN_KEY    = "tig_chat_open";
+
+function loadHistory() {
+    try { return JSON.parse(sessionStorage.getItem(HISTORY_KEY)) || []; }
+    catch { return []; }
+}
+
+function saveHistory() {
+    try { sessionStorage.setItem(HISTORY_KEY, JSON.stringify(chatHistory.slice(-20))); }
+    catch (e) { console.error("Could not save chat", e); }
+}
+
+function setOpen(isOpen) {
+    chatbotBox.style.display = isOpen ? "flex" : "none";
+    try { sessionStorage.setItem(OPEN_KEY, isOpen ? "1" : "0"); } catch {}
+}
+
+let chatHistory  = loadHistory();
 let introRemoved = false;
 
+function removeIntro() {
+    chatBody.querySelectorAll(":scope > p.bot-msg").forEach(el => el.remove());
+    introRemoved = true;
+}
+
+// save chat on every page...
+function restoreChat() {
+    if (chatHistory.length === 0) return;
+    removeIntro();
+    chatHistory.forEach(m => {
+        if (m.role === "user") appendMessage("user", m.content);
+        else createBotBubble().innerHTML = renderMarkdown(m.content);
+    });
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+restoreChat();
+if (sessionStorage.getItem(OPEN_KEY) === "1") setOpen(true);  
+
 chatbotBtn.onclick = () => {
-    chatbotBox.style.display = "flex";
+    setOpen(true);                        
     chatInput.focus();
 };
 
 closeChat.onclick = () => {
-    chatbotBox.style.display = "none";
+    setOpen(false);                       
 };
 
 // Enter btn fo msg send 
@@ -26,15 +63,10 @@ chatInput.addEventListener("keydown", function (e) {
 
 // Send function 
 async function sendMessage() {
-    const message = chatInput.value.trim(); 
+    const message = chatInput.value.trim();
     if (!message) return;
 
-    // Remove intro message on first send
-    if (!introRemoved) {
-        const introMsg = chatBody.querySelector("p.bot-msg");
-        if (introMsg) introMsg.remove();
-        introRemoved = true;
-    }
+    removeIntro();
 
     // Show user bubble
     appendMessage("user", message);
@@ -45,6 +77,11 @@ async function sendMessage() {
     // Show typing dots
     const typingEl = showTyping();
 
+    const rollbackUserMsg = () => {
+        if (chatHistory.length && chatHistory[chatHistory.length - 1].role === "user") {
+            chatHistory.pop();
+        }
+    };
     try {
         const res = await fetch("/chatbot/", {
             method : "POST",
@@ -56,10 +93,12 @@ async function sendMessage() {
         });
 
         if (!res.ok) {
-            const err = await res.json();
+            let errMsg = "Server error.";
+            try { errMsg = (await res.json()).error || errMsg; } catch {}
             removeTyping(typingEl);
+            rollbackUserMsg();
+            appendMessage("bot", "⚠️ " + errMsg);
             chatInput.disabled = false;
-            appendMessage("bot", "⚠️ " + (err.error || "Server error."));
             return;
         }
 
@@ -110,10 +149,15 @@ async function sendMessage() {
         // Save full reply to history
         if (fullReply) {
             chatHistory.push({ role: "assistant", content: fullReply });
+            saveHistory();
+        } else {
+            removeTyping(typingEl);
+            rollbackUserMsg();
         }
 
     } catch (err) {
         removeTyping(typingEl);
+        rollbackUserMsg();
         appendMessage("bot", "⚠️ Network error. Is the server running?");
         console.error(err);
     }
@@ -124,6 +168,7 @@ async function sendMessage() {
 
 // empty bot bubble
 function createBotBubble() {
+    removeIntro();
     const wrapper = document.createElement("div");
     wrapper.classList.add("msg-wrapper", "msg-bot-wrap");
 
@@ -138,6 +183,7 @@ function createBotBubble() {
 
 // Append a complete bubble (user msg)
 function appendMessage(role, text) {
+    removeIntro();
     const wrapper = document.createElement("div");
     wrapper.classList.add(
         "msg-wrapper",
@@ -152,6 +198,10 @@ function appendMessage(role, text) {
 }
 
 // Convert 
+function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 function renderMarkdown(text) {
     return text
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
