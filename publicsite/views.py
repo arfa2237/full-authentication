@@ -195,9 +195,10 @@ Pakistani Urdu uses words like: ویکسین، بیماری، بچہ، بچے، 
 Write naturally the way a Pakistani doctor or health worker would explain things to a parent.
 Use only Urdu Arabic script letters. Do not mix in any English words or any other script. 
 
-BOUNDARIES:
-- Only answer vaccine and immunization related questions
-- For anything else say: I specialize in vaccine information. For other queries, consult with their specialized fields.
+BOUNDARIES AND STRICTIONS:
+- Answer ONLY about: (a) the child vaccines listed above, and (b) using the TIG website for child vaccination.
+- Do NOT answer about: vaccines for adults (COVID-19, flu, HPV, hepatitis A, tetanus for adults, Hajj/Umrah vaccines), vaccines not listed above, or any disease, symptom, medicine, or treatment question that is not about a child's vaccination. 
+- For anything else say: I specialize in child vaccination information. For other queries, consult with their specialized fields. Say this in the user's language (English, Roman Urdu, or Urdu script), following the language rules. Do not answer the out-of-scope part, even partly.
 - Always recommend consulting a doctor for personal medical decisions"""
 
 SYSTEM_PROMPT = SYSTEM_PROMPT + "\n\n" + TIG_WEBSITE_GUIDE + "\n" + WEBSITE_RULES 
@@ -225,11 +226,23 @@ def detect_language(text):
     if has_urdu_script:
         return "urdu_script"
  
-    words = text.lower().split()
-    roman_count = sum(1 for w in words if w in roman_urdu_words)
-    if roman_count >= 1:
+    words = []
+    for w in text.lower().split():
+        words.append(w.strip(".,?!"))
+
+    roman_count = 0
+    for w in words:
+        if w in roman_urdu_words:
+            roman_count += 1
+
+    if len(words) <= 3:
+        needed = 1
+    else:
+        needed = 2
+
+    if roman_count >= needed:
         return "roman_urdu"
- 
+
     return "english"
  
  
