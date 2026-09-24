@@ -36,10 +36,6 @@ def Home(request):
     upcoming_count  = Appointment.objects.filter(patient=request.user, status__in=['pending','scheduled']).count()
     missed_count    = Appointment.objects.filter(patient=request.user, status='missed').count()
 
-    # Immunization percentage (out of 6 total doses)
-    TOTAL_DOSES = 6
-    percent = int((completed_count / TOTAL_DOSES) * 100) if completed_count else 0
-
 def RegisterView(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
@@ -710,7 +706,6 @@ def DownloadVaccineCard(request):
 def MyRecords(request):
     profile, _ = PatientProfile.objects.get_or_create(user=request.user)
     today       = date.today().strftime("%A, %d %B %Y")
-
     # All appointments
     appointments = Appointment.objects.filter(patient=request.user)
 
@@ -721,9 +716,6 @@ def MyRecords(request):
     completed_count = appointments.filter(status='completed').count()
     missed_count    = appointments.filter(status='missed').count()
     cancelled_count = appointments.filter(status='cancelled').count()
-
-    TOTAL_DOSES = 6  # 6 child vaccines total
-    immunization_pct = int((completed_count / TOTAL_DOSES) * 100) if completed_count else 0
 
     # Data for Donut chart (appointment status) ..............................
     donut_data = {
@@ -746,12 +738,10 @@ def MyRecords(request):
         'completed_count':   completed_count,
         'missed_count':      missed_count,
         'cancelled_count':   cancelled_count,
-        'immunization_pct':  immunization_pct,
         # Donut chart data
         'donut_labels':      donut_data['labels'],
         'donut_data':        donut_data['data'],
         'donut_colors':      donut_data['colors'],
-        'TOTAL_DOSES':       TOTAL_DOSES,
     })
         
 class LoginView(View):

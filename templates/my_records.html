@@ -166,10 +166,19 @@
         .chart-wrap {
             position: relative;
             padding: 10px 0;
+            width: min(100%, 360px);
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .chart-wrap canvas {
-            max-height: 280px;
+            display: block;
+            width: 100% !important;
+            max-width: 320px;
+            height: 240px !important;
+            margin: 0 auto;
         }
 
         .chart-center-label {
@@ -386,35 +395,6 @@
 
     <div class="content">
 
-        <!-- ── IMMUNIZATION BANNER ── -->
-        <div class="immun-banner">
-            <div class="immun-text">
-                <h1>Your Immunization Status 💉</h1>
-                <p>
-                    You have completed <strong>{{ completed_count }}</strong> out of
-                    <strong>{{ TOTAL_DOSES }}</strong> total recommended doses.
-                    {% if immunization_pct == 100 %}
-                        Congratulations — you are fully immunized! 🎉
-                    {% elif immunization_pct >= 50 %}
-                        Keep going — you are more than halfway there!
-                    {% else %}
-                        Book your next appointment to stay protected!
-                    {% endif %}
-                </p>
-            </div>
-            <!-- Circular Progress -->
-            <div class="circle-wrap">
-                <svg width="110" height="110" viewBox="0 0 110 110">
-                    <circle class="circle-bg" cx="55" cy="55" r="45"/>
-                    <circle class="circle-fill" id="circleProgress" cx="55" cy="55" r="45"/>
-                </svg>
-                <div class="circle-text">
-                    <div class="pct" id="circleLabel">0%</div>
-                    <div class="lbl">COMPLETE</div>
-                </div>
-            </div>
-        </div>
-
         <!-- ── MINI STAT CARDS ── -->
         <div class="mini-stats">
             <div class="mini-stat">
@@ -492,28 +472,7 @@
 const donutLabels  = {{ donut_labels|safe }};
 const donutData    = {{ donut_data|safe }};
 const donutColors  = {{ donut_colors|safe }};
-const immPct       = {{ immunization_pct }};
 const totalCount   = {{ total_count }};
-
-//  CIRCULAR PROGRESS 
-window.addEventListener('load', () => {
-    const circle = document.getElementById('circleProgress');
-    const label  = document.getElementById('circleLabel');
-    if (circle) {
-        const circumference = 2 * Math.PI * 45; // r=45 → ~283
-        const offset = circumference - (immPct / 100) * circumference;
-        setTimeout(() => {
-            circle.style.strokeDashoffset = offset;
-            // Animate counter
-            let count = 0;
-            const interval = setInterval(() => {
-                count++;
-                label.textContent = count + '%';
-                if (count >= immPct) clearInterval(interval);
-            }, 20);
-        }, 300);
-    }
-});
 
 //  DONUT CHART 
 {% if total_count > 0 %}
@@ -532,6 +491,7 @@ new Chart(donutCtx, {
     },
     options: {
         responsive: true,
+        maintainAspectRatio: false,
         cutout: '65%',
         plugins: {
             legend: { display: false },
@@ -544,7 +504,7 @@ new Chart(donutCtx, {
                 }
             }
         },
-        animation: { animateRotate: true, duration: 1200 }
+        animation: false
     }
 });
 {% endif %}
