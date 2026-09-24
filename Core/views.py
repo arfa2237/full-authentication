@@ -21,21 +21,6 @@ from .models import *
 
 
 # Create your views here.
-@login_required
-def Home(request):
-    profile, created = PatientProfile.objects.get_or_create(user=request.user)
-    today = date.today().strftime("%A, %d %B %Y")
-    # All appointments
-    all_appointments = Appointment.objects.filter(
-        patient=request.user
-    ).order_by('-appointment_date')[:4]  # latest 4 for dashboard
-
-    # Stat counts
-    pending_count   = Appointment.objects.filter(patient=request.user, status='pending').count()
-    completed_count = Appointment.objects.filter(patient=request.user, status='completed').count()
-    upcoming_count  = Appointment.objects.filter(patient=request.user, status__in=['pending','scheduled']).count()
-    missed_count    = Appointment.objects.filter(patient=request.user, status='missed').count()
-
 def RegisterView(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
