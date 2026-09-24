@@ -8,7 +8,7 @@ from django.db.models import Count
 from datetime import date
 from Core.models import Appointment, VaccinationCenter, PatientProfile
 from Staff.models import StaffProfile
-from .models import Blog, AdminProfile
+from .models import AdminProfile
 from django.db.models.functions import TruncMonth
 
 
@@ -67,7 +67,6 @@ def AdminDashboard(request):
     pending_appts     = Appointment.objects.filter(status='pending').count()
     completed_appts   = Appointment.objects.filter(status='completed').count()
     total_centers     = VaccinationCenter.objects.filter(is_active=True).count()
-    total_blogs       = Blog.objects.filter(is_published=True).count()
 
     # Recent pending staff
     pending_staff_list = StaffProfile.objects.filter(
@@ -86,7 +85,6 @@ def AdminDashboard(request):
         'pending_appts':    pending_appts,
         'completed_appts':  completed_appts,
         'total_centers':    total_centers,
-        'total_blogs':      total_blogs,
         'pending_staff_list': pending_staff_list,
         'recent_appts':     recent_appts,
     })
@@ -256,57 +254,6 @@ def AdminAppointments(request):
         'scheduled_count': scheduled_count,
         'completed_count': completed_count,
         'missed_count':   missed_count,
-    })
-
-
-#  Manage Blogs 
-@admin_required
-def AdminBlogs(request):
-    today = date.today().strftime("%A, %d %B %Y")
-    blogs = Blog.objects.all().order_by('-published_at')
-
-    if request.method == 'POST':
-        action = request.POST.get('action', '')
-
-        if action == 'add':
-            title    = request.POST.get('title', '').strip()
-            summary  = request.POST.get('summary', '').strip()
-            content  = request.POST.get('content', '').strip()
-            category = request.POST.get('category', 'awareness')
-
-            if title and content:
-                Blog.objects.create(
-                    title=title,
-                    summary=summary,
-                    content=content,
-                    category=category,
-                    author=request.user,
-                    is_published=True,
-                )
-                messages.success(request, f'Blog "{title}" published successfully!')
-            else:
-                messages.error(request, 'Title and content are required.')
-
-        elif action == 'delete':
-            blog_id = request.POST.get('blog_id')
-            blog    = get_object_or_404(Blog, id=blog_id)
-            title   = blog.title
-            blog.delete()
-            messages.success(request, f'Blog "{title}" deleted!')
-
-        elif action == 'toggle':
-            blog_id = request.POST.get('blog_id')
-            blog    = get_object_or_404(Blog, id=blog_id)
-            blog.is_published = not blog.is_published
-            blog.save()
-            status = 'published' if blog.is_published else 'unpublished'
-            messages.success(request, f'Blog {status}!')
-
-        return redirect('admin-blogs')
-
-    return render(request, 'adminpanel/admin_blogs.html', {
-        'today': today,
-        'blogs': blogs,
     })
 
 
