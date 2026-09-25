@@ -37,12 +37,17 @@ function initMap() {
 
     // Original map exactly as it was at the start — standard OpenStreetMap
     // tile server, no third-party style/attribution added.
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-        maxZoom: 19,
-        maxNativeZoom: 19,
-        crossOrigin: true
-    }).addTo(map);
+    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //     attribution: '&copy; OpenStreetMap contributors',
+    //     maxZoom: 19,
+    //     maxNativeZoom: 19,
+    //     crossOrigin: true
+    // }).addTo(map);
+
+   L.tileLayer('https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=HmvcrID2WBgJfiQ4QZem', {
+    attribution: '&copy; MapTiler &copy; OpenStreetMap contributors',
+    maxZoom: 19
+}).addTo(map);
 
     ayeshaMarker = L.marker([ayeshaLat, ayeshaLng], {
         icon: L.icon({
