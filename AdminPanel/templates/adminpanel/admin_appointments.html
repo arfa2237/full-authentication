@@ -1,4 +1,3 @@
-<!-- Save as admin_appointments.html -->
 <!doctype html>
 <html lang="en">
   <head>
@@ -422,8 +421,7 @@
     <aside class="sidebar">
       <div class="sidebar-logo">
         <div class="logo-icon"><i class="fa-solid fa-crown"></i></div>
-        <div class="logo-text">
-          TIG Admin <span>Administration Portal</span>
+        <div class="logo-text"> TIG Admin <span>Administration Portal</span>
         </div>
       </div>
       <div class="sidebar-user">
@@ -452,9 +450,6 @@
         <div class="nav-label" style="margin-top: 8px">Management</div>
         <a class="nav-item" href="{% url 'admin-centers' %}"
           ><i class="fa-solid fa-hospital"></i> Centers</a
-        >
-        <a class="nav-item" href="{% url 'admin-blogs' %}"
-          ><i class="fa-solid fa-newspaper"></i> Blogs</a
         >
       </nav>
       <div class="sidebar-footer">
@@ -492,41 +487,23 @@
         <div class="filter-bar">
           <a
             href="?status=all"
-            class="filter-btn {% if status_filter == 'all' %}active{% endif %}"
-            ><i class="fa-solid fa-list"></i> All
-            <span class="filter-count">{{ total_count }}</span></a
-          >
+            class="filter-btn {% if status_filter == 'all' %}active{% endif %}"><i class="fa-solid fa-list"></i> All
+            <span class="filter-count">{{ total_count }}</span></a>
           <a
             href="?status=pending"
-            class="filter-btn {% if status_filter == 'pending' %}active{% endif %}"
-            ><i class="fa-solid fa-clock"></i> Pending
-            <span class="filter-count">{{ pending_count }}</span></a
-          >
-          <a
-            href="?status=scheduled"
-            class="filter-btn {% if status_filter == 'scheduled' %}active{% endif %}"
-            ><i class="fa-solid fa-calendar"></i> Scheduled
-            <span class="filter-count">{{ scheduled_count }}</span></a
-          >
-          <a
-            href="?status=completed"
-            class="filter-btn {% if status_filter == 'completed' %}active{% endif %}"
-            ><i class="fa-solid fa-check"></i> Completed
-            <span class="filter-count">{{ completed_count }}</span></a
-          >
-          <a
-            href="?status=missed"
-            class="filter-btn {% if status_filter == 'missed' %}active{% endif %}"
-            ><i class="fa-solid fa-xmark"></i> Missed
-            <span class="filter-count">{{ missed_count }}</span></a
-          >
+            class="filter-btn {% if status_filter == 'pending' %}active{% endif %}"><i class="fa-solid fa-clock"></i> Pending
+            <span class="filter-count">{{ pending_count }}</span></a>
+          <a href="?status=scheduled" class="filter-btn {% if status_filter == 'scheduled' %}active{% endif %}"><i class="fa-solid fa-calendar"></i> Scheduled
+            <span class="filter-count">{{ scheduled_count }}</span></a>
+          <a href="?status=completed" class="filter-btn {% if status_filter == 'completed' %}active{% endif %}"><i class="fa-solid fa-check"></i> Completed
+            <span class="filter-count">{{ completed_count }}</span></a>
+          <a href="?status=missed" class="filter-btn {% if status_filter == 'missed' %}active{% endif %}"><i class="fa-solid fa-xmark"></i> Missed
+            <span class="filter-count">{{ missed_count }}</span></a>
         </div>
         <div class="table-card">
           <div class="card-header">
             <h3><i class="fa-solid fa-calendar-days"></i> Appointments</h3>
-            <span style="font-size: 11px; color: var(--muted)"
-              >{{ appointments|length }} records</span
-            >
+            <span style="font-size: 11px; color: var(--muted)">{{ appointments|length }} records</span>
           </div>
           <table class="data-table">
             <thead>
@@ -556,10 +533,7 @@
                   </div>
                 </td>
                 <td>
-                  <strong>{{ appt.vaccine_type }}</strong><br /><small
-                    style="color: var(--muted)"
-                    >Dose {{ appt.dose_number }}</small
-                  >
+                  <strong>{{ appt.vaccine_type }}</strong><br /><small style="color: var(--muted)">Dose {{ appt.dose_number }}</small>
                 </td>
                 <td style="font-size: 11px">
                   {{ appt.center.name|default:"—" }}
@@ -572,17 +546,12 @@
                 </td>
                 <td>
                   <span class="status-pill {{ appt.status }}"
-                    >{{ appt.status|capfirst }}</span
-                  >
+                    >{{ appt.status|capfirst }}</span>
                 </td>
               </tr>
               {% empty %}
               <tr>
-                <td
-                  colspan="6"
-                  style="text-align: center; padding: 40px; color: var(--muted)"
-                >
-                  No appointments found.
+                <td colspan="6" style="text-align: center; padding: 40px; color: var(--muted)"> No appointments found.
                 </td>
               </tr>
               {% endfor %}

@@ -21,10 +21,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Leaflet CSS (free map - no API key needed) -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <!-- Leaflet Routing Machine CSS (free road-route + distance, no API key) -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css"/>
+    <!-- Leaflet CSS (free map - no API key needed) 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>-->
+    <!-- Leaflet Routing Machine CSS (free road-route + distance, no API key) 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css"/>-->
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.css"/>
 
     <!-- Libs -->
     <link href="{% static 'publicsite/lib/animate/animate.min.css' %}" rel="stylesheet">
@@ -173,8 +179,7 @@
                     <div class="stat-pill wow fadeInUp" data-wow-delay="0.2s">
                         <i class="fas fa-syringe"></i>
                         <div>
-                            <span class="stat-num">19</span>
-                            <span class="stat-txt">{% trans "Vaccines" %}</span>
+                            <span class="stat-num">{% trans "Child Vaccination" %}</span>
                         </div>
                     </div>
                 </div>
@@ -438,14 +443,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Leaflet Routing Machine JS (free OSRM routing, no API key) -->
-    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <!--<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+     Leaflet Routing Machine JS (free OSRM routing, no API key) -->
+    <!--<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>-->
+    <!-- Leaflet JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+    <!-- Leaflet Routing Machine JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
 
     <script src="{% static 'publicsite/lib/wow/wow.min.js' %}"></script>
     <script src="{% static 'publicsite/lib/easing/easing.min.js' %}"></script>
-    <script src="{% static 'publicsite/lib/waypoints/waypoints.min.js' %}"></script>
-    <script src="{% static 'publicsite/lib/counterup/counterup.min.js' %}"></script>
     <script src="{% static 'publicsite/js/main.js' %}"></script>
     <script src="{% static 'publicsite/js/nearby.js' %}?v=4"></script>
 

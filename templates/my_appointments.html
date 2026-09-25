@@ -387,7 +387,7 @@
             transform: translateY(-1px);
         }
 
-        /* ── CANCEL CONFIRM MODAL ── */
+        /*  CANCEL CONFIRM MODAL  */
         .modal-overlay {
             position: fixed; inset: 0;
             background: rgba(40,55,95,0.45);
@@ -544,10 +544,6 @@
             <p>{{ today }} &nbsp;&middot;&nbsp; Track all your vaccination appointments</p>
         </div>
         <div class="topbar-right">
-            <button class="notif-btn" title="Notifications">
-                <i class="fa-solid fa-bell"></i>
-                <span class="notif-dot"></span>
-            </button>
             <div class="topbar-avatar">{{ request.user.first_name|first|upper }}</div>
         </div>
     </header>
@@ -759,7 +755,7 @@
     </div><!-- end content -->
 </div><!-- end main -->
 
-<!-- ════════ CANCEL MODAL ════════ -->
+<!--CANCEL MODAL-->
 <div class="modal-overlay" id="cancelModal">
     <div class="modal-box">
         <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
@@ -822,12 +818,11 @@
         }
     }
 
-    // ── CANCEL MODAL ──
+    //  CANCEL MODAL 
     function confirmCancel(id, vaccine) {
         document.getElementById('cancelId').value = id;
-        document.getElementById('modalText').textContent =
-            `Are you sure you want to cancel your ${vaccine} appointment? This action cannot be undone.`;
-        document.getElementById('cancelForm').action = `/cancel-appointment/${id}/`;
+        document.getElementById('modalText').textContent = `Are you sure you want to cancel your ${vaccine} appointment? This action cannot be undone.`;
+        document.getElementById('cancelForm').action = `/patient/cancel-appointment/${id}/`;
         document.getElementById('cancelModal').classList.add('show');
     }
 

@@ -10,6 +10,5 @@ urlpatterns = [
     path('users/',                              views.AdminUsers,           name='admin-users'),
     path('centers/',                            views.AdminCenters,         name='admin-centers'),
     path('appointments/',                       views.AdminAppointments,    name='admin-appointments'),
-    path('blogs/',                              views.AdminBlogs,           name='admin-blogs'),
     path('statistics/', views.AdminStatistics, name='admin-statistics'),
 ]

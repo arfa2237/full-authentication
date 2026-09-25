@@ -12,7 +12,8 @@
         <link rel="stylesheet" href="{% static 'publicsite/css/chatbot.css' %}">
     </head>
     <body>
-        <div id="chatbot-container"> 
+        <div id="chatbot-container"
+            data-owner="{% if user.is_authenticated %}u{{ user.pk }}{% else %}guest{% endif %}">
                 <button id="chatbot-btn">
                     <span class="fab-tooltip">{% trans "Ask AI Chatbot" %}</span>
                     <i class="fas fa-robot"></i> 

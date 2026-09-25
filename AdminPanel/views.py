@@ -8,10 +8,11 @@ from django.db.models import Count
 from datetime import date
 from Core.models import Appointment, VaccinationCenter, PatientProfile
 from Staff.models import StaffProfile
-from .models import Blog, AdminProfile
+from .models import AdminProfile
+from django.db.models.functions import TruncMonth
 
 
-# ── Helper decorator ──────────────────────────────────────────────────────────
+#  Helper decorator 
 def admin_required(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -26,7 +27,7 @@ def admin_required(view_func):
     return wrapper
 
 
-# ── Admin Login ───────────────────────────────────────────────────────────────
+#  Admin Login 
 def AdminLogin(request):
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
@@ -47,13 +48,13 @@ def AdminLogin(request):
     return render(request, 'adminpanel/admin_login.html')
 
 
-# ── Admin Logout ──────────────────────────────────────────────────────────────
+#  Admin Logout 
 def AdminLogout(request):
     logout(request)
     return redirect('admin-login')
 
 
-# ── Admin Dashboard ───────────────────────────────────────────────────────────
+#  Admin Dashboard 
 @admin_required
 def AdminDashboard(request):
     today = date.today().strftime("%A, %d %B %Y")
@@ -66,7 +67,6 @@ def AdminDashboard(request):
     pending_appts     = Appointment.objects.filter(status='pending').count()
     completed_appts   = Appointment.objects.filter(status='completed').count()
     total_centers     = VaccinationCenter.objects.filter(is_active=True).count()
-    total_blogs       = Blog.objects.filter(is_published=True).count()
 
     # Recent pending staff
     pending_staff_list = StaffProfile.objects.filter(
@@ -75,16 +75,6 @@ def AdminDashboard(request):
 
     # Recent appointments
     recent_appts = Appointment.objects.order_by('-created_at')[:5]
-
-    # Vaccine stats for chart
-    vaccine_stats = []
-    VACCINES = ['Child Vaccine - At Birth', 'Child Vaccine - 10 week', 'Child Vaccine - 14 week', 'Child Vaccine - 9 months', 'Child Vaccine - 15 months']
-    for vac in VACCINES:
-        count = Appointment.objects.filter(
-            vaccine_type=vac,
-            status='completed'
-        ).count()
-        vaccine_stats.append({'name': vac, 'count': count})
 
     return render(request, 'adminpanel/admin_dashboard.html', {
         'today':            today,
@@ -95,14 +85,12 @@ def AdminDashboard(request):
         'pending_appts':    pending_appts,
         'completed_appts':  completed_appts,
         'total_centers':    total_centers,
-        'total_blogs':      total_blogs,
         'pending_staff_list': pending_staff_list,
         'recent_appts':     recent_appts,
-        'vaccine_stats':    vaccine_stats,
     })
 
 
-# ── Manage Staff ──────────────────────────────────────────────────────────────
+#  Manage Staff 
 @admin_required
 def AdminStaff(request):
     today = date.today().strftime("%A, %d %B %Y")
@@ -127,7 +115,7 @@ def AdminStaff(request):
     })
 
 
-# ── Update Staff Status ───────────────────────────────────────────────────────
+#  Update Staff Status 
 @admin_required
 def UpdateStaffStatus(request, staff_id):
     if request.method == 'POST':
@@ -142,7 +130,7 @@ def UpdateStaffStatus(request, staff_id):
                 f'TIG - Staff Account Approved',
                 f'Dear {sp.user.get_full_name()},\n\n'
                 f'Your healthcare staff account has been APPROVED!\n\n'
-                f'You can now login at: https://tig-gujranwala.com/staff/login/'
+                f'You can now login at: https://tig-gujranwala.com/staff/login/\n'
                 f'Username: {sp.user.username}\n\n'
                 f'Regards,\nTIG Admin',
                 sp.user.email
@@ -166,7 +154,7 @@ def UpdateStaffStatus(request, staff_id):
     return redirect('admin-staff')
 
 
-# ── Manage Users/Patients ─────────────────────────────────────────────────────
+#  Manage Users/Patients 
 @admin_required
 def AdminUsers(request):
     today    = date.today().strftime("%A, %d %B %Y")
@@ -188,7 +176,7 @@ def AdminUsers(request):
     })
 
 
-# ── Manage Centers ────────────────────────────────────────────────────────────
+#  Manage Centers
 @admin_required
 def AdminCenters(request):
     today   = date.today().strftime("%A, %d %B %Y")
@@ -240,7 +228,7 @@ def AdminCenters(request):
     })
 
 
-# ── View All Appointments ─────────────────────────────────────────────────────
+#  View All Appointments 
 @admin_required
 def AdminAppointments(request):
     today         = date.today().strftime("%A, %d %B %Y")
@@ -269,63 +257,12 @@ def AdminAppointments(request):
     })
 
 
-# ── Manage Blogs ──────────────────────────────────────────────────────────────
-@admin_required
-def AdminBlogs(request):
-    today = date.today().strftime("%A, %d %B %Y")
-    blogs = Blog.objects.all().order_by('-published_at')
-
-    if request.method == 'POST':
-        action = request.POST.get('action', '')
-
-        if action == 'add':
-            title    = request.POST.get('title', '').strip()
-            summary  = request.POST.get('summary', '').strip()
-            content  = request.POST.get('content', '').strip()
-            category = request.POST.get('category', 'awareness')
-
-            if title and content:
-                Blog.objects.create(
-                    title=title,
-                    summary=summary,
-                    content=content,
-                    category=category,
-                    author=request.user,
-                    is_published=True,
-                )
-                messages.success(request, f'Blog "{title}" published successfully!')
-            else:
-                messages.error(request, 'Title and content are required.')
-
-        elif action == 'delete':
-            blog_id = request.POST.get('blog_id')
-            blog    = get_object_or_404(Blog, id=blog_id)
-            title   = blog.title
-            blog.delete()
-            messages.success(request, f'Blog "{title}" deleted!')
-
-        elif action == 'toggle':
-            blog_id = request.POST.get('blog_id')
-            blog    = get_object_or_404(Blog, id=blog_id)
-            blog.is_published = not blog.is_published
-            blog.save()
-            status = 'published' if blog.is_published else 'unpublished'
-            messages.success(request, f'Blog {status}!')
-
-        return redirect('admin-blogs')
-
-    return render(request, 'adminpanel/admin_blogs.html', {
-        'today': today,
-        'blogs': blogs,
-    })
-
-
-# ── Email Helper ──────────────────────────────────────────────────────────────
+#  Email Helper 
 def _send_email(subject, body, to_email):
     try:
         email = EmailMessage(
             subject, body,
-            settings.EMAIL_HOST_USER,
+            settings.DEFAULT_FROM_EMAIL,
             [to_email],
         )
         email.fail_silently = True
@@ -333,23 +270,11 @@ def _send_email(subject, body, to_email):
     except Exception:
         pass
 
-
-    # ── ADD THIS FUNCTION in AdminPanel/views.py ─────────────────────────────────
-# Also add this import at top if not already there:
-# from datetime import date
-# from django.db.models import Count
-# from django.db.models.functions import TruncMonth
-
-from django.db.models.functions import TruncMonth
-
 @admin_required
 def AdminStatistics(request):
     today = date.today().strftime("%A, %d %B %Y")
 
-    # ── System-wide counts ────────────────────────────────────────────────────
-    from Core.models import Appointment, VaccinationCenter, PatientProfile
-    from Staff.models import StaffProfile
-
+    #  System wide counts 
     total_patients    = PatientProfile.objects.count()
     total_staff       = StaffProfile.objects.filter(status='approved').count()
     total_centers     = VaccinationCenter.objects.filter(is_active=True).count()
@@ -360,13 +285,13 @@ def AdminStatistics(request):
     cancelled_appts   = Appointment.objects.filter(status='cancelled').count()
     scheduled_appts   = Appointment.objects.filter(status='scheduled').count()
 
-    # ── Immunization rate ─────────────────────────────────────────────────────
-    TOTAL_DOSES = 13
+    #  Immunization rate
+    TOTAL_DOSES = 6
     total_possible = total_patients * TOTAL_DOSES
     immun_rate = int((completed_appts / total_possible) * 100) if total_possible > 0 else 0
 
-    # ── Vaccine-wise stats ────────────────────────────────────────────────────
-    VACCINES = ['Hepatitis B', 'MMR', 'Tetanus', 'Pneumococcal', 'Child Vaccination', 'COVID-19']
+    #  Vaccine-wise stats 
+    VACCINES = ['Child Vaccine - At Birth', 'Child Vaccine - 6 week', 'Child Vaccine - 10 week', 'Child Vaccine - 14 week', 'Child Vaccine - 9 months', 'Child Vaccine - 15 months']
     VACCINE_COLORS = ['#6884d3', '#43a047', '#fb8c00', '#f06272', '#1a6fb3', '#28375f']
 
     vaccine_stats = []
@@ -382,7 +307,7 @@ def AdminStatistics(request):
             'color':   VACCINE_COLORS[i],
         })
 
-    # ── Center-wise stats ─────────────────────────────────────────────────────
+    #  Center wise stats
     centers = VaccinationCenter.objects.filter(is_active=True)
     center_stats = []
     for center in centers:
@@ -394,7 +319,7 @@ def AdminStatistics(request):
             'done':  done,
         })
 
-    # ── Monthly trend (last 6 months) ─────────────────────────────────────────
+    #  Monthly trend (last 6 months)
     from django.utils import timezone
     import datetime
 
@@ -411,7 +336,7 @@ def AdminStatistics(request):
         monthly_labels.append(month_name)
         monthly_data.append(count)
 
-    # ── Donut data ────────────────────────────────────────────────────────────
+    #  Donut data
     donut_data   = [completed_appts, pending_appts, scheduled_appts, missed_appts, cancelled_appts]
     donut_labels = ['Completed', 'Pending', 'Scheduled', 'Missed', 'Cancelled']
     donut_colors = ['#43a047', '#fb8c00', '#6884d3', '#f06272', '#9e9e9e']

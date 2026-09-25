@@ -9,7 +9,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
       :root {
@@ -94,7 +93,6 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #gold, #ffd700);
         background: linear-gradient(135deg, #f59e0b, #fbbf24);
         display: flex;
         align-items: center;
@@ -351,14 +349,6 @@
         font-weight: 500;
       }
 
-      /* GRID */
-      .grid-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 22px;
-        margin-bottom: 22px;
-      }
-
       /* SECTION CARD */
       .section-card {
         background: white;
@@ -505,11 +495,6 @@
         color: white;
       }
 
-      /* CHART */
-      .chart-wrap {
-        padding: 20px;
-      }
-
       /* Messages */
       .msg-success {
         background: #e8f5e9;
@@ -540,9 +525,6 @@
         .stats-row {
           grid-template-columns: repeat(2, 1fr);
         }
-        .grid-2 {
-          grid-template-columns: 1fr;
-        }
       }
     </style>
   </head>
@@ -566,35 +548,19 @@
       </div>
       <nav class="sidebar-nav">
         <div class="nav-label">Main Menu</div>
-        <a class="nav-item active" href="{% url 'admin-dashboard' %}"
-          ><i class="fa-solid fa-gauge-high"></i> Dashboard</a
-        >
+        <a class="nav-item active" href="{% url 'admin-dashboard' %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
         <a class="nav-item" href="{% url 'admin-staff' %}">
-          <i class="fa-solid fa-user-nurse"></i> Staff Management {% if
-          pending_staff %}<span class="nav-badge">{{ pending_staff }}</span>{%
-          endif %}
+          <i class="fa-solid fa-user-nurse"></i> Staff Management {% if pending_staff %}<span class="nav-badge">{{ pending_staff }}</span>{% endif %}
         </a>
-        <a class="nav-item" href="{% url 'admin-users' %}"
-          ><i class="fa-solid fa-users"></i> Patients</a
-        >
-        <a class="nav-item" href="{% url 'admin-appointments' %}"
-          ><i class="fa-solid fa-calendar-check"></i> Appointments</a
-        >
+        
+        <a class="nav-item" href="{% url 'admin-users' %}"><i class="fa-solid fa-users"></i> Patients</a>
+        <a class="nav-item" href="{% url 'admin-appointments' %}"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
         <div class="nav-label" style="margin-top: 8px">Management</div>
-        <a class="nav-item" href="{% url 'admin-centers' %}"
-          ><i class="fa-solid fa-hospital"></i> Centers</a
-        >
-        <a class="nav-item" href="{% url 'admin-blogs' %}"
-          ><i class="fa-solid fa-newspaper"></i> Blogs</a
-        >
-        <a class="nav-item" href="{% url 'admin-statistics' %}"
-          ><i class="fa-solid fa-chart-bar"></i> Statistics</a
-        >
+        <a class="nav-item" href="{% url 'admin-centers' %}"><i class="fa-solid fa-hospital"></i> Centers</a>
+        <a class="nav-item" href="{% url 'admin-statistics' %}"><i class="fa-solid fa-chart-bar"></i> Statistics</a>
       </nav>
       <div class="sidebar-footer">
-        <a class="logout-btn" href="{% url 'admin-logout' %}"
-          ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
-        >
+        <a class="logout-btn" href="{% url 'admin-logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
       </div>
     </aside>
 
@@ -617,15 +583,13 @@
             font-size: 15px;
             color: white;
             font-weight: 700;
-          "
-        >
+          ">
           {{ request.user.first_name|first|upper }}
         </div>
       </header>
 
       <div class="content">
-        {% if messages %} {% for message in messages %} {% if message.tags ==
-        'error' %}
+        {% if messages %} {% for message in messages %} {% if message.tags == 'error' %}
         <div class="msg-error">
           <i class="fa-solid fa-circle-xmark"></i> {{ message }}
         </div>
@@ -638,14 +602,10 @@
         <!-- Welcome Banner -->
         <div class="welcome-banner">
           <div class="wb-text">
-            <h1>Welcome, {{ request.user.first_name }}! 👑</h1>
+            <h1>Welcome, {{ request.user.first_name }}! </h1>
             <p>
               You have
-              <strong
-                >{{ pending_staff }} staff registration{{
-                pending_staff|pluralize }}</strong
-              >
-              waiting for approval.
+              <strong>{{ pending_staff }} staff registration{{ pending_staff|pluralize }}</strong>waiting for approval.
             </p>
           </div>
           <div class="wb-badge">
@@ -724,21 +684,10 @@
               <div class="stat-label">Completed</div>
             </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-icon gold">
-              <i class="fa-solid fa-newspaper"></i>
-            </div>
-            <div>
-              <div class="stat-val">{{ total_blogs }}</div>
-              <div class="stat-label">Published Blogs</div>
-            </div>
-          </div>
         </div>
 
-        <!-- Grid: Pending Staff + Chart -->
-        <div class="grid-2">
-          <!-- Pending Staff Approvals -->
-          <div class="section-card">
+        <!-- Pending Staff Approvals -->
+        <div class="section-card" style="margin-bottom: 22px">
             <div class="card-header">
               <h3>
                 <i class="fa-solid fa-user-clock"></i> Pending Staff Approvals
@@ -789,15 +738,11 @@
                           <i class="fa-solid fa-check"></i> Approve
                         </button>
                       </form>
-                      <form
-                        method="POST"
-                        action="{% url 'update-staff-status' sp.id %}"
-                      >
+                      <form method="POST" action="{% url 'update-staff-status' sp.id %}" >
                         {% csrf_token %}<input
                           type="hidden"
                           name="action"
-                          value="reject"
-                        />
+                          value="reject"/>
                         <button type="submit" class="act-btn reject">
                           <i class="fa-solid fa-xmark"></i> Reject
                         </button>
@@ -831,19 +776,6 @@
                 {% endfor %}
               </tbody>
             </table>
-          </div>
-
-          <!-- Vaccination Chart -->
-          <div class="section-card">
-            <div class="card-header">
-              <h3>
-                <i class="fa-solid fa-chart-bar"></i> Vaccination Statistics
-              </h3>
-            </div>
-            <div class="chart-wrap">
-              <canvas id="vaccineChart" height="220"></canvas>
-            </div>
-          </div>
         </div>
 
         <!-- Recent Appointments -->
@@ -852,9 +784,7 @@
             <h3>
               <i class="fa-solid fa-calendar-days"></i> Recent Appointments
             </h3>
-            <a href="{% url 'admin-appointments' %}" class="view-all"
-              >View All</a
-            >
+            <a href="{% url 'admin-appointments' %}" class="view-all" >View All</a>
           </div>
           <table class="data-table">
             <thead>
@@ -876,18 +806,14 @@
                     </div>
                     <div>
                       <div class="p-nm">
-                        {{ appt.patient.first_name }} {{ appt.patient.last_name
-                        }}
+                        {{ appt.patient.first_name }} {{ appt.patient.last_name }}
                       </div>
                       <div class="p-em">{{ appt.patient.email }}</div>
                     </div>
                   </div>
                 </td>
                 <td>
-                  {{ appt.vaccine_type }}<br /><small
-                    style="color: var(--muted)"
-                    >Dose {{ appt.dose_number }}</small
-                  >
+                  {{ appt.vaccine_type }}<br /><small style="color: var(--muted)">Dose {{ appt.dose_number }}</small>
                 </td>
                 <td style="font-size: 11px">
                   {{ appt.center.name|default:"—" }}
@@ -896,17 +822,12 @@
                   {{ appt.appointment_date|date:"d M Y" }}
                 </td>
                 <td>
-                  <span class="status-pill {{ appt.status }}"
-                    >{{ appt.status|capfirst }}</span
-                  >
+                  <span class="status-pill {{ appt.status }}">{{ appt.status|capfirst }}</span>
                 </td>
               </tr>
               {% empty %}
               <tr>
-                <td
-                  colspan="5"
-                  style="text-align: center; padding: 30px; color: var(--muted)"
-                >
+                <td colspan="5" style="text-align: center; padding: 30px; color: var(--muted)">
                   No appointments yet.
                 </td>
               </tr>
@@ -917,46 +838,5 @@
       </div>
     </div>
 
-    <script>
-      // Vaccine Chart chart.js
-      const ctx = document.getElementById('vaccineChart').getContext('2d');
-      new Chart(ctx, {
-          type: 'bar',
-          data: {
-              labels: [{% for v in vaccine_stats %}'{{ v.name }}'{% if not forloop.last %},{% endif %}{% endfor %}],
-              datasets: [{
-                  label: 'Completed Vaccinations',
-                  data: [{% for v in vaccine_stats %}{{ v.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
-                  backgroundColor: [
-                      'rgba(104,132,211,0.8)',
-                      'rgba(67,160,71,0.8)',
-                      'rgba(251,140,0,0.8)',
-                      'rgba(240,98,114,0.8)',
-                      'rgba(26,111,179,0.8)',
-                      'rgba(40,55,95,0.8)',
-                  ],
-                  borderRadius: 8,
-                  borderSkipped: false,
-              }]
-          },
-          options: {
-              responsive: true,
-              plugins: {
-                  legend: { display: false }
-              },
-              scales: {
-                  y: {
-                      beginAtZero: true,
-                      ticks: { stepSize: 1 },
-                      grid: { color: 'rgba(104,132,211,0.08)' }
-                  },
-                  x: {
-                      grid: { display: false },
-                      ticks: { font: { size: 10 } }
-                  }
-              }
-          }
-      });
-    </script>
   </body>
 </html>

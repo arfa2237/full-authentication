@@ -1,10 +1,3 @@
-/* ═══════════════════════════════════════════
-   nearby.js — Ayesha Dispensary Location Page
-   Free map (Leaflet) + free road routing (OSRM
-   via Leaflet Routing Machine). No API key needed.
-═══════════════════════════════════════════ */
-
-// Ayesha Dispensary — Main Road, Peoples Colony, Gujranwala (verified real location)
 var ayeshaLat = 32.1381538;
 var ayeshaLng = 74.2081076;
 
@@ -25,15 +18,11 @@ function initMap() {
     }
 
     // FIX: maxZoom raised to 20. maxNativeZoom on each tile layer tells
-    // Leaflet the highest zoom level actual tile images exist for; if the
-    // user zooms past that, Leaflet automatically upscales the last real
-    // tile (slightly blurry) instead of showing nothing. That combination
-    // is what stops the map from ever going blank/grey no matter how far
-    // someone zooms in.
     map = L.map('tig-map', {
         maxZoom: 19,
         minZoom: 3
     }).setView([ayeshaLat, ayeshaLng], 15);
+
 
     // Original map exactly as it was at the start — standard OpenStreetMap
     // tile server, no third-party style/attribution added.
@@ -49,6 +38,9 @@ function initMap() {
     maxZoom: 19
 }).addTo(map);
 
+    
+    
+
     ayeshaMarker = L.marker([ayeshaLat, ayeshaLng], {
         icon: L.icon({
             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -61,17 +53,11 @@ function initMap() {
     }).addTo(map);
     ayeshaMarker.bindPopup('<b>Ayesha Dispensary</b><br>Peoples Colony, Gujranwala<br>Free EPI Vaccines');
 
-    // FIX: invalidateSize() on every zoom/move end too — not just once on
-    // load. Leaflet caches the container's pixel size internally; if that
-    // cached size is even slightly wrong (common when the map sits inside
-    // a flex/grid layout, or the page is still doing layout/animations
-    // when the map first initializes), tiles beyond the "known" area will
-    // not render as you zoom or pan, leaving blank grey patches.
     map.on('zoomend moveend', function () {
         map.invalidateSize();
     });
 
-    // Re-check size whenever the window is resized (orientation change,
+    // Re check size whenever the window is resized (orientation change,
     // devtools opening, sidebar collapsing, etc.)
     window.addEventListener('resize', function () {
         if (map) map.invalidateSize();
@@ -79,12 +65,12 @@ function initMap() {
 
     // Fix leaflet rendering issue when map container was hidden/resized on load
     setTimeout(function () { if (map) map.invalidateSize(); }, 300);
-    // A second, later check catches slow web-font/layout shifts that can
+    // A second, later check catches slow web font/layout shifts that can
     // still throw off the container size after the first check.
     setTimeout(function () { if (map) map.invalidateSize(); }, 1000);
 }
 
-/* Skip location — just show the dispensary on the map */
+/* Skip location  just show the dispensary on the map */
 function loadDefaultMap() {
     var overlay = document.getElementById('locPrompt');
     if (overlay) overlay.style.display = 'none';
@@ -228,9 +214,9 @@ function showRoute() {
         var statusEl = document.getElementById('locStatusText');
         if (statusEl) statusEl.textContent = 'Route found — ' + distDisplay;
 
-        // FIX: fitSelectedRoutes already re-fits the view/zoom for the
+        // FIX: fitSelectedRoutes already re fits the view/zoom for the
         // route bounds, which can leave Leaflet's cached container size
-        // stale for a moment — re-check right after.
+        // stale for a moment re check right after.
         setTimeout(function () { if (map) map.invalidateSize(); }, 200);
     });
 
@@ -288,13 +274,7 @@ function scrollToMap() {
     if (mapSection) mapSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* ── DEFENSIVE FIX ──────────────────────────────────────────────
-   Explicitly attach every function used by inline onclick="..."
-   handlers to the global window object. This guarantees they are
-   always callable from HTML onclick attributes no matter how this
-   script gets loaded/bundled/minified in the future — eliminates
-   the "X is not defined" class of errors permanently.
-   ──────────────────────────────────────────────────────────────── */
+
 window.initMap = initMap;
 window.loadDefaultMap = loadDefaultMap;
 window.requestLocation = requestLocation;

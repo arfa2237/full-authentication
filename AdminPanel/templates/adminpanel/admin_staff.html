@@ -432,32 +432,17 @@
       </div>
       <nav class="sidebar-nav">
         <div class="nav-label">Main Menu</div>
-        <a class="nav-item" href="{% url 'admin-dashboard' %}"
-          ><i class="fa-solid fa-gauge-high"></i> Dashboard</a
-        >
+        <a class="nav-item" href="{% url 'admin-dashboard' %}" ><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
         <a class="nav-item active" href="{% url 'admin-staff' %}">
-          <i class="fa-solid fa-user-nurse"></i> Staff Management {% if
-          pending_count %}<span class="nav-badge">{{ pending_count }}</span>{%
-          endif %}
+          <i class="fa-solid fa-user-nurse"></i> Staff Management {% if pending_count %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}
         </a>
-        <a class="nav-item" href="{% url 'admin-users' %}"
-          ><i class="fa-solid fa-users"></i> Patients</a
-        >
-        <a class="nav-item" href="{% url 'admin-appointments' %}"
-          ><i class="fa-solid fa-calendar-check"></i> Appointments</a
-        >
+        <a class="nav-item" href="{% url 'admin-users' %}" ><i class="fa-solid fa-users"></i> Patients</a>
+        <a class="nav-item" href="{% url 'admin-appointments' %}" ><i class="fa-solid fa-calendar-check"></i> Appointments</a>
         <div class="nav-label" style="margin-top: 8px">Management</div>
-        <a class="nav-item" href="{% url 'admin-centers' %}"
-          ><i class="fa-solid fa-hospital"></i> Centers</a
-        >
-        <a class="nav-item" href="{% url 'admin-blogs' %}"
-          ><i class="fa-solid fa-newspaper"></i> Blogs</a
-        >
+        <a class="nav-item" href="{% url 'admin-centers' %}" ><i class="fa-solid fa-hospital"></i> Centers</a>
       </nav>
       <div class="sidebar-footer">
-        <a class="logout-btn" href="{% url 'admin-logout' %}"
-          ><i class="fa-solid fa-right-from-bracket"></i> Logout</a
-        >
+        <a class="logout-btn" href="{% url 'admin-logout' %}" ><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
       </div>
     </aside>
     <div class="main">
@@ -487,8 +472,7 @@
         </div>
       </header>
       <div class="content">
-        {% if messages %}{% for message in messages %} {% if message.tags ==
-        'error' %}
+        {% if messages %}{% for message in messages %} {% if message.tags == 'error' %}
         <div class="msg-error">
           <i class="fa-solid fa-circle-xmark"></i> {{ message }}
         </div>
@@ -501,35 +485,25 @@
         <div class="filter-bar">
           <a
             href="?status=all"
-            class="filter-btn {% if status_filter == 'all' %}active{% endif %}"
-            ><i class="fa-solid fa-list"></i> All</a
-          >
+            class="filter-btn {% if status_filter == 'all' %}active{% endif %}"><i class="fa-solid fa-list"></i> All</a>
           <a
             href="?status=pending"
-            class="filter-btn {% if status_filter == 'pending' %}active{% endif %}"
-            ><i class="fa-solid fa-clock"></i> Pending
-            <span class="filter-count">{{ pending_count }}</span></a
-          >
+            class="filter-btn {% if status_filter == 'pending' %}active{% endif %}" ><i class="fa-solid fa-clock"></i> Pending
+            <span class="filter-count">{{ pending_count }}</span></a>
           <a
             href="?status=approved"
-            class="filter-btn {% if status_filter == 'approved' %}active{% endif %}"
-            ><i class="fa-solid fa-check"></i> Approved
-            <span class="filter-count">{{ approved_count }}</span></a
-          >
+            class="filter-btn {% if status_filter == 'approved' %}active{% endif %}" ><i class="fa-solid fa-check"></i> Approved
+            <span class="filter-count">{{ approved_count }}</span></a>
           <a
             href="?status=rejected"
-            class="filter-btn {% if status_filter == 'rejected' %}active{% endif %}"
-            ><i class="fa-solid fa-xmark"></i> Rejected
-            <span class="filter-count">{{ rejected_count }}</span></a
-          >
+            class="filter-btn {% if status_filter == 'rejected' %}active{% endif %}" ><i class="fa-solid fa-xmark"></i> Rejected
+            <span class="filter-count">{{ rejected_count }}</span></a>
         </div>
 
         <div class="table-card">
           <div class="card-header">
             <h3><i class="fa-solid fa-user-nurse"></i> Staff Registrations</h3>
-            <span style="font-size: 11px; color: var(--muted)"
-              >{{ staff_list|length }} records</span
-            >
+            <span style="font-size: 11px; color: var(--muted)" >{{ staff_list|length }} records</span>
           </div>
           <table class="data-table">
             <thead>
@@ -566,35 +540,29 @@
                   {{ sp.created_at|date:"d M Y" }}
                 </td>
                 <td>
-                  <span class="status-pill {{ sp.status }}"
-                    >{{ sp.status|capfirst }}</span
-                  >
+                  <span class="status-pill {{ sp.status }}" >{{ sp.status|capfirst }}</span>
                 </td>
                 <td>
                   <div class="action-btns">
                     {% if sp.status == 'pending' %}
                     <form
                       method="POST"
-                      action="{% url 'update-staff-status' sp.id %}"
-                    >
+                      action="{% url 'update-staff-status' sp.id %}">
                       {% csrf_token %}<input
                         type="hidden"
                         name="action"
-                        value="approve"
-                      />
+                        value="approve"/>
                       <button type="submit" class="act-btn approve">
                         <i class="fa-solid fa-check"></i> Approve
                       </button>
                     </form>
                     <form
                       method="POST"
-                      action="{% url 'update-staff-status' sp.id %}"
-                    >
+                      action="{% url 'update-staff-status' sp.id %}">
                       {% csrf_token %}<input
                         type="hidden"
                         name="action"
-                        value="reject"
-                      />
+                        value="reject"/>
                       <button type="submit" class="act-btn reject">
                         <i class="fa-solid fa-xmark"></i> Reject
                       </button>
@@ -602,13 +570,11 @@
                     {% elif sp.status == 'approved' %}
                     <form
                       method="POST"
-                      action="{% url 'update-staff-status' sp.id %}"
-                    >
+                      action="{% url 'update-staff-status' sp.id %}">
                       {% csrf_token %}<input
                         type="hidden"
                         name="action"
-                        value="reject"
-                      />
+                        value="reject"/>
                       <button type="submit" class="act-btn reject">
                         <i class="fa-solid fa-ban"></i> Revoke
                       </button>
@@ -616,13 +582,11 @@
                     {% else %}
                     <form
                       method="POST"
-                      action="{% url 'update-staff-status' sp.id %}"
-                    >
+                      action="{% url 'update-staff-status' sp.id %}">
                       {% csrf_token %}<input
                         type="hidden"
                         name="action"
-                        value="approve"
-                      />
+                        value="approve"/>
                       <button type="submit" class="act-btn approve">
                         <i class="fa-solid fa-rotate-right"></i> Re-approve
                       </button>
