@@ -111,7 +111,7 @@ TIG WEBSITE GUIDE (use ONLY this information for questions about using the TIG p
    Step 4: <<e.g. Choose Ayesha Dispensary center and enter child datails>>
    Step 5: <<e.g. Choose date and time slot>>
    Step 6: <<e.g. You will receive confirmation email for appointment >>
-   Documents to bring: <<e.g. vaccination card, parent CNIC>>
+   Documents to bring: <<e.g. vaccination card>>
 
 2. RESCHEDULING OR CANCELLING
    Step 1: <<e.g. Go to Track now page>>
