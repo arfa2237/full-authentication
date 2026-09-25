@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     errorBox.style.display = "block";   
     errorBox.scrollIntoView({ behavior: "smooth", block: "center" });
   }
-  // ─── Password Strength Meter ───────────────────────────────────────────────
+  //  Password Strength 
  
   function getStrength(pwd) {
     let score = 0;
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
     strengthLabel.textContent    = s.label;
   });
  
-  // ──────────────────────────────────────────────────────────────────────────
+  
 
   form.addEventListener("submit", function (e) {
     let errors = [];

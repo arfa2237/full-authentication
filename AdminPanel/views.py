@@ -285,40 +285,6 @@ def AdminStatistics(request):
     cancelled_appts   = Appointment.objects.filter(status='cancelled').count()
     scheduled_appts   = Appointment.objects.filter(status='scheduled').count()
 
-    #  Immunization rate
-    TOTAL_DOSES = 6
-    total_possible = total_patients * TOTAL_DOSES
-    immun_rate = int((completed_appts / total_possible) * 100) if total_possible > 0 else 0
-
-    #  Vaccine-wise stats 
-    VACCINES = ['Child Vaccine - At Birth', 'Child Vaccine - 6 week', 'Child Vaccine - 10 week', 'Child Vaccine - 14 week', 'Child Vaccine - 9 months', 'Child Vaccine - 15 months']
-    VACCINE_COLORS = ['#6884d3', '#43a047', '#fb8c00', '#f06272', '#1a6fb3', '#28375f']
-
-    vaccine_stats = []
-    for i, vac in enumerate(VACCINES):
-        total  = Appointment.objects.filter(vaccine_type=vac).count()
-        done   = Appointment.objects.filter(vaccine_type=vac, status='completed').count()
-        pct    = int((done / total) * 100) if total > 0 else 0
-        vaccine_stats.append({
-            'name':    vac,
-            'total':   total,
-            'done':    done,
-            'percent': pct,
-            'color':   VACCINE_COLORS[i],
-        })
-
-    #  Center wise stats
-    centers = VaccinationCenter.objects.filter(is_active=True)
-    center_stats = []
-    for center in centers:
-        total = Appointment.objects.filter(center=center).count()
-        done  = Appointment.objects.filter(center=center, status='completed').count()
-        center_stats.append({
-            'name':  center.name,
-            'total': total,
-            'done':  done,
-        })
-
     #  Monthly trend (last 6 months)
     from django.utils import timezone
     import datetime
@@ -352,19 +318,10 @@ def AdminStatistics(request):
         'missed_appts':     missed_appts,
         'cancelled_appts':  cancelled_appts,
         'scheduled_appts':  scheduled_appts,
-        'immun_rate':       immun_rate,
-        'vaccine_stats':    vaccine_stats,
-        'center_stats':     center_stats,
         # JSON data for charts
         'donut_labels':     donut_labels,
         'donut_data':       donut_data,
         'donut_colors':     donut_colors,
         'monthly_labels':   monthly_labels,
         'monthly_data':     monthly_data,
-        'bar_labels':       [v['name'] for v in vaccine_stats],
-        'bar_done':         [v['done'] for v in vaccine_stats],
-        'bar_colors':       [v['color'] for v in vaccine_stats],
-        'center_labels':    [c['name'] for c in center_stats],
-        'center_total':     [c['total'] for c in center_stats],
-        'center_done':      [c['done'] for c in center_stats],
     })
