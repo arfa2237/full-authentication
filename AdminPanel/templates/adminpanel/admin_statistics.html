@@ -601,27 +601,11 @@
     </div>
 </div>
 
-<!-- Monthly Trend Chart  Full Width -->
-<div class="section-card" style="margin-bottom: 22px;">
-    <div class="card-header">
-        <h3>
-            <i class="fa-solid fa-chart-line"></i> Monthly Vaccination Trend
-        </h3>
-    </div>
-    <div class="card-body">
-        <div class="chart-wrap" style="position: relative; height: 300px;">
-            <canvas id="lineChart"></canvas>
-        </div>
-    </div>
-</div>
-
 
   <script>
       const donutLabels  = {{ donut_labels|safe }};
       const donutData    = {{ donut_data|safe }};
       const donutColors  = {{ donut_colors|safe }};
-      const monthLabels  = {{ monthly_labels|safe }};
-      const monthData    = {{ monthly_data|safe }};
       const totalAppts   = {{ total_appts }};
 
 // Donut Chart
@@ -640,7 +624,7 @@
     },
     options: {
         responsive: true,
-        maintainAspectRatio: false,  // ← FIXES shrinking/growing ✅
+        maintainAspectRatio: false,  //  FIXES shrinking/growing 
         cutout: '60%',
         plugins: {
             legend: { display: false },
@@ -659,44 +643,7 @@
     }
   });
 
-    const lineCtx = document.getElementById('lineChart').getContext('2d');
-    new Chart(lineCtx, {
-    type: 'line',
-    data: {
-        labels: monthLabels,
-        datasets: [{
-            label: 'Completed Vaccinations',
-            data: monthData,
-            borderColor: '#6884d3',
-            backgroundColor: 'rgba(104,132,211,0.12)',
-            borderWidth: 2.5,
-            pointBackgroundColor: '#6884d3',
-            pointRadius: 5,
-            pointHoverRadius: 7,
-            fill: true,
-            tension: 0.4,
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,  // ← FIXES shrinking/growing ✅
-        plugins: {
-            legend: { display: false },
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: { stepSize: 1, font: { family: 'Poppins', size: 10 } },
-                grid:  { color: 'rgba(104,132,211,0.08)' }
-            },
-            x: {
-                grid: { display: false },
-                ticks: { font: { family: 'Poppins', size: 10 } }
-            }
-        },
-        animation: { duration: 1200 }
-    }
-  });
+  
   </script>
   </body>
 </html>

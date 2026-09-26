@@ -285,22 +285,6 @@ def AdminStatistics(request):
     cancelled_appts   = Appointment.objects.filter(status='cancelled').count()
     scheduled_appts   = Appointment.objects.filter(status='scheduled').count()
 
-    #  Monthly trend (last 6 months)
-    from django.utils import timezone
-    import datetime
-
-    monthly_data = []
-    monthly_labels = []
-    for i in range(5, -1, -1):
-        month_date = date.today().replace(day=1) - datetime.timedelta(days=i * 30)
-        month_name = month_date.strftime("%b %Y")
-        count = Appointment.objects.filter(
-            appointment_date__year=month_date.year,
-            appointment_date__month=month_date.month,
-            status='completed'
-        ).count()
-        monthly_labels.append(month_name)
-        monthly_data.append(count)
 
     #  Donut data
     donut_data   = [completed_appts, pending_appts, scheduled_appts, missed_appts, cancelled_appts]
@@ -322,6 +306,4 @@ def AdminStatistics(request):
         'donut_labels':     donut_labels,
         'donut_data':       donut_data,
         'donut_colors':     donut_colors,
-        'monthly_labels':   monthly_labels,
-        'monthly_data':     monthly_data,
     })
